@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
+import SignInPage from './pages/account/sign-in';
 
 const App: React.FC = () => (
 	<Routes>
@@ -12,7 +13,7 @@ const App: React.FC = () => (
 
 		<Route path='account'>
 			<Route index element='Account' />
-			<Route path='sign-in' element='Sign In' />
+			<Route path='sign-in' element={<SignInPage />} />
 			<Route path='sign-up' element='Sign Up' />
 		</Route>
 

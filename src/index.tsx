@@ -4,11 +4,12 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import './index.css';
+import theme from './theme';
 
 ReactDOM.render(
 	<React.StrictMode>
 		<BrowserRouter>
-			<ChakraProvider>
+			<ChakraProvider theme={theme}>
 				<App />
 			</ChakraProvider>
 		</BrowserRouter>
