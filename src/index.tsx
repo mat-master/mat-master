@@ -1,17 +1,16 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { MantineProvider } from '@mantine/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import './index.css';
-import theme from './theme';
 
 ReactDOM.render(
 	<React.StrictMode>
 		<BrowserRouter>
-			<ChakraProvider theme={theme}>
+			<MantineProvider theme={{ primaryColor: 'red' }}>
 				<App />
-			</ChakraProvider>
+			</MantineProvider>
 		</BrowserRouter>
 	</React.StrictMode>,
 	document.getElementById('root')
