@@ -1,4 +1,4 @@
-import { Grid, TextInput } from '@mantine/core';
+import { Grid, PasswordInput, TextInput } from '@mantine/core';
 import React from 'react';
 
 const AdminSignUpForm: React.FC = () => {
@@ -12,10 +12,10 @@ const AdminSignUpForm: React.FC = () => {
 					<TextInput label='Last Name' />
 				</Grid.Col>
 				<Grid.Col span={6}>
-					<TextInput label='Email' type='email' />
+					<TextInput type='email' label='Email' />
 				</Grid.Col>
 				<Grid.Col span={6}>
-					<TextInput label='Phone Number' type='tel' />
+					<PasswordInput label='Password' />
 				</Grid.Col>
 			</Grid>
 		</form>
