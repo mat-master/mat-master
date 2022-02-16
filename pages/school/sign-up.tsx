@@ -1,9 +1,7 @@
 import {
-	Button,
 	Center,
 	Container,
 	createStyles,
-	Group,
 	Paper,
 	Stepper,
 	Title,
@@ -12,8 +10,6 @@ import {
 import { NextPage } from 'next';
 import { useState } from 'react';
 import {
-	ArrowLeft as ArrowLeftIcon,
-	ArrowRight as ArrowRightIcon,
 	Check as CheckIcon,
 	CreditCard as CreditCardIcon,
 	Home as HomeIcon,
@@ -22,6 +18,7 @@ import {
 import AdminSignUpForm from '../../components/admin-sign-up-form';
 import BillingSignUpForm from '../../components/billing-sign-up-form';
 import SchoolSignUpForm from '../../components/school-sign-up-form';
+import StepperControl from '../../components/stepper-control';
 
 const useStyles = createStyles(() => ({
 	stepIcon: { backgroundColor: 'transparent' },
@@ -86,23 +83,7 @@ const SignUpPage: NextPage = () => {
 						</Stepper.Step>
 					</Stepper>
 
-					<Group position='apart'>
-						<Button
-							variant='outline'
-							disabled={active <= 0}
-							onClick={() => setActive(Math.max(0, active - 1))}
-							leftIcon={<ArrowLeftIcon size={18} />}
-						>
-							Back
-						</Button>
-
-						<Button
-							onClick={() => setActive(active + 1)}
-							rightIcon={active < 3 && <ArrowRightIcon size={18} />}
-						>
-							{active < 3 ? 'Next' : 'Done'}
-						</Button>
-					</Group>
+					<StepperControl steps={3} active={active} setActive={setActive} />
 				</Paper>
 			</Container>
 		</Center>
