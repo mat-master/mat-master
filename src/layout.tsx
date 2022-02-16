@@ -1,13 +1,32 @@
-import { AppShell } from '@mantine/core';
+import { Box } from '@mantine/core';
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
+import PageHeader from './components/page-header';
 import SideNav from './components/side-nav';
 
 const Layout: React.FC = () => {
 	return (
-		<AppShell fixed navbar={<SideNav />}>
-			<Outlet />
-		</AppShell>
+		<Box
+			sx={(theme) => ({
+				width: '100vw',
+				height: '100vh',
+				padding: 36,
+				display: 'grid',
+				gridTemplateColumns: 'min-content 1fr',
+				gridTemplateRows: 'min-content 1fr',
+				gap: theme.spacing.xl,
+				gridTemplateAreas: `
+					"nav header"
+					"nav main"
+				`,
+			})}
+		>
+			<PageHeader />
+			<SideNav />
+			<Box component='main' style={{ gridArea: 'main' }}>
+				<Outlet />
+			</Box>
+		</Box>
 	);
 };
 

@@ -11,6 +11,7 @@ const App: React.FC = () => (
 			<Route path='/students' element='Students' />
 			<Route path='/students/:student' element='Student' />
 			<Route path='/billing' element='Billing' />
+			<Route path='/settings' element='Settings' />
 			<Route path='/account' element='Account' />
 		</Route>
 
