@@ -1,7 +1,6 @@
-import { Box } from '@mantine/core';
+import { Box, ScrollArea, Title } from '@mantine/core';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import PageHeader from './components/page-header';
 import SideNav from './components/side-nav';
 
 const Layout: React.FC = () => {
@@ -10,10 +9,12 @@ const Layout: React.FC = () => {
 			sx={(theme) => ({
 				width: '100vw',
 				height: '100vh',
-				padding: 36,
+				maxHeight: '100%',
+				padding: theme.spacing.xl,
+				paddingBottom: 0,
 				display: 'grid',
-				gridTemplateColumns: 'min-content 1fr',
-				gridTemplateRows: 'min-content 1fr',
+				gridTemplateColumns: 'min-content auto',
+				gridTemplateRows: 'auto 1fr',
 				gap: theme.spacing.xl,
 				gridTemplateAreas: `
 					"nav header"
@@ -21,11 +22,11 @@ const Layout: React.FC = () => {
 				`,
 			})}
 		>
-			<PageHeader />
+			<Title style={{ gridArea: 'header' }}>Page Header</Title>
 			<SideNav />
-			<Box component='main' style={{ gridArea: 'main' }}>
+			<ScrollArea offsetScrollbars style={{ gridArea: 'main', maxHeight: '100%' }}>
 				<Outlet />
-			</Box>
+			</ScrollArea>
 		</Box>
 	);
 };

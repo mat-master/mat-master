@@ -6,11 +6,6 @@ const PageHeader: React.FC = () => {
 		<header
 			style={{
 				gridArea: 'header',
-				backgroundColor: 'transparent',
-				border: 'none',
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'space-between',
 			}}
 		>
 			<Title>Page Title</Title>
