@@ -1,0 +1,1 @@
+require('dotenv').config({path: "/opt/nodejs/.env"});
