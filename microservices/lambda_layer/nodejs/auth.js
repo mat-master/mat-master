@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-export async function authBearer(event) {
+exports.authBearer = async (event) => {
   if(!event.headers["Authorization"])
     return {
       statusCode: 401,
