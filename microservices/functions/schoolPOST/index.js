@@ -25,7 +25,7 @@ exports.handler = async (event) => {
   if(!res)
     return {
       statusCode: 500,
-      body: JSON.stringify({error: "Could not create school."})
+      body: JSON.stringify({error: "Could not create school due to internal error."})
     };
   return {
     statusCode: 200

@@ -1,0 +1,34 @@
+API paths
+
+https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/auth/signup
+POST
+Body:
+
+firstName - String (1-50 chars)
+lastName - String (1-50 chars)
+email - String (Valid email)
+password - String(Atleast 6 characters)
+
+Response with 200 if ok, then you need to pass a login request
+
+https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/auth/login
+POST
+Body:
+
+email - String (Valid email)
+password - String (Atleast 6 characters)
+
+Response with 200 if Valid
+Response Body:
+jwt - The jwt token
+
+https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/school
+POST
+Body: 
+
+name - String (5-100 chars)
+
+Headers:
+Authentication - Bearer [jwt token]
+
+Response with 200 if valid
