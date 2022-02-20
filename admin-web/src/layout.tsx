@@ -10,16 +10,17 @@ const useStyles = createStyles((theme) => ({
 		width: '100%',
 		height: '100%',
 		display: 'grid',
-		gridTemplateRows: 'min-content auto',
-		gridTemplateColumns: 'min-content auto',
-		overflow: 'hiden',
+		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		gridTemplateColumns: 'min-content minmax(0, 1fr)',
 	},
 	content: {
 		width: '100%',
 		height: '100%',
 		maxHeight: '100%',
+		display: 'grid',
+		gridTemplateColumns: '1fr',
+		gridTemplateRows: 'min-content minmax(0, 1fr)',
 		padding: theme.spacing.xl,
-		overflow: 'hidden',
 	},
 }));
 
