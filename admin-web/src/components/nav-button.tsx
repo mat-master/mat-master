@@ -1,15 +1,16 @@
 import { Button } from '@mantine/core';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 
 export interface NavButtonProps {
 	label: string;
-	icon: ReactNode;
-	to: string;
+	icon: React.ReactNode;
+	to?: string;
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ label, icon, to }) => {
+	to ??= `/${label}`.toLowerCase();
 	const active = !!useMatch(to);
 
 	return (
@@ -17,10 +18,14 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon, to }) => {
 			component={Link}
 			to={to}
 			leftIcon={icon}
-			sx={(theme) => ({ marginBottom: theme.spacing.xs, border: 'none' })}
-			styles={{ inner: { justifyContent: 'left' } }}
-			variant={active ? 'light' : 'default'}
 			fullWidth
+			color={active ? undefined : 'gray'}
+			variant={active ? 'light' : 'subtle'}
+			styles={{ inner: { justifyContent: 'start' } }}
+			sx={(theme) => ({
+				color: active ? undefined : theme.colors.gray[7],
+				paddingRight: 72,
+			})}
 		>
 			{label}
 		</Button>

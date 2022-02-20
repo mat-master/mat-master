@@ -9,7 +9,7 @@ ReactDOM.render(
 			<Global
 				styles={(theme) => ({
 					'*': { boxSizing: 'border-box' },
-					'body, #root': { margin: 0 },
+					'body, #root': { margin: 0, width: '100vw', height: '100vh', maxHeight: '100vh' },
 					body: { backgroundColor: theme.colors.gray[1] },
 				})}
 			/>
