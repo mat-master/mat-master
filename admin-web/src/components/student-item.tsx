@@ -1,7 +1,6 @@
-import { Avatar, Badge, Button, createStyles, Text, Title } from '@mantine/core';
+import { ActionIcon, Avatar, Badge, createStyles, Text, Title } from '@mantine/core';
 import React from 'react';
-import { ChevronRight as ChevronRightIcon } from 'react-feather';
-import { Link } from 'react-router-dom';
+import { MoreHorizontal as MoreHorizontalIcon } from 'react-feather';
 
 export interface StudentItemProps {
 	name: string;
@@ -25,14 +24,24 @@ const StudentItem: React.FC<StudentItemProps> = ({
 	const { classes } = useStyles();
 
 	return (
-		<Button
-			classNames={classes}
-			variant='default'
-			size='lg'
-			mb='xs'
-			component={Link}
-			to='./student'
-			fullWidth
+		// <Button
+		// 	classNames={classes}
+		// 	variant='default'
+		// 	size='lg'
+		// 	mb='xs'
+		// 	component={Link}
+		// 	to='./student'
+		// 	fullWidth
+		// >
+
+		// </Button>
+		<div
+			style={{
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				padding: '6px 12px',
+			}}
 		>
 			<Avatar src={avatarUrl} radius='xl' />
 			<Title order={6}>{name}</Title>
@@ -40,8 +49,10 @@ const StudentItem: React.FC<StudentItemProps> = ({
 				{status}
 			</Badge>
 			<Text>{membershipCount} active memberships</Text>
-			<ChevronRightIcon />
-		</Button>
+			<ActionIcon>
+				<MoreHorizontalIcon />
+			</ActionIcon>
+		</div>
 	);
 };
 
