@@ -1,46 +1,29 @@
-import { ActionIcon, Avatar, Badge, createStyles, Text, Title } from '@mantine/core';
+import { ActionIcon, Avatar, Badge, Box, Menu, Text, Title } from '@mantine/core';
 import React from 'react';
-import { MoreHorizontal as MoreHorizontalIcon } from 'react-feather';
+import { Edit2 as EditIcon, MoreHorizontal as MoreHorizontalIcon } from 'react-feather';
 
 export interface StudentItemProps {
 	name: string;
 	avatarUrl?: string | undefined;
 	status: 'active' | 'inactive';
 	membershipCount: number;
+	openEdit: VoidFunction;
 }
-
-const useStyles = createStyles((theme) => ({
-	inner: {
-		justifyContent: 'left',
-	},
-}));
 
 const StudentItem: React.FC<StudentItemProps> = ({
 	avatarUrl,
 	name,
 	status,
 	membershipCount,
+	openEdit,
 }) => {
-	const { classes } = useStyles();
-
 	return (
-		// <Button
-		// 	classNames={classes}
-		// 	variant='default'
-		// 	size='lg'
-		// 	mb='xs'
-		// 	component={Link}
-		// 	to='./student'
-		// 	fullWidth
-		// >
-
-		// </Button>
-		<div
+		<Box
 			style={{
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'center',
-				padding: '6px 12px',
+				padding: '6px 12px 6px 24px',
 			}}
 		>
 			<Avatar src={avatarUrl} radius='xl' />
@@ -49,10 +32,19 @@ const StudentItem: React.FC<StudentItemProps> = ({
 				{status}
 			</Badge>
 			<Text>{membershipCount} active memberships</Text>
-			<ActionIcon>
-				<MoreHorizontalIcon />
-			</ActionIcon>
-		</div>
+			<Menu
+				gutter={2}
+				control={
+					<ActionIcon size='lg'>
+						<MoreHorizontalIcon size={18} />
+					</ActionIcon>
+				}
+			>
+				<Menu.Item icon={<EditIcon size={16} />} onClick={openEdit}>
+					Edit
+				</Menu.Item>
+			</Menu>
+		</Box>
 	);
 };
 

@@ -1,4 +1,4 @@
-import { Paper, ScrollArea } from '@mantine/core';
+import { Divider, Paper, ScrollArea } from '@mantine/core';
 import React from 'react';
 import { UserPlus } from 'react-feather';
 import PageHeader from '../components/page-header';
@@ -18,9 +18,15 @@ const StudentsPage: React.FC = () => {
 			/>
 
 			<Paper style={{ overflow: 'hidden' }} shadow='md' withBorder>
-				<ScrollArea style={{ height: '100%' }} offsetScrollbars>
+				<ScrollArea
+					style={{ height: '100%' }}
+					styles={{ root: { height: '100%' }, viewport: { padding: 12 } }}
+				>
 					{students.map((student, i) => (
-						<StudentItem key={i} {...student} />
+						<div key={i}>
+							<StudentItem key={i} {...student} openEdit={() => console.log('edit')} />
+							<Divider />
+						</div>
 					))}
 				</ScrollArea>
 			</Paper>
