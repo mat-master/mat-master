@@ -9,10 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.52.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
+    "stripe": "^8.203.0",
     "validator": "^13.7.0"
   }
 }

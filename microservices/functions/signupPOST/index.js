@@ -4,13 +4,14 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
 exports.handler = async (event) => {
-    if(!event.body) {
+    const body = JSON.parse(event.body);
+    if(!body) {
         return {
           statusCode: 400,
           body: JSON.stringify({error: "No body submitted."})
         };
     }
-    const { firstName, lastName, email, password } = event.body;
+    const { firstName, lastName, email, password } = body;
     if(!validator.isLength(firstName, {min:1, max:50}))
         return {
             statusCode: 400,

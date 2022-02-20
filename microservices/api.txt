@@ -1,6 +1,7 @@
 API paths
 
 https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/auth/signup
+Signs up
 POST
 Body:
 
@@ -12,6 +13,7 @@ password - String(Atleast 6 characters)
 Response with 200 if ok, then you need to pass a login request
 
 https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/auth/login
+Logs in
 POST
 Body:
 
@@ -23,10 +25,39 @@ Response Body:
 jwt - The jwt token
 
 https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/school
+Creates a new school
 POST
 Body: 
 
 name - String (5-100 chars)
+address - String (10-150)
+
+Headers:
+Authentication - Bearer [jwt token]
+
+Response with 200 if valid
+
+https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/school/students
+Invites a student and sends a student
+POST
+Body: 
+
+firstName - String (1-50 chars)
+lastName - String (1-50 chars)
+email - String
+
+Headers:
+Authentication - Bearer [jwt token]
+
+Response with 200 if valid
+
+
+https://nxtqqspyxb.execute-api.us-west-1.amazonaws.com/dev/school/join
+Joins a school if there is a valid invite
+POST
+Body: 
+
+school - int (school id)
 
 Headers:
 Authentication - Bearer [jwt token]

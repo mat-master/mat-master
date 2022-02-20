@@ -7,25 +7,31 @@ exports.handler = async (event) => {
   const payload = await auth.authBearer(event);
   if(payload.statusCode)
     return payload;
-  if(!event.body) {
+  const body = JSON.parse(event.body);
+  if(!body) {
       return {
         statusCode: 400,
         body: JSON.stringify({error: "No body submitted."})
       };
   }
-  const { name } = event.body;
+  const { name, address } = body;
   if(!validator.isLength(name, {min:5, max:100}))
       return {
           statusCode: 400,
           body: JSON.stringify({error: "School name must be atleast 5 characters."})
       };
+  if(!validator.isLength(name, {min:10, max:150}))
+    return {
+        statusCode: 400,
+        body: JSON.stringify({error: "Address must be atleast 10 characters."})
+    };
   const client = new Client();
   await client.connect();
-  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier) VALUES (DEFAULT, $1, $2, DEFAULT, 0)", [name, payload.id]);
+  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address, admitted_emails) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3, DEFAULT)", [name, payload.id, address]);
   if(!res)
     return {
       statusCode: 500,
-      body: JSON.stringify({error: "Could not create school due to internal error."})
+      body: JSON.stringify({error: "Could not create school due to an internal error."})
     };
   return {
     statusCode: 200

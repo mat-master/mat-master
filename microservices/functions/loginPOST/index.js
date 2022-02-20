@@ -5,13 +5,14 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
 exports.handler = async (event) => {
-    if(!event.body) {
+    const body = JSON.parse(event.body);
+    if(!body) {
         return {
           statusCode: 400,
           body: JSON.stringify({error: "No body submitted."})
         };
     }
-    const { email, password } = event.body;
+    const { email, password } = body;
     if(!validator.isEmail(email))
         return {
             statusCode: 400,
@@ -33,7 +34,7 @@ exports.handler = async (event) => {
     }
     const response = {
         statusCode: 200,
-        body: JSON.stringify({jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE)})
+        body: {jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE)}
     };
     return response;
 };
