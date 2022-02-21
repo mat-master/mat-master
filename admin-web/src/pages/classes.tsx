@@ -1,7 +1,8 @@
 import React from 'react';
+import PageHeader from '../components/page-header';
 
 const ClassesPage: React.FC = () => {
-	return <div>Classes</div>;
+	return <PageHeader title='Classes' />;
 };
 
 export default ClassesPage;

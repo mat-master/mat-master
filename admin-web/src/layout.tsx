@@ -1,32 +1,38 @@
-import { Box, ScrollArea, Title } from '@mantine/core';
+import { Box, createStyles } from '@mantine/core';
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
+import AppHeader from './components/app-header';
 import SideNav from './components/side-nav';
 
+const useStyles = createStyles((theme) => ({
+	layout: {
+		width: '100%',
+		height: '100%',
+		display: 'grid',
+		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		gridTemplateColumns: 'min-content minmax(0, 1fr)',
+	},
+	content: {
+		width: '100%',
+		height: '100%',
+		maxHeight: '100%',
+		display: 'grid',
+		gridTemplateColumns: '1fr',
+		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		padding: theme.spacing.xl,
+	},
+}));
+
 const Layout: React.FC = () => {
+	const { classes } = useStyles();
+
 	return (
-		<Box
-			sx={(theme) => ({
-				width: '100vw',
-				height: '100vh',
-				maxHeight: '100%',
-				padding: theme.spacing.xl,
-				paddingBottom: 0,
-				display: 'grid',
-				gridTemplateColumns: 'min-content auto',
-				gridTemplateRows: 'auto 1fr',
-				gap: theme.spacing.xl,
-				gridTemplateAreas: `
-					"nav header"
-					"nav main"
-				`,
-			})}
-		>
-			<Title style={{ gridArea: 'header' }}>Page Header</Title>
+		<Box className={classes.layout}>
+			<AppHeader />
 			<SideNav />
-			<ScrollArea offsetScrollbars style={{ gridArea: 'main', maxHeight: '100%' }}>
+			<Box component='main' className={classes.content}>
 				<Outlet />
-			</ScrollArea>
+			</Box>
 		</Box>
 	);
 };
