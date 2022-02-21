@@ -2,7 +2,7 @@ import { Divider, Paper, ScrollArea } from '@mantine/core';
 import React from 'react';
 import { UserPlus } from 'react-feather';
 import PageHeader from '../components/page-header';
-import StudentItem from '../components/student-item';
+import { StudentsTableHead, StudentTableItem } from '../components/students-table';
 import useSearchTerm from '../hooks/use-search-tem';
 
 const StudentsPage: React.FC = () => {
@@ -17,14 +17,22 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: <UserPlus size={18} />, action: () => {} }]}
 			/>
 
-			<Paper style={{ overflow: 'hidden' }} shadow='md' withBorder>
-				<ScrollArea
-					style={{ height: '100%' }}
-					styles={{ root: { height: '100%' }, viewport: { padding: 12 } }}
-				>
+			<Paper
+				style={{
+					display: 'grid',
+					gridTemplateColumns: '1fr',
+					gridTemplateRows: 'min-content minmax(0, 1fr)',
+					overflow: 'hidden',
+				}}
+				shadow='md'
+				withBorder
+			>
+				<StudentsTableHead />
+
+				<ScrollArea style={{ height: '100%' }}>
 					{students.map((student, i) => (
 						<div key={i}>
-							<StudentItem key={i} {...student} openEdit={() => console.log('edit')} />
+							<StudentTableItem key={i} {...student} openEdit={() => console.log('edit')} />
 							<Divider />
 						</div>
 					))}
