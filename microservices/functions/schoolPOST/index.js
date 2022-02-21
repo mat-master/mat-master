@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     };
   const client = new Client();
   await client.connect();
-  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address, admitted_emails) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3, DEFAULT)", [name, payload.id, address]);
+  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3)", [name, payload.id, address]);
   if(!res)
     return {
       statusCode: 500,

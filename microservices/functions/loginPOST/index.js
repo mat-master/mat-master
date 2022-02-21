@@ -34,7 +34,7 @@ exports.handler = async (event) => {
     }
     const response = {
         statusCode: 200,
-        body: {jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE)}
+        body: JSON.stringify({jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE)})
     };
     return response;
 };
