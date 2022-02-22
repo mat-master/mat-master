@@ -3,6 +3,12 @@ const { Client } = require('pg');
 const validator = require('validator');
 const auth = require('/opt/nodejs/auth');
 
+// Adds a class to the school.
+// Requires Bearer token.
+// name - Name of the class
+// type - Scheduling type (onetime, recurring)
+// scheduledDate? - Date of the class (onetime)
+// scheduledDays? - Days of the week and time (recurring)
 exports.handler = async (event) => {
   const payload = await auth.authBearer(event);
   if(payload.statusCode)
@@ -14,8 +20,8 @@ exports.handler = async (event) => {
         body: JSON.stringify({error: "No body submitted."})
       };
   }
-  const { school, className, type } = body;
-  if(!validator.isLength(className, {min:5, max:100}))
+  const { name, type } = body;
+  if(!validator.isLength(name, {min:5, max:100}))
       return {
           statusCode: 400,
           body: JSON.stringify({error: "School name must be atleast 5 characters."})
@@ -38,7 +44,7 @@ exports.handler = async (event) => {
         statusCode: 400,
         body: JSON.stringify({error: "Expected scheduledDays in body."})
       };
-    schedule = { days: body.scheduledDays }
+    schedule = { days: body.scheduledDays };
     scheduleType = 1;
   } else {
     return {
@@ -48,13 +54,10 @@ exports.handler = async (event) => {
   }
   const client = new Client();
   await client.connect();
-  const verifySchool = await client.query("SELECT * FROM schools WHERE id = $1 AND owner = $2 LIMIT 1", [school, payload.id]);
-  if(verifySchool.rows.length === 0)
-      return {
-        statusCode: 401,
-        body: JSON.stringify({error: "You are not allowed to edit this school."})
-      }
-  const res = await client.query("INSERT INTO classes (id, name, school, schedule, scheduleType) VALUES (DEFAULT, $1, $2, $3, $4)", [className, school, JSON.stringify(schedule), scheduleType]);
+  const school = await auth.authSchool(event, payload, client);
+  if(school.statusCode)
+    return school;
+  const res = await client.query("INSERT INTO classes (id, name, school, schedule, \"scheduleType\") VALUES (DEFAULT, $1, $2, $3, $4)", [name, school.id, JSON.stringify(schedule), scheduleType]);
   if(!res)
     return {
       statusCode: 500,

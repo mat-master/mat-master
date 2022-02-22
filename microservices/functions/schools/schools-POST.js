@@ -3,6 +3,10 @@ const { Client } = require('pg');
 const validator = require('validator');
 const auth = require('/opt/nodejs/auth');
 
+// Creates a new school.
+// Requires Bearer token.
+// name - Name of the school.
+// address - Address of the school.
 exports.handler = async (event) => {
   const payload = await auth.authBearer(event);
   if(payload.statusCode)

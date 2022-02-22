@@ -3,6 +3,11 @@ const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
+// Signs up a user.
+// firstName = First Name
+// lastName = Last Name
+// email = Email
+// password = Password
 exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     if(!body) {

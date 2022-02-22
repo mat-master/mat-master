@@ -4,6 +4,9 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
+// Logs in a user.
+// email - Email
+// password - Password
 exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     if(!body) {
@@ -20,7 +23,7 @@ exports.handler = async (event) => {
         };
     const client = new Client();
     await client.connect();
-    const query = await client.query("SELECT * FROM users WHERE email=$1 LIMIT 1", [email]);
+    const query = await client.query("SELECT id, first_name, last_name, email, creation_date, privilege, schools FROM users WHERE email=$1 LIMIT 1", [email]);
     if(query.rows.length === 0)
         return {
             statusCode: 400,
