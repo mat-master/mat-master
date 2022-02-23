@@ -1,17 +1,10 @@
-import {
-	ActionIcon,
-	Avatar,
-	Badge,
-	Group,
-	Modal,
-	Paper,
-	TextInput,
-	Title,
-} from '@mantine/core';
-import React, { useState } from 'react';
-import { UserPlus, X as CloseIcon } from 'react-feather';
+import { Avatar, Badge, Paper, Title } from '@mantine/core';
+import { useSetState } from '@mantine/hooks';
+import React from 'react';
+import { UserPlus } from 'react-feather';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
+import StudentInviteModal from '../components/student-invite-modal';
 import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
 
@@ -23,8 +16,8 @@ interface StudentSummary {
 }
 
 const StudentsPage: React.FC = () => {
-	const [currentStudentName, setCurrentStudentName] = useState<string>();
 	const [searchTerm, setSearchTerm] = useSearchTerm();
+	const [modals, setModals] = useSetState({ invite: false });
 
 	const students = Array<StudentSummary>(24).fill({
 		name: 'John Doe',
@@ -32,14 +25,12 @@ const StudentsPage: React.FC = () => {
 		memberships: ['Basic'],
 	});
 
-	const currentStudent = students.find(({ name }) => name === currentStudentName);
-
 	return (
 		<>
 			<PageHeader
 				title='Students'
 				search={setSearchTerm}
-				actions={[{ icon: <UserPlus size={18} />, action: () => {} }]}
+				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
 			/>
 
 			<Paper shadow='md' withBorder>
@@ -68,20 +59,7 @@ const StudentsPage: React.FC = () => {
 				/>
 			</Paper>
 
-			<Modal
-				opened={!!currentStudentName}
-				onClose={() => setCurrentStudentName(undefined)}
-				hideCloseButton
-			>
-				<Group position='apart' align='center'>
-					<Title order={2}>{currentStudent?.name}</Title>
-					<ActionIcon size='lg' onClick={() => setCurrentStudentName(undefined)}>
-						<CloseIcon />
-					</ActionIcon>
-				</Group>
-
-				<TextInput />
-			</Modal>
+			<StudentInviteModal open={modals.invite} onClose={() => setModals({ invite: false })} />
 		</>
 	);
 };
