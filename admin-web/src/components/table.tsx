@@ -1,15 +1,16 @@
 import { createStyles, MantineNumberSize, Text, Title } from '@mantine/core';
 import React from 'react';
 
-interface Column<T extends {}> {
-	key: keyof T;
+interface Column<T extends string> {
+	key: T;
 	name?: string;
 	width?: number;
+	defaultElement?: React.ReactNode | undefined;
 }
 
-export interface TableProps<T extends {}> {
+export interface TableProps<T extends string> {
 	columns: Column<T>[];
-	items: { [_ in keyof T]: React.ReactNode }[];
+	items: { [_ in T]?: React.ReactNode | undefined }[];
 	itemPadding?: MantineNumberSize | number | undefined;
 }
 
@@ -58,7 +59,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 	},
 }));
 
-const Table = <T extends {}>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
+const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding });
 
 	const totalColumnWidth = columns.reduce((sum, { width = 1 }) => sum + width, 0);
@@ -69,11 +70,7 @@ const Table = <T extends {}>({ columns, items, itemPadding = 'xs' }: TableProps<
 			<thead className={classes.head}>
 				<tr className={classes.row}>
 					{columns.map((column, i) => (
-						<th
-							key={column.key as string}
-							className={classes.cell}
-							style={{ width: columnWidths[i] }}
-						>
+						<th key={column.key} className={classes.cell} style={{ width: columnWidths[i] }}>
 							<Title order={5}>{column.name ?? column.key}</Title>
 						</th>
 					))}
@@ -83,15 +80,15 @@ const Table = <T extends {}>({ columns, items, itemPadding = 'xs' }: TableProps<
 			<tbody className={classes.body}>
 				{items.map((data, i) => (
 					<tr key={i} className={`${classes.row} ${classes.item}`}>
-						{columns.map(({ key }, i) => {
+						{columns.map(({ key, defaultElement }, i) => {
 							const props = {
-								key: key as string,
+								key: key,
 								className: classes.cell,
 								style: { width: columnWidths[i] },
-								children: data[key],
+								children: data[key] ?? defaultElement,
 							};
 
-							return typeof data[key] === 'string' ? (
+							return typeof props.children === 'string' ? (
 								<Text component='td' {...props} />
 							) : (
 								<td {...props} />

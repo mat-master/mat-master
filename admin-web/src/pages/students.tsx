@@ -42,7 +42,7 @@ const StudentsPage: React.FC = () => {
 			/>
 
 			<Paper shadow='md' withBorder>
-				<Table<Omit<StudentSummary, 'id'> & { menu: never }>
+				<Table<keyof (StudentSummary & { menu: never })>
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
 						{ key: 'name', name: 'Name', width: 4 },

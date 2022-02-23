@@ -9,6 +9,7 @@ import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
 
 interface ClassSummary {
+	id: string;
 	name: string;
 	studentsCount: number;
 	membershipsCount: number;
@@ -20,6 +21,7 @@ interface ClassesPageModals {
 }
 
 const classes = Array<ClassSummary>(36).fill({
+	id: '3s564',
 	name: 'TaeKwonDo',
 	studentsCount: 12,
 	membershipsCount: 3,
@@ -39,7 +41,7 @@ const ClassesPage: React.FC = () => {
 			/>
 
 			<Paper shadow='md' withBorder>
-				<Table<ClassSummary & { menu: never }>
+				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
 						{ key: 'name', name: 'Name', width: 3 },
 						{ key: 'studentsCount', name: 'Students', width: 2 },
