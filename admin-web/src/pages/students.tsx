@@ -1,21 +1,38 @@
-import { ActionIcon, Group, Modal, Paper, ScrollArea, TextInput, Title } from '@mantine/core';
+import {
+	ActionIcon,
+	Avatar,
+	Badge,
+	Group,
+	Menu,
+	Modal,
+	Paper,
+	TextInput,
+	Title,
+} from '@mantine/core';
 import React, { useState } from 'react';
 import { UserPlus, X as CloseIcon } from 'react-feather';
 import PageHeader from '../components/page-header';
-import { StudentsTableHead, StudentTableItem } from '../components/students-table';
+import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
 
+interface StudentSummary {
+	name: string;
+	status: string;
+	memberships: string[];
+	avatarUrl?: string;
+}
+
 const StudentsPage: React.FC = () => {
-	const [currentStudentId, setCurrentStudentId] = useState<string>();
+	const [currentStudentName, setCurrentStudentName] = useState<string>();
 	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const students = Array(24).fill({
-		id: '347hf9',
+
+	const students = Array<StudentSummary>(24).fill({
 		name: 'John Doe',
 		status: 'active',
-		membershipCount: 1,
+		memberships: ['Basic'],
 	});
 
-	const currentStudent = students.find(({ id }) => id === currentStudentId);
+	const currentStudent = students.find(({ name }) => name === currentStudentName);
 
 	return (
 		<>
@@ -25,39 +42,41 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: <UserPlus size={18} />, action: () => {} }]}
 			/>
 
-			<Paper
-				style={{
-					display: 'grid',
-					gridTemplateColumns: '1fr',
-					gridTemplateRows: 'min-content minmax(0, 1fr)',
-					overflow: 'hidden',
-				}}
-				shadow='md'
-				withBorder
-			>
-				<StudentsTableHead />
-
-				<ScrollArea style={{ height: '100%' }}>
-					{students.map((student, i) => (
-						<div key={i}>
-							<StudentTableItem
-								key={i}
-								{...student}
-								openEdit={() => setCurrentStudentId(student.id)}
-							/>
-						</div>
-					))}
-				</ScrollArea>
+			<Paper shadow='md' withBorder>
+				<Table<StudentSummary & { menu: never }>
+					columns={[
+						{ key: 'avatarUrl', name: '' },
+						{ key: 'name', name: 'Name', width: 4 },
+						{ key: 'status', name: 'Status', width: 2 },
+						{ key: 'memberships', name: 'Membership', width: 5 },
+						{ key: 'menu', name: '' },
+					]}
+					items={students.map((student) => ({
+						avatarUrl: <Avatar radius='xl' />,
+						name: <Title order={5}>{student.name}</Title>,
+						status: (
+							<Badge variant='outline' color='green'>
+								{student.status}
+							</Badge>
+						),
+						memberships: student.memberships.join(', '),
+						menu: (
+							<Menu>
+								<Menu.Item onClick={() => setCurrentStudentName(student.name)}>Edit</Menu.Item>
+							</Menu>
+						),
+					}))}
+				/>
 			</Paper>
 
 			<Modal
-				opened={typeof currentStudentId === 'string'}
-				onClose={() => setCurrentStudentId(undefined)}
+				opened={!!currentStudentName}
+				onClose={() => setCurrentStudentName(undefined)}
 				hideCloseButton
 			>
 				<Group position='apart' align='center'>
 					<Title order={2}>{currentStudent?.name}</Title>
-					<ActionIcon size='lg' onClick={() => setCurrentStudentId(undefined)}>
+					<ActionIcon size='lg' onClick={() => setCurrentStudentName(undefined)}>
 						<CloseIcon />
 					</ActionIcon>
 				</Group>
