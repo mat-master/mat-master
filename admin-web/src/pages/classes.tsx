@@ -1,4 +1,4 @@
-import { Paper, Title } from '@mantine/core';
+import { Menu, Paper, Title } from '@mantine/core';
 import React from 'react';
 import { Plus as PlusIcon } from 'react-feather';
 import PageHeader from '../components/page-header';
@@ -31,12 +31,13 @@ const ClassesPage: React.FC = () => {
 			/>
 
 			<Paper shadow='md' withBorder>
-				<Table<ClassSummary>
+				<Table<ClassSummary & { menu: never }>
 					columns={[
 						{ key: 'name', name: 'Name', width: 3 },
 						{ key: 'studentsCount', name: 'Students', width: 2 },
 						{ key: 'membershipsCount', name: 'Included In', width: 3 },
 						{ key: 'weeklyClassesCount', name: 'Classes Per Week', width: 2 },
+						{ key: 'menu', name: '', width: 0.5 },
 					]}
 					items={classes
 						.filter((classSummary) =>
@@ -47,6 +48,11 @@ const ClassesPage: React.FC = () => {
 							studentsCount: `${studentsCount} students`,
 							membershipsCount: `Included in ${membershipsCount} memberships`,
 							weeklyClassesCount: `${weeklyClassesCount} classes per week`,
+							menu: (
+								<Menu>
+									<Menu.Item>Edit</Menu.Item>
+								</Menu>
+							),
 						}))}
 				/>
 			</Paper>

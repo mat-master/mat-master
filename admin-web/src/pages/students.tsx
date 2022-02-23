@@ -55,7 +55,7 @@ const StudentsPage: React.FC = () => {
 						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
 						.map((student) => ({
 							avatarUrl: <Avatar radius='xl' />,
-							name: <Title order={5}>{student.name}</Title>,
+							name: <Title order={6}>{student.name}</Title>,
 							status: (
 								<Badge variant='outline' color='green'>
 									{student.status}

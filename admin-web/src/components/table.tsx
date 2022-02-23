@@ -20,11 +20,17 @@ const useStyles = createStyles((theme) => ({
 		display: 'grid',
 		gridAutoColumns: '1fr',
 		gridTemplateRows: 'min-content 1fr',
+		padding: `0 ${theme.spacing.xs}px`,
+	},
+	row: {
+		display: 'block',
+		padding: `6px ${theme.spacing.lg}px`,
+		borderBottom: `1px solid ${theme.colors.gray[2]}`,
 	},
 	head: {
 		width: '100%',
-		paddingTop: theme.spacing.md,
-		paddingBottom: theme.spacing.md,
+		padding: `${theme.spacing.md}px ${theme.spacing.lg}px`,
+		borderBottom: `1px solid ${theme.colors.gray[2]}`,
 	},
 	body: {
 		display: 'block',
@@ -33,10 +39,11 @@ const useStyles = createStyles((theme) => ({
 		maxHeight: '100%',
 		overflowY: 'scroll',
 	},
-	row: {
-		display: 'block',
-		padding: theme.spacing.sm,
-		borderBottom: `1px solid ${theme.colors.gray[2]}`,
+	item: {
+		borderRadius: theme.radius.sm,
+		'&:hover': {
+			backgroundColor: theme.colors.gray[1],
+		},
 	},
 	cell: {
 		display: 'inline-block',
@@ -60,7 +67,7 @@ const Table = <T extends {}>({ columns, items }: TableProps<T>) => {
 							className={classes.cell}
 							style={{ width: columnWidths[i] }}
 						>
-							<Title order={4}>{column.name ?? column.key}</Title>
+							<Title order={5}>{column.name ?? column.key}</Title>
 						</th>
 					))}
 				</tr>
@@ -68,7 +75,7 @@ const Table = <T extends {}>({ columns, items }: TableProps<T>) => {
 
 			<tbody className={classes.body}>
 				{items.map((data, i) => (
-					<tr key={i} className={classes.row}>
+					<tr key={i} className={`${classes.row} ${classes.item}`}>
 						{columns.map(({ key }, i) => {
 							const props = {
 								key: key as string,
