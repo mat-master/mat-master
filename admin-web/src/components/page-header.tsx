@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Title } from '@mantine/core';
+import { ActionIcon, Box, Group, Title, useMantineTheme } from '@mantine/core';
 import React from 'react';
 import SearchBar from './search-bar';
 
@@ -14,22 +14,32 @@ export interface PageHeaderProps {
 	search?: ((term: string) => void) | undefined;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => (
-	<Box component='header' mb='md'>
-		<Group position='apart' align='center'>
-			<Title>{title}</Title>
+const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => {
+	const theme = useMantineTheme();
 
-			<Group spacing='sm' align='center'>
-				{actions?.map(({ icon, action, label }, i) => (
-					<ActionIcon key={i} size='lg' color='red' variant='filled' onClick={action}>
-						{icon}
-					</ActionIcon>
-				))}
+	return (
+		<Box component='header' mb='md'>
+			<Group position='apart' align='center'>
+				<Title>{title}</Title>
 
-				{search && <SearchBar onChange={(e) => search(e.target.value)} />}
+				<Group spacing='sm' align='center'>
+					{actions?.map(({ icon, action, label }, i) => (
+						<ActionIcon
+							key={i}
+							size='lg'
+							color={theme.primaryColor}
+							variant='filled'
+							onClick={action}
+						>
+							{icon}
+						</ActionIcon>
+					))}
+
+					{search && <SearchBar onChange={(e) => search(e.target.value)} />}
+				</Group>
 			</Group>
-		</Group>
-	</Box>
-);
+		</Box>
+	);
+};
 
 export default PageHeader;

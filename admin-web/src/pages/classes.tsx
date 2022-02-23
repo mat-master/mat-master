@@ -66,6 +66,8 @@ const ClassesPage: React.FC = () => {
 				open={!!modals.deleteConfirmation}
 				action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
+				workingMessage='Deleting class...'
+				successMessage='Class deleted'
 			/>
 		</>
 	);

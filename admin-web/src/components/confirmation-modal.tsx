@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from './modal';
 
 export interface ConfirmationModalProps {
@@ -9,7 +9,8 @@ export interface ConfirmationModalProps {
 	resourceType: string;
 	actionType?: string | undefined;
 	action: () => void | Promise<void>;
-	successMessage?: string | undefined;
+	successMessage: string;
+	workingMessage: string;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -19,22 +20,27 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	actionType = 'delete',
 	action,
 	successMessage,
+	workingMessage,
 }) => {
-	const [working, setWorking] = useState(false);
 	const notifications = useNotifications();
 
-	const handleClose = () => {
-		onClose();
-	};
-
 	const handleConfirmation = async () => {
-		if (working) return;
-		setWorking(true);
+		onClose();
+
+		const notificationId = notifications.showNotification({
+			message: workingMessage,
+			loading: true,
+			autoClose: false,
+			disallowClose: true,
+		});
+
 		await action();
 
-		handleClose();
-		setWorking(false);
-		successMessage && notifications.showNotification({ message: successMessage });
+		notifications.updateNotification(notificationId, {
+			id: notificationId,
+			message: successMessage,
+			loading: false,
+		});
 	};
 
 	return (
@@ -47,7 +53,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 				<Button variant='outline' onClick={onClose}>
 					Cancel
 				</Button>
-				<Button onClick={handleConfirmation} loading={working}>
+				<Button onClick={handleConfirmation}>
 					Yes, {actionType} this {resourceType}
 				</Button>
 			</Group>

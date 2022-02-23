@@ -1,6 +1,6 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Modal from './modal';
 
 export interface StudentInviteFormProps {
@@ -9,55 +9,50 @@ export interface StudentInviteFormProps {
 }
 
 const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) => {
-	const [email, setEmail] = useState('');
+	const emailInputRef = useRef<HTMLInputElement>(null);
 	const [error, setError] = useState<string>();
-	const [working, setWorking] = useState(false);
 	const notifications = useNotifications();
 
-	const handleClose = () => {
-		onClose();
-		if (!working) {
-			setEmail('');
-			setError(undefined);
-		}
-	};
-
 	const handleSubmit = async () => {
-		if (working) return;
+		const email = emailInputRef.current?.value;
 		if (!email) return setError('Enter a valid email');
 		setError(undefined);
-		setWorking(true);
+		onClose();
+
+		const notificationId = notifications.showNotification({
+			title: 'Sending invitation',
+			message: `Sending invitation to ${email}`,
+			loading: true,
+			autoClose: false,
+			disallowClose: true,
+		});
 
 		// TODO: Send api request
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await new Promise((resolve) => setTimeout(resolve, 2000));
 
-		setWorking(false);
-		if (open) handleClose();
-		notifications.showNotification({
-			title: `Invitation sent to ${email}`,
-			message: "You'll be notified when they accept the invitation",
-			autoClose: 3000,
+		notifications.updateNotification(notificationId, {
+			id: notificationId,
+			title: `Invitation sent`,
+			message: 'You will be notified when they accept the invitation',
+			loading: false,
 		});
 	};
 
 	return (
-		<Modal opened={open} onClose={handleClose} title='Invite a student'>
+		<Modal opened={open} onClose={onClose} title='Invite a student'>
 			<form>
 				<Group direction='column' spacing='sm'>
 					<TextInput
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						ref={emailInputRef}
 						placeholder='Email'
 						error={error}
 						style={{ width: '100%' }}
 					/>
 					<Group position='right' style={{ width: '100%' }}>
-						<Button variant='outline' onClick={handleClose}>
+						<Button variant='outline' onClick={onClose}>
 							Cancel
 						</Button>
-						<Button loading={working} onClick={handleSubmit}>
-							Send
-						</Button>
+						<Button onClick={handleSubmit}>Send</Button>
 					</Group>
 				</Group>
 			</form>
