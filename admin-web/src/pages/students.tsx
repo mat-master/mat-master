@@ -3,7 +3,6 @@ import {
 	Avatar,
 	Badge,
 	Group,
-	Menu,
 	Modal,
 	Paper,
 	TextInput,
@@ -11,6 +10,7 @@ import {
 } from '@mantine/core';
 import React, { useState } from 'react';
 import { UserPlus, X as CloseIcon } from 'react-feather';
+import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
@@ -45,11 +45,11 @@ const StudentsPage: React.FC = () => {
 			<Paper shadow='md' withBorder>
 				<Table<StudentSummary & { menu: never }>
 					columns={[
-						{ key: 'avatarUrl', name: '' },
+						{ key: 'avatarUrl', name: '', width: 0.8 },
 						{ key: 'name', name: 'Name', width: 4 },
 						{ key: 'status', name: 'Status', width: 2 },
 						{ key: 'memberships', name: 'Memberships', width: 5 },
-						{ key: 'menu', name: '' },
+						{ key: 'menu', name: '', width: 0.8 },
 					]}
 					items={students
 						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -62,14 +62,9 @@ const StudentsPage: React.FC = () => {
 								</Badge>
 							),
 							memberships: student.memberships.join(', '),
-							menu: (
-								<Menu>
-									<Menu.Item onClick={() => setCurrentStudentName(student.name)}>
-										Edit
-									</Menu.Item>
-								</Menu>
-							),
+							menu: <ItemMenu />,
 						}))}
+					itemPadding={4}
 				/>
 			</Paper>
 

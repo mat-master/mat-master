@@ -1,6 +1,7 @@
-import { Menu, Paper, Title } from '@mantine/core';
+import { Paper, Title } from '@mantine/core';
 import React from 'react';
 import { Plus as PlusIcon } from 'react-feather';
+import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
@@ -48,11 +49,7 @@ const ClassesPage: React.FC = () => {
 							studentsCount: `${studentsCount} students`,
 							membershipsCount: `Included in ${membershipsCount} memberships`,
 							weeklyClassesCount: `${weeklyClassesCount} classes per week`,
-							menu: (
-								<Menu>
-									<Menu.Item>Edit</Menu.Item>
-								</Menu>
-							),
+							menu: <ItemMenu />,
 						}))}
 				/>
 			</Paper>
