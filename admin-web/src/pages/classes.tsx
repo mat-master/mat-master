@@ -1,7 +1,9 @@
 import { Paper, Title } from '@mantine/core';
 import React from 'react';
+import { Plus as PlusIcon } from 'react-feather';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
+import useSearchTerm from '../hooks/use-search-tem';
 
 interface ClassSummary {
 	name: string;
@@ -11,6 +13,8 @@ interface ClassSummary {
 }
 
 const ClassesPage: React.FC = () => {
+	const [searchTerm, setSearchTerm] = useSearchTerm('');
+
 	const classes = Array<ClassSummary>(36).fill({
 		name: 'TaeKwonDo',
 		studentsCount: 12,
@@ -20,7 +24,11 @@ const ClassesPage: React.FC = () => {
 
 	return (
 		<>
-			<PageHeader title='Classes' />
+			<PageHeader
+				title='Classes'
+				search={setSearchTerm}
+				actions={[{ icon: <PlusIcon size={18} />, action: () => {} }]}
+			/>
 
 			<Paper shadow='md' withBorder>
 				<Table<ClassSummary>
@@ -30,14 +38,16 @@ const ClassesPage: React.FC = () => {
 						{ key: 'membershipsCount', name: 'Included In', width: 3 },
 						{ key: 'weeklyClassesCount', name: 'Classes Per Week', width: 2 },
 					]}
-					items={classes.map(
-						({ name, studentsCount, membershipsCount, weeklyClassesCount }) => ({
+					items={classes
+						.filter((classSummary) =>
+							classSummary.name.toLowerCase().includes(searchTerm.toLowerCase())
+						)
+						.map(({ name, studentsCount, membershipsCount, weeklyClassesCount }) => ({
 							name: <Title order={5}>{name}</Title>,
 							studentsCount: `${studentsCount} students`,
 							membershipsCount: `Included in ${membershipsCount} memberships`,
 							weeklyClassesCount: `${weeklyClassesCount} classes per week`,
-						})
-					)}
+						}))}
 				/>
 			</Paper>
 		</>

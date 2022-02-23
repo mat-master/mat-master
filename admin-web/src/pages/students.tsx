@@ -51,21 +51,25 @@ const StudentsPage: React.FC = () => {
 						{ key: 'memberships', name: 'Memberships', width: 5 },
 						{ key: 'menu', name: '' },
 					]}
-					items={students.map((student) => ({
-						avatarUrl: <Avatar radius='xl' />,
-						name: <Title order={5}>{student.name}</Title>,
-						status: (
-							<Badge variant='outline' color='green'>
-								{student.status}
-							</Badge>
-						),
-						memberships: student.memberships.join(', '),
-						menu: (
-							<Menu>
-								<Menu.Item onClick={() => setCurrentStudentName(student.name)}>Edit</Menu.Item>
-							</Menu>
-						),
-					}))}
+					items={students
+						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
+						.map((student) => ({
+							avatarUrl: <Avatar radius='xl' />,
+							name: <Title order={5}>{student.name}</Title>,
+							status: (
+								<Badge variant='outline' color='green'>
+									{student.status}
+								</Badge>
+							),
+							memberships: student.memberships.join(', '),
+							menu: (
+								<Menu>
+									<Menu.Item onClick={() => setCurrentStudentName(student.name)}>
+										Edit
+									</Menu.Item>
+								</Menu>
+							),
+						}))}
 				/>
 			</Paper>
 

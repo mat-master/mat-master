@@ -1,6 +1,6 @@
-import { ActionIcon, Box, Group, TextInput, Title } from '@mantine/core';
+import { ActionIcon, Box, Group, Title } from '@mantine/core';
 import React from 'react';
-import { Search } from 'react-feather';
+import SearchBar from './search-bar';
 
 export interface Action {
 	icon: React.ReactNode;
@@ -26,14 +26,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => (
 					</ActionIcon>
 				))}
 
-				{search && (
-					<TextInput
-						style={{ width: '32ch' }}
-						icon={<Search size={18} />}
-						placeholder='Search...'
-						onChange={(e) => search(e.target.value)}
-					/>
-				)}
+				{search && <SearchBar onChange={(e) => search(e.target.value)} />}
 			</Group>
 		</Group>
 	</Box>
