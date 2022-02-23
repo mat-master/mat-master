@@ -2,6 +2,7 @@ import { Avatar, Badge, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import React from 'react';
 import { UserPlus } from 'react-feather';
+import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import StudentInviteModal from '../components/student-invite-modal';
@@ -9,21 +10,28 @@ import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
 
 interface StudentSummary {
+	id: string;
 	name: string;
 	status: string;
 	memberships: string[];
 	avatarUrl?: string;
 }
 
+interface StudentsPageModals {
+	invite?: boolean | undefined;
+	deleteConfirmation?: string | undefined;
+}
+
+const students = Array<StudentSummary>(24).fill({
+	id: 'k93487hkf',
+	name: 'John Doe',
+	status: 'active',
+	memberships: ['Basic'],
+});
+
 const StudentsPage: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const [modals, setModals] = useSetState({ invite: false });
-
-	const students = Array<StudentSummary>(24).fill({
-		name: 'John Doe',
-		status: 'active',
-		memberships: ['Basic'],
-	});
+	const [modals, setModals] = useSetState<StudentsPageModals>({});
 
 	return (
 		<>
@@ -34,7 +42,7 @@ const StudentsPage: React.FC = () => {
 			/>
 
 			<Paper shadow='md' withBorder>
-				<Table<StudentSummary & { menu: never }>
+				<Table<Omit<StudentSummary, 'id'> & { menu: never }>
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
 						{ key: 'name', name: 'Name', width: 4 },
@@ -53,13 +61,19 @@ const StudentsPage: React.FC = () => {
 								</Badge>
 							),
 							memberships: student.memberships.join(', '),
-							menu: <ItemMenu />,
+							menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: student.id })} />,
 						}))}
 					itemPadding={4}
 				/>
 			</Paper>
 
-			<StudentInviteModal open={modals.invite} onClose={() => setModals({ invite: false })} />
+			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
+			<ConfirmationModal
+				resourceType='student'
+				open={!!modals.deleteConfirmation}
+				action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
+				onClose={() => setModals({ deleteConfirmation: undefined })}
+			/>
 		</>
 	);
 };

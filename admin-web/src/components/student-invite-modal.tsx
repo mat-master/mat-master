@@ -1,7 +1,7 @@
-import { ActionIcon, Button, Group, Modal, TextInput, Title } from '@mantine/core';
+import { Button, Group, TextInput } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
 import React, { useState } from 'react';
-import { X as CloseIcon } from 'react-feather';
+import Modal from './modal';
 
 export interface StudentInviteFormProps {
 	open: boolean;
@@ -41,13 +41,7 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 	};
 
 	return (
-		<Modal opened={open} onClose={handleClose} hideCloseButton>
-			<Group position='apart' mb='sm'>
-				<Title order={3}>Invite A Student</Title>
-				<ActionIcon onClick={onClose}>
-					<CloseIcon size={18} />
-				</ActionIcon>
-			</Group>
+		<Modal opened={open} onClose={handleClose} title='Invite a student'>
 			<form>
 				<Group direction='column' spacing='sm'>
 					<TextInput
