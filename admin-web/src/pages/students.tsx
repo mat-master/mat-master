@@ -48,7 +48,7 @@ const StudentsPage: React.FC = () => {
 						{ key: 'avatarUrl', name: '' },
 						{ key: 'name', name: 'Name', width: 4 },
 						{ key: 'status', name: 'Status', width: 2 },
-						{ key: 'memberships', name: 'Membership', width: 5 },
+						{ key: 'memberships', name: 'Memberships', width: 5 },
 						{ key: 'menu', name: '' },
 					]}
 					items={students.map((student) => ({

@@ -69,7 +69,7 @@ const Table = <T extends {}>({ columns, items }: TableProps<T>) => {
 			<tbody className={classes.body}>
 				{items.map((data, i) => (
 					<tr key={i} className={classes.row}>
-						{columns.map(({ key, width = 1 }, i) => {
+						{columns.map(({ key }, i) => {
 							const props = {
 								key: key as string,
 								className: classes.cell,

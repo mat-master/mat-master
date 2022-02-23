@@ -14,31 +14,29 @@ export interface PageHeaderProps {
 	search?: ((term: string) => void) | undefined;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => {
-	return (
-		<Box component='header' mb='md'>
-			<Group position='apart' align='center'>
-				<Title>{title}</Title>
+const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => (
+	<Box component='header' mb='md'>
+		<Group position='apart' align='center'>
+			<Title>{title}</Title>
 
-				<Group spacing='sm' align='center'>
-					{actions?.map(({ icon, action, label }, i) => (
-						<ActionIcon key={i} size='lg' color='red' variant='filled' onClick={action}>
-							{icon}
-						</ActionIcon>
-					))}
+			<Group spacing='sm' align='center'>
+				{actions?.map(({ icon, action, label }, i) => (
+					<ActionIcon key={i} size='lg' color='red' variant='filled' onClick={action}>
+						{icon}
+					</ActionIcon>
+				))}
 
-					{search && (
-						<TextInput
-							style={{ width: '32ch' }}
-							icon={<Search size={18} />}
-							placeholder='Search...'
-							onChange={(e) => search(e.target.value)}
-						/>
-					)}
-				</Group>
+				{search && (
+					<TextInput
+						style={{ width: '32ch' }}
+						icon={<Search size={18} />}
+						placeholder='Search...'
+						onChange={(e) => search(e.target.value)}
+					/>
+				)}
 			</Group>
-		</Box>
-	);
-};
+		</Group>
+	</Box>
+);
 
 export default PageHeader;
