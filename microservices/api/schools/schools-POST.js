@@ -2,6 +2,7 @@ require("/opt/nodejs/env");
 const { Client } = require('pg');
 const validator = require('validator');
 const auth = require('/opt/nodejs/auth');
+const stripe = require('/opt/nodejs/stripe');
 
 // Creates a new school.
 // Requires Bearer token.
@@ -31,7 +32,19 @@ exports.handler = async (event) => {
     };
   const client = new Client();
   await client.connect();
-  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3)", [name, payload.id, address]);
+  const customer = await stripe.getCustomer(payload, client);
+  if(customer.statusCode)
+    return customer;
+  const subscription = await stripe.client.subscriptions.create({
+    customer: customer.id,
+    items: [{
+      price: "price_1KW88vGsHxGKM7KBG946ldmZ",
+    }],
+    payment_behavior: "default_incomplete",
+    expand: ["latest_invoice.payment_intent"],
+    trial_period_days: 14
+  });
+  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address, stripe_subscription_id) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3, $4)", [name, payload.id, address, subscription.id]);
   if(!res)
     return {
       statusCode: 500,
