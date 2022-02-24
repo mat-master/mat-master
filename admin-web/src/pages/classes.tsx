@@ -1,4 +1,4 @@
-import { Paper, Title } from '@mantine/core';
+import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import React from 'react';
 import { Plus as PlusIcon } from 'react-feather';
@@ -11,8 +11,8 @@ import useSearchTerm from '../hooks/use-search-tem';
 interface ClassSummary {
 	id: string;
 	name: string;
-	studentsCount: number;
-	membershipsCount: number;
+	students: number;
+	memberships: string[];
 	weeklyClassesCount: number;
 }
 
@@ -23,8 +23,8 @@ interface ClassesPageModals {
 const classes = Array<ClassSummary>(36).fill({
 	id: '3s564',
 	name: 'TaeKwonDo',
-	studentsCount: 12,
-	membershipsCount: 3,
+	students: 12,
+	memberships: ['Basic', 'Advanced'],
 	weeklyClassesCount: 2,
 });
 
@@ -43,23 +43,34 @@ const ClassesPage: React.FC = () => {
 			<Paper shadow='md' withBorder>
 				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
-						{ key: 'name', name: 'Name', width: 3 },
-						{ key: 'studentsCount', name: 'Students', width: 2 },
-						{ key: 'membershipsCount', name: 'Included In', width: 3 },
-						{ key: 'weeklyClassesCount', name: 'Classes Per Week', width: 2 },
+						{ key: 'name', name: 'Name', width: 2 },
+						{ key: 'students', name: 'Students', width: 2 },
+						{ key: 'memberships', name: 'Memberships', width: 3 },
+						{ key: 'weeklyClassesCount', name: 'Classes', width: 2 },
 						{ key: 'menu', name: '', width: 0.5 },
 					]}
 					items={classes
 						.filter((classSummary) =>
 							classSummary.name.toLowerCase().includes(searchTerm.toLowerCase())
 						)
-						.map(({ name, studentsCount, membershipsCount, weeklyClassesCount }) => ({
+						.map(({ name, memberships, weeklyClassesCount }) => ({
 							name: <Title order={6}>{name}</Title>,
-							studentsCount: `${studentsCount} students`,
-							membershipsCount: `Included in ${membershipsCount} memberships`,
-							weeklyClassesCount: `${weeklyClassesCount} classes per week`,
+							students: (
+								<AvatarsGroup limit={4} spacing='xl'>
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+								</AvatarsGroup>
+							),
+							memberships: memberships.join(', '),
+							weeklyClassesCount: `${weeklyClassesCount} per week`,
 							menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: name })} />,
 						}))}
+					itemPadding={4}
 				/>
 			</Paper>
 
