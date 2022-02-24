@@ -25,10 +25,25 @@ exports.handler = async (event) => {
           statusCode: 400,
           body: JSON.stringify({error: "School name must be atleast 5 characters."})
       };
-  if(!validator.isLength(name, {min:10, max:150}))
+  if(!address.state)
     return {
-        statusCode: 400,
-        body: JSON.stringify({error: "Address must be atleast 10 characters."})
+      statusCode: 400,
+      body: JSON.stringify({error: "Address missing state."})
+    };
+  if(!address.city)
+    return {
+      statusCode: 400,
+      body: JSON.stringify({error: "Address missing city."})
+    };
+  if(!address.postalCode)
+    return {
+      statusCode: 400,
+      body: JSON.stringify({error: "Address missing postal code."})
+    };
+  if(!address.line1)
+    return {
+      statusCode: 400,
+      body: JSON.stringify({error: "Address missing line 1."})
     };
   const client = new Client();
   await client.connect();
@@ -44,7 +59,24 @@ exports.handler = async (event) => {
     expand: ["latest_invoice.payment_intent"],
     trial_period_days: 14
   });
-  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, address, stripe_subscription_id) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3, $4)", [name, payload.id, address, subscription.id]);
+  const account = await stripe.client.accounts.create({
+    type: "standard",
+    country: "US",
+    business_type: "company",
+    email: payload.email,
+    company: {
+      address: {
+        country: "US",
+        state: address.state,
+        city: address.city,
+        postal_code: address.postalCode,
+        line1: address.line1,
+        line2: address.line2
+      }
+    }
+  })
+  const addressId = await client.query("INSERT INTO addresses (id, state, city, postal_code, line_1, line_2) VALUES (DEFAULT, $1, $2, $3, $4, $5) RETURNING id", [address.state, address.city, address.postalCode, address.line1, address.line2]);
+  const res = await client.query("INSERT INTO schools (id, name, owner, creation_date, tier, stripe_subscription_id, stripe_account_id, address) VALUES (DEFAULT, $1, $2, DEFAULT, 0, $3, $4, $5)", [name, payload.id, subscription.id, account.id, addressId.rows[0].id]);
   if(!res)
     return {
       statusCode: 500,
