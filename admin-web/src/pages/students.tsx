@@ -53,15 +53,20 @@ const StudentsPage: React.FC = () => {
 					items={students
 						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
 						.map((student) => ({
-							avatarUrl: <Avatar radius='xl' />,
-							name: <Title order={6}>{student.name}</Title>,
-							status: (
-								<Badge variant='outline' color='green'>
-									{student.status}
-								</Badge>
-							),
-							memberships: student.memberships.join(', '),
-							menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: student.id })} />,
+							href: `./${student.id}`,
+							data: {
+								avatarUrl: <Avatar radius='xl' />,
+								name: <Title order={6}>{student.name}</Title>,
+								status: (
+									<Badge variant='outline' color='green'>
+										{student.status}
+									</Badge>
+								),
+								memberships: student.memberships.join(', '),
+								menu: (
+									<ItemMenu onDelete={() => setModals({ deleteConfirmation: student.id })} />
+								),
+							},
 						}))}
 					itemPadding={4}
 				/>

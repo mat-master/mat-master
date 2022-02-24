@@ -54,21 +54,23 @@ const ClassesPage: React.FC = () => {
 							classSummary.name.toLowerCase().includes(searchTerm.toLowerCase())
 						)
 						.map(({ name, memberships, weeklyClassesCount }) => ({
-							name: <Title order={6}>{name}</Title>,
-							students: (
-								<AvatarsGroup limit={4} spacing='xl'>
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-								</AvatarsGroup>
-							),
-							memberships: memberships.join(', '),
-							weeklyClassesCount: `${weeklyClassesCount} per week`,
-							menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: name })} />,
+							data: {
+								name: <Title order={6}>{name}</Title>,
+								students: (
+									<AvatarsGroup limit={4} spacing='xl'>
+										<Avatar />
+										<Avatar />
+										<Avatar />
+										<Avatar />
+										<Avatar />
+										<Avatar />
+										<Avatar />
+									</AvatarsGroup>
+								),
+								memberships: memberships.join(', '),
+								weeklyClassesCount: `${weeklyClassesCount} per week`,
+								menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: name })} />,
+							},
 						}))}
 					itemPadding={4}
 				/>

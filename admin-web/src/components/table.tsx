@@ -1,5 +1,6 @@
 import { createStyles, MantineNumberSize, Text, Title } from '@mantine/core';
 import React from 'react';
+import { useNavigate } from 'react-router';
 
 interface Column<T extends string> {
 	key: T;
@@ -8,9 +9,14 @@ interface Column<T extends string> {
 	defaultElement?: React.ReactNode | undefined;
 }
 
+interface ItemData<T extends string> {
+	href?: string | undefined;
+	data: { [_ in T]?: React.ReactNode };
+}
+
 export interface TableProps<T extends string> {
 	columns: Column<T>[];
-	items: { [_ in T]?: React.ReactNode | undefined }[];
+	items: ItemData<T>[];
 	itemPadding?: MantineNumberSize | number | undefined;
 }
 
@@ -61,6 +67,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 
 const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding });
+	const navigate = useNavigate();
 
 	const totalColumnWidth = columns.reduce((sum, { width = 1 }) => sum + width, 0);
 	const columnWidths = columns.map(({ width = 1 }) => `${(width / totalColumnWidth) * 100}%`);
@@ -78,14 +85,20 @@ const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TablePr
 			</thead>
 
 			<tbody className={classes.body}>
-				{items.map((data, i) => (
-					<tr key={i} className={`${classes.row} ${classes.item}`}>
+				{items.map((item, i) => (
+					<tr
+						key={i}
+						className={`${classes.row} ${classes.item}`}
+						data-href={item.href}
+						onClick={() => item.href && navigate(item.href)}
+						style={{ cursor: item.href ? 'pointer' : undefined }}
+					>
 						{columns.map(({ key, defaultElement }, i) => {
 							const props = {
 								key: key,
 								className: classes.cell,
 								style: { width: columnWidths[i] },
-								children: data[key] ?? defaultElement,
+								children: item.data[key] ?? defaultElement,
 							};
 
 							return typeof props.children === 'string' ? (
