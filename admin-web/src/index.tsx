@@ -1,4 +1,5 @@
 import { Global, MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
@@ -13,7 +14,10 @@ ReactDOM.render(
 					body: { backgroundColor: theme.colors.gray[1] },
 				})}
 			/>
-			<App />
+
+			<NotificationsProvider>
+				<App />
+			</NotificationsProvider>
 		</MantineProvider>
 	</React.StrictMode>,
 	document.getElementById('root')
