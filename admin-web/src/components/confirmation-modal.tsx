@@ -1,7 +1,7 @@
-import { Button, Group } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
 import React from 'react';
 import Modal from './modal';
+import ModalActions from './modal-actions';
 
 export interface ConfirmationModalProps {
 	open: boolean;
@@ -49,14 +49,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 			onClose={onClose}
 			title={`Are you sure you want to ${actionType} this ${resourceType}?`}
 		>
-			<Group style={{ width: '100%' }} position='right'>
-				<Button variant='outline' onClick={onClose}>
-					Cancel
-				</Button>
-				<Button onClick={handleConfirmation}>
-					Yes, {actionType} this {resourceType}
-				</Button>
-			</Group>
+			<ModalActions
+				primaryAction={handleConfirmation}
+				primaryLabel={`Yes, ${actionType} this ${resourceType}`}
+				secondaryAction={onClose}
+				secondaryLabel='Cancel'
+			/>
 		</Modal>
 	);
 };

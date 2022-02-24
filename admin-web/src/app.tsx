@@ -2,11 +2,9 @@ import React from 'react';
 import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import Layout from './layout';
-import BillingPage from './pages/billing';
-import ClassPage from './pages/class';
 import ClassesPage from './pages/classes';
 import DashboardPage from './pages/dashboard';
-import StudentPage from './pages/student';
+import MembershipsPage from './pages/memberships';
 import StudentsPage from './pages/students';
 
 const App: React.FC = () => (
@@ -14,18 +12,9 @@ const App: React.FC = () => (
 		<Routes>
 			<Route path='/' element={<Layout />}>
 				<Route index element={<DashboardPage />} />
-
-				<Route path='/classes'>
-					<Route index element={<ClassesPage />} />
-					<Route path=':class' element={<ClassPage />} />
-				</Route>
-
-				<Route path='/students'>
-					<Route index element={<StudentsPage />} />
-					<Route path=':student' element={<StudentPage />} />
-				</Route>
-
-				<Route path='/billing' element={<BillingPage />} />
+				<Route path='/students' element={<StudentsPage />} />
+				<Route path='/classes' element={<ClassesPage />} />
+				<Route path='/memberships' element={<MembershipsPage />} />
 				<Route path='/settings' element='Settings' />
 				<Route path='/account' element='Account' />
 			</Route>

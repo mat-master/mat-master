@@ -1,7 +1,8 @@
-import { Button, Group, TextInput } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
 import React, { useRef, useState } from 'react';
 import Modal from './modal';
+import ModalActions from './modal-actions';
 
 export interface StudentInviteFormProps {
 	open: boolean;
@@ -40,22 +41,19 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 
 	return (
 		<Modal opened={open} onClose={onClose} title='Invite a student'>
-			<form>
-				<Group direction='column' spacing='sm'>
-					<TextInput
-						ref={emailInputRef}
-						placeholder='Email'
-						error={error}
-						style={{ width: '100%' }}
-					/>
-					<Group position='right' style={{ width: '100%' }}>
-						<Button variant='outline' onClick={onClose}>
-							Cancel
-						</Button>
-						<Button onClick={handleSubmit}>Send</Button>
-					</Group>
-				</Group>
-			</form>
+			<TextInput
+				ref={emailInputRef}
+				placeholder='Email'
+				error={error}
+				style={{ width: '100%' }}
+			/>
+
+			<ModalActions
+				primaryAction={handleSubmit}
+				primaryLabel='Send'
+				secondaryAction={onClose}
+				secondaryLabel='Cancel'
+			/>
 		</Modal>
 	);
 };

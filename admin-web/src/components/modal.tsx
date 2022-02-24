@@ -2,6 +2,7 @@ import {
 	ActionIcon,
 	Box,
 	createStyles,
+	Group,
 	Modal as MantineModal,
 	ModalProps as MantineModalProps,
 	Title,
@@ -16,7 +17,6 @@ const useStyles = createStyles((theme) => ({
 		display: 'grid',
 		gridTemplateColumns: 'auto min-content',
 		gridTemplateRows: '1fr',
-		marginBottom: theme.spacing.xs,
 	},
 }));
 
@@ -25,13 +25,15 @@ const Modal: React.FC<ModalProps> = (props) => {
 
 	return (
 		<MantineModal hideCloseButton {...props} title={undefined}>
-			<Box className={classes.head}>
-				<Title order={3}>{props.title}</Title>
-				<ActionIcon>
-					<CloseIcon size={18} onClick={props.onClose} />
-				</ActionIcon>
-			</Box>
-			{props.children}
+			<Group direction='column' spacing='sm' grow>
+				<Box className={classes.head}>
+					<Title order={3}>{props.title}</Title>
+					<ActionIcon>
+						<CloseIcon size={18} onClick={props.onClose} />
+					</ActionIcon>
+				</Box>
+				{props.children}
+			</Group>
 		</MantineModal>
 	);
 };
