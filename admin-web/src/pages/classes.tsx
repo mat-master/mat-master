@@ -2,6 +2,7 @@ import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import React from 'react';
 import { Plus as PlusIcon } from 'react-feather';
+import ClassEditModal from '../components/class-edit-modal';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
@@ -17,6 +18,7 @@ interface ClassSummary {
 }
 
 interface ClassesPageModals {
+	edit?: string | undefined;
 	deleteConfirmation?: string | undefined;
 }
 
@@ -53,7 +55,7 @@ const ClassesPage: React.FC = () => {
 						.filter((classSummary) =>
 							classSummary.name.toLowerCase().includes(searchTerm.toLowerCase())
 						)
-						.map(({ name, memberships, weeklyClassesCount }) => ({
+						.map(({ id, name, memberships, weeklyClassesCount }) => ({
 							data: {
 								name: <Title order={6}>{name}</Title>,
 								students: (
@@ -69,13 +71,19 @@ const ClassesPage: React.FC = () => {
 								),
 								memberships: memberships.join(', '),
 								weeklyClassesCount: `${weeklyClassesCount} per week`,
-								menu: <ItemMenu onDelete={() => setModals({ deleteConfirmation: name })} />,
+								menu: (
+									<ItemMenu
+										onEdit={() => setModals({ edit: id })}
+										onDelete={() => setModals({ deleteConfirmation: id })}
+									/>
+								),
 							},
 						}))}
 					itemPadding={4}
 				/>
 			</Paper>
 
+			<ClassEditModal open={!!modals.edit} onClose={() => setModals({ edit: undefined })} />
 			<ConfirmationModal
 				resourceType='class'
 				open={!!modals.deleteConfirmation}

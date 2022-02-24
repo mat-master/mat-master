@@ -5,6 +5,7 @@ import { UserPlus } from 'react-feather';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
+import StudentEditModal from '../components/student-edit-modal';
 import StudentInviteModal from '../components/student-invite-modal';
 import Table from '../components/table';
 import useSearchTerm from '../hooks/use-search-tem';
@@ -19,6 +20,7 @@ interface StudentSummary {
 
 interface StudentsPageModals {
 	invite?: boolean | undefined;
+	edit?: string | undefined;
 	deleteConfirmation?: string | undefined;
 }
 
@@ -53,7 +55,6 @@ const StudentsPage: React.FC = () => {
 					items={students
 						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
 						.map((student) => ({
-							href: `./${student.id}`,
 							data: {
 								avatarUrl: <Avatar radius='xl' />,
 								name: <Title order={6}>{student.name}</Title>,
@@ -64,7 +65,10 @@ const StudentsPage: React.FC = () => {
 								),
 								memberships: student.memberships.join(', '),
 								menu: (
-									<ItemMenu onDelete={() => setModals({ deleteConfirmation: student.id })} />
+									<ItemMenu
+										onEdit={() => setModals({ edit: student.id })}
+										onDelete={() => setModals({ deleteConfirmation: student.id })}
+									/>
 								),
 							},
 						}))}
@@ -73,6 +77,7 @@ const StudentsPage: React.FC = () => {
 			</Paper>
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
+			<StudentEditModal open={!!modals.edit} onClose={() => setModals({ edit: undefined })} />
 			<ConfirmationModal
 				resourceType='student'
 				open={!!modals.deleteConfirmation}

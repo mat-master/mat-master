@@ -1,7 +1,7 @@
 import { Box, Group } from '@mantine/core';
 import React from 'react';
 import {
-	CreditCard as BillingIcon,
+	CreditCard as MembershipsIcon,
 	Grid as DashboardIcon,
 	List as ClassesIcon,
 	Settings as SettingsIcon,
@@ -25,9 +25,9 @@ const SideNav: React.FC = () => (
 	>
 		<Group direction='column' spacing='sm' mb='auto'>
 			<NavButton label='Dashboard' to='/' icon={<DashboardIcon size={ICON_SIZE} />} />
-			<NavButton label='Classes' icon={<ClassesIcon size={ICON_SIZE} />} />
 			<NavButton label='Students' icon={<StudentsIcon size={ICON_SIZE} />} />
-			<NavButton label='Billing' icon={<BillingIcon size={ICON_SIZE} />} />
+			<NavButton label='Classes' icon={<ClassesIcon size={ICON_SIZE} />} />
+			<NavButton label='Memberships' icon={<MembershipsIcon size={ICON_SIZE} />} />
 		</Group>
 
 		<NavButton label='Settings' icon={<SettingsIcon size={ICON_SIZE} />} />
