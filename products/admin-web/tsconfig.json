@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "types"
+  ],
+  "compilerOptions": {
+    "types": [
+      "snowpack-env"
+    ]
+  },
+  "references": [
+    {
+      "path": "../../common/types"
+    }
+  ]
+}
