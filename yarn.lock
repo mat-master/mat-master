@@ -1051,9 +1051,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"admin_web@workspace:products/admin-web":
+"admin-web@workspace:products/admin-web":
   version: 0.0.0-use.local
-  resolution: "admin_web@workspace:products/admin-web"
+  resolution: "admin-web@workspace:products/admin-web"
   dependencies:
     "@mantine/core": ^3.6.9
     "@mantine/dates": ^3.6.9

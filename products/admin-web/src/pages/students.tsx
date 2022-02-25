@@ -1,6 +1,7 @@
 import { Avatar, Badge, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
-import React from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { UserPlus } from 'react-feather';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
@@ -8,7 +9,7 @@ import PageHeader from '../components/page-header';
 import StudentEditModal from '../components/student-edit-modal';
 import StudentInviteModal from '../components/student-invite-modal';
 import Table from '../components/table';
-import useSearchTerm from '../hooks/use-search-tem';
+import useSearchTerm from '../hooks/use-search-term';
 
 interface StudentSummary {
 	id: string;
@@ -32,14 +33,19 @@ const students = Array<StudentSummary>(24).fill({
 });
 
 const StudentsPage: React.FC = () => {
-	const [searchTerm, setSearchTerm] = useSearchTerm();
 	const [modals, setModals] = useSetState<StudentsPageModals>({});
+	const [searchTerm, setSearchTerm] = useSearchTerm();
+	const filteredStudents = useMemo(
+		() => students.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase())),
+		[searchTerm]
+	);
 
 	return (
 		<>
 			<PageHeader
 				title='Students'
 				search={setSearchTerm}
+				searchTerm={searchTerm}
 				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
 			/>
 
@@ -52,26 +58,24 @@ const StudentsPage: React.FC = () => {
 						{ key: 'memberships', name: 'Memberships', width: 5 },
 						{ key: 'menu', name: '', width: 0.8 },
 					]}
-					items={students
-						.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
-						.map((student) => ({
-							data: {
-								avatarUrl: <Avatar radius='xl' />,
-								name: <Title order={6}>{student.name}</Title>,
-								status: (
-									<Badge variant='outline' color='green'>
-										{student.status}
-									</Badge>
-								),
-								memberships: student.memberships.join(', '),
-								menu: (
-									<ItemMenu
-										onEdit={() => setModals({ edit: student.id })}
-										onDelete={() => setModals({ deleteConfirmation: student.id })}
-									/>
-								),
-							},
-						}))}
+					items={filteredStudents.map((student) => ({
+						data: {
+							avatarUrl: <Avatar radius='xl' />,
+							name: <Title order={6}>{student.name}</Title>,
+							status: (
+								<Badge variant='outline' color='green'>
+									{student.status}
+								</Badge>
+							),
+							memberships: student.memberships.join(', '),
+							menu: (
+								<ItemMenu
+									onEdit={() => setModals({ edit: student.id })}
+									onDelete={() => setModals({ deleteConfirmation: student.id })}
+								/>
+							),
+						},
+					}))}
 					itemPadding={4}
 				/>
 			</Paper>

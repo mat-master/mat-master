@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Group, Title, useMantineTheme } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import SearchBar from './search-bar';
 
 export interface Action {
@@ -12,9 +12,10 @@ export interface PageHeaderProps {
 	title: string;
 	actions?: Action[];
 	search?: ((term: string) => void) | undefined;
+	searchTerm?: string;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, search, searchTerm }) => {
 	const theme = useMantineTheme();
 
 	return (
@@ -23,7 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => {
 				<Title>{title}</Title>
 
 				<Group spacing='sm' align='center'>
-					{actions?.map(({ icon, action, label }, i) => (
+					{actions?.map(({ icon, action }, i) => (
 						<ActionIcon
 							key={i}
 							size='lg'
@@ -35,7 +36,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, search, actions }) => {
 						</ActionIcon>
 					))}
 
-					{search && <SearchBar onChange={(e) => search(e.target.value)} />}
+					{search && <SearchBar onChange={(e) => search(e.target.value)} value={searchTerm} />}
 				</Group>
 			</Group>
 		</Box>
