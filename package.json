@@ -1,0 +1,9 @@
+{
+  "name": "mat-master",
+  "repository": "https://github.com/mat-master/mat-master.git",
+  "private": "true",
+  "workspaces": [
+    "products/*",
+    "common/*"
+  ]
+}
