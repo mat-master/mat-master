@@ -1,17 +1,32 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src",
-    "types"
+    "src"
   ],
   "compilerOptions": {
-    "types": [
-      "snowpack-env"
-    ]
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
   "references": [
     {
-      "path": "../../common/types"
+      "path": "./tsconfig.node.json"
     }
   ]
 }

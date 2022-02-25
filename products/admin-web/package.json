@@ -2,9 +2,11 @@
   "name": "admin-web",
   "version": "0.1.0",
   "license": "MIT",
+  "private": true,
   "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mantine/core": "^3.6.9",
@@ -19,14 +21,10 @@
     "react-router-dom": "^6.2.1"
   },
   "devDependencies": {
-    "@snowpack/plugin-dotenv": "^2.1.0",
-    "@snowpack/plugin-react-refresh": "^2.5.0",
-    "@snowpack/plugin-typescript": "^1.2.1",
-    "@types/react": "^17.0.4",
-    "@types/react-dom": "^17.0.3",
-    "@types/snowpack-env": "^2.3.3",
-    "snowpack": "^3.3.7",
-    "typescript": "^4.2.4",
-    "types": "^1.0.0"
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@vitejs/plugin-react": "^1.0.7",
+    "typescript": "^4.5.4",
+    "vite": "^2.8.0"
   }
 }
