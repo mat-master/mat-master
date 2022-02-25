@@ -1,5 +1,5 @@
 import { useNotifications } from '@mantine/notifications';
-import React from 'react';
+import type React from 'react';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 

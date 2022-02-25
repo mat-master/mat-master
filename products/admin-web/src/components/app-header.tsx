@@ -1,5 +1,5 @@
 import { Box, Title } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 
 const AppHeader: React.FC = () => (
 	<Box

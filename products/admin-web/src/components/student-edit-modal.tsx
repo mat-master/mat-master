@@ -1,5 +1,5 @@
 import { MultiSelect, Select } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import { memberships } from '../pages/memberships';
 import Modal from './modal';
 import ModalActions from './modal-actions';

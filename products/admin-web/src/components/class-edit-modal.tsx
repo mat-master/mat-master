@@ -1,5 +1,5 @@
 import { MultiSelect, Textarea, TextInput } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import { memberships } from '../pages/memberships';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';

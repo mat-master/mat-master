@@ -7,7 +7,7 @@ import {
 	ModalProps as MantineModalProps,
 	Title,
 } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import { X as CloseIcon } from 'react-feather';
 
 export type ModalProps = Omit<MantineModalProps, 'hideCloseButton'>;

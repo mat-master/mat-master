@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { TimeInput } from '@mantine/dates';
 import { useListState } from '@mantine/hooks';
-import React from 'react';
+import type React from 'react';
 import { MinusCircle, PlusCircle } from 'react-feather';
 
 type Segment = '*' | number;
