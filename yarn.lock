@@ -1828,9 +1828,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"admin-web@workspace:products/admin-web":
+"admin-web@workspace:products/school-web":
   version: 0.0.0-use.local
-  resolution: "admin-web@workspace:products/admin-web"
+  resolution: "admin-web@workspace:products/school-web"
   dependencies:
     "@mantine/core": ^3.6.9
     "@mantine/dates": ^3.6.9
@@ -1929,6 +1929,7 @@ __metadata:
     jsonwebtoken: ^8.5.1
     pg: ^8.7.3
     stripe: ^8.205.0
+    types: ^1.0.0
     validator: ^13.7.0
   languageName: unknown
   linkType: soft

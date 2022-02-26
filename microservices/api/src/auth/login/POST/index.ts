@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
 
-interface LoginPostBody {
+export interface LoginPostBody {
     email: string,
     password: string
   }
