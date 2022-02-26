@@ -7,11 +7,6 @@ interface SignupPostBody {
   password: string
 }
 
-interface LoginPostBody {
-  email: string,
-  password: string
-}
-
 // Schools
 
 interface SchoolPostBody {
