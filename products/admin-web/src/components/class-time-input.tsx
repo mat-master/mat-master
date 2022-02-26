@@ -1,10 +1,9 @@
-import { ActionIcon, Box, createStyles, Select, Text } from '@mantine/core';
+import { createStyles, InputWrapper, Select, Text } from '@mantine/core';
 import { TimeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { MinusCircle } from 'react-feather';
 import {
 	ClassTime,
 	deserializeClassTime,
@@ -27,9 +26,9 @@ interface ClassTimeInputState {
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const useStyles = createStyles((theme) => ({
-	scheduleItem: {
+	root: {
 		display: 'grid',
-		gridTemplateColumns: 'min-content 1fr min-content max-content min-content',
+		gridTemplateColumns: '1fr min-content max-content min-content',
 		columnGap: theme.spacing.sm,
 		alignItems: 'center',
 	},
@@ -40,12 +39,13 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({ initialValue, onChange 
 	const [classTime, setClassTime] = useState<ClassTimeInputState>({});
 
 	useEffect(() => {
+		if (!initialValue) return;
+
 		try {
-			if (!initialValue) return;
 			const [start, end] = deserializeClassTime(initialValue);
 			setClassTime({ day: WEEKDAYS[start.getDay()], start, end });
 		} catch (error) {
-			console.error(error);
+			console.error(`Error deserializing class time ${error}`);
 		}
 	}, []);
 
@@ -59,18 +59,29 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({ initialValue, onChange 
 
 		const dayIndex = WEEKDAYS.findIndex((item) => item === newClassTime.day);
 		const start = dayjs(newClassTime.start).weekday(dayIndex).toDate();
-		const classTimeStr = serializeClassTime(start, newClassTime.end);
-		onChange(classTimeStr);
+		onChange(serializeClassTime(start, newClassTime.end));
 	};
 
+	// const handleStartChange = (value: Date) => {
+	// 	const duration = classTime.end && classTime.start
+	// 		? Math.max(0, classTime.end.getTime() - classTime.start?.getTime())
+	// 		: defaultDuration * 60 * 1000;
+
+	// 	const end = dayjs(value).add(duration, 'ms').toDate();
+	// 	handleChange({ start: value, end });
+	// };
+
+	// const handleEndChange = (value: Date) => {
+	// 	if (value.getTime() < (classTime.start?.getTime() ?? 0)) {
+	// 		handleChange({ end: classTime.start });
+	// 	} else {
+	// 		handleChange({ end: value });
+	// 	}
+	// };
+
 	return (
-		<Box className={classes.scheduleItem}>
-			<ActionIcon>
-				<MinusCircle size={16} />
-			</ActionIcon>
-
+		<InputWrapper className={classes.root}>
 			<Select data={WEEKDAYS} value={classTime.day} onChange={(day) => handleChange({ day })} />
-
 			<TimeInput
 				format='12'
 				value={classTime.start}
@@ -78,7 +89,7 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({ initialValue, onChange 
 			/>
 			<Text>-</Text>
 			<TimeInput format='12' value={classTime.end} onChange={(end) => handleChange({ end })} />
-		</Box>
+		</InputWrapper>
 	);
 };
 

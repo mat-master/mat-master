@@ -22,7 +22,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose }) => {
 				data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
 			/>
 
-			<ClassScheduleInput />
+			<ClassScheduleInput onChange={(value) => console.log(value)} />
 
 			<ModalActions
 				primaryAction={() => {}}
