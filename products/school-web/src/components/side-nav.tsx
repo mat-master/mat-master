@@ -1,5 +1,5 @@
 import { Box, Group } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import {
 	CreditCard as MembershipsIcon,
 	Grid as DashboardIcon,

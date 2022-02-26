@@ -1,5 +1,5 @@
 import { MultiSelect, Textarea, TextInput } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import { memberships } from '../pages/memberships';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';
@@ -22,7 +22,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose }) => {
 				data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
 			/>
 
-			<ClassScheduleInput />
+			<ClassScheduleInput onChange={(value) => console.log(value)} />
 
 			<ModalActions
 				primaryAction={() => {}}

@@ -1,5 +1,5 @@
 import { ActionIcon, Menu } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import {
 	Edit2 as EditIcon,
 	MoreHorizontal as MenuIcon,

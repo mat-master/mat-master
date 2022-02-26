@@ -1,5 +1,5 @@
 import { Box, createStyles } from '@mantine/core';
-import React from 'react';
+import type React from 'react';
 import { Outlet } from 'react-router';
 import AppHeader from './components/app-header';
 import SideNav from './components/side-nav';

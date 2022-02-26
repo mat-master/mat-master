@@ -1,13 +1,14 @@
 import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
-import React from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { Plus as PlusIcon } from 'react-feather';
 import ClassEditModal from '../components/class-edit-modal';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
-import useSearchTerm from '../hooks/use-search-tem';
+import useSearchTerm from '../hooks/use-search-term';
 
 interface ClassSummary {
 	id: string;
@@ -31,14 +32,19 @@ const classes = Array<ClassSummary>(36).fill({
 });
 
 const ClassesPage: React.FC = () => {
-	const [searchTerm, setSearchTerm] = useSearchTerm('');
 	const [modals, setModals] = useSetState<ClassesPageModals>({});
+	const [searchTerm, setSearchTerm] = useSearchTerm();
+	const filteredClasses = useMemo(
+		() => classes.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase())),
+		[searchTerm]
+	);
 
 	return (
 		<>
 			<PageHeader
 				title='Classes'
 				search={setSearchTerm}
+				searchTerm={searchTerm}
 				actions={[{ icon: <PlusIcon size={18} />, action: () => {} }]}
 			/>
 
@@ -51,34 +57,30 @@ const ClassesPage: React.FC = () => {
 						{ key: 'weeklyClassesCount', name: 'Classes', width: 2 },
 						{ key: 'menu', name: '', width: 0.5 },
 					]}
-					items={classes
-						.filter((classSummary) =>
-							classSummary.name.toLowerCase().includes(searchTerm.toLowerCase())
-						)
-						.map(({ id, name, memberships, weeklyClassesCount }) => ({
-							data: {
-								name: <Title order={6}>{name}</Title>,
-								students: (
-									<AvatarsGroup limit={4} spacing='xl'>
-										<Avatar />
-										<Avatar />
-										<Avatar />
-										<Avatar />
-										<Avatar />
-										<Avatar />
-										<Avatar />
-									</AvatarsGroup>
-								),
-								memberships: memberships.join(', '),
-								weeklyClassesCount: `${weeklyClassesCount} per week`,
-								menu: (
-									<ItemMenu
-										onEdit={() => setModals({ edit: id })}
-										onDelete={() => setModals({ deleteConfirmation: id })}
-									/>
-								),
-							},
-						}))}
+					items={filteredClasses.map(({ id, name, memberships, weeklyClassesCount }) => ({
+						data: {
+							name: <Title order={6}>{name}</Title>,
+							students: (
+								<AvatarsGroup limit={4} spacing='xl'>
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+									<Avatar />
+								</AvatarsGroup>
+							),
+							memberships: memberships.join(', '),
+							weeklyClassesCount: `${weeklyClassesCount} per week`,
+							menu: (
+								<ItemMenu
+									onEdit={() => setModals({ edit: id })}
+									onDelete={() => setModals({ deleteConfirmation: id })}
+								/>
+							),
+						},
+					}))}
 					itemPadding={4}
 				/>
 			</Paper>
