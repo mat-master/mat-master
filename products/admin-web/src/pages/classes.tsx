@@ -85,7 +85,7 @@ const ClassesPage: React.FC = () => {
 				/>
 			</Paper>
 
-			<ClassEditModal open={!!modals.edit} onClose={() => setModals({ edit: undefined })} />
+			<ClassEditModal open={true} onClose={() => setModals({ edit: undefined })} />
 			<ConfirmationModal
 				resourceType='class'
 				open={!!modals.deleteConfirmation}
