@@ -1,9 +1,9 @@
 import { ActionIcon, Box, createStyles, Group, InputWrapper } from '@mantine/core';
+import { randomId } from '@mantine/hooks';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { MinusCircle, PlusCircle } from 'react-feather';
 import type { ClassTime } from '../utils/class-time-serialization';
-import randomString from '../utils/random-string';
 import ClassTimeInput from './class-time-input';
 
 export interface ClassScheduleInputProps {
@@ -25,8 +25,8 @@ const ClassScheduleInput: React.FC<ClassScheduleInputProps> = ({ initialValue, o
 	const [times, setTimes] = useState<Array<{ key: string; time: ClassTime | null }>>([]);
 
 	useEffect(() => {
-		if (!initialValue) return setTimes([{ key: randomString(6), time: null }]);
-		setTimes(initialValue.map((time) => ({ key: randomString(6), time })));
+		if (!initialValue) return setTimes([{ key: randomId(), time: null }]);
+		setTimes(initialValue.map((time) => ({ key: randomId(), time })));
 	}, []);
 
 	const handleChange = (i: number, value: ClassTime | null) => {
@@ -60,7 +60,7 @@ const ClassScheduleInput: React.FC<ClassScheduleInputProps> = ({ initialValue, o
 				))}
 
 				<ActionIcon
-					onClick={() => setTimes([...times, { key: randomString(6), time: null }])}
+					onClick={() => setTimes([...times, { key: randomId(), time: null }])}
 					disabled={!times[times.length - 1]?.time}
 				>
 					<PlusCircle size={16} />
