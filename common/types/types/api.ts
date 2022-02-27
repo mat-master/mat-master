@@ -1,27 +1,29 @@
+import type { Address } from './index';
+
 // Auth
 
 interface SignupPostBody {
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
 }
 
 // Schools
 
 interface SchoolPostBody {
-  name: string,
-  address: Address
+	name: string;
+	address: Address;
 }
 
 interface SchoolClassesPostBody {
-  name: string,
+	name: string;
 }
 
 interface SchoolInvitesPostBody {
-  email: string
+	email: string;
 }
 
 interface SchoolInvitesDeleteBody {
-  email: string
+	email: string;
 }
