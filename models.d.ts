@@ -5,24 +5,6 @@ interface User {
 	email: string;
 }
 
-type ActivityStatus = 'active' | 'inactive' | 'deleted';
-
-interface Student {
-	id: string;
-	user: string;
-	school: string;
-	activityStatus: ActivityStatus;
-	memberships: Array<string>;
-	data: { [key: string]: any };
-}
-
-interface StudentSummary {
-	id: string;
-	name: string;
-	activityStatus: ActivityStatus;
-	memberships: Array<string>;
-}
-
 interface Class {
 	id: string;
 	school: string;
