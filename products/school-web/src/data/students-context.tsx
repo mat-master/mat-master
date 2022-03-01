@@ -46,6 +46,7 @@ const mergeStudent = (student: Student, data: Partial<Student>) => {
 const defaultMethod = async () => {
 	throw Error('uninitailized');
 };
+
 export const studentsContext = React.createContext<StudentsContext>({
 	summaries: [],
 	students: [],
@@ -57,8 +58,8 @@ export const studentsContext = React.createContext<StudentsContext>({
 });
 
 const StudentsProvider: React.FC = ({ children }) => {
-	const [summaries, summariesHandlers] = useListState<StudentSummary>([]);
-	const [students, studentsHandlers] = useListState<Student>([]);
+	const [summaries, summariesHandlers] = useListState<StudentSummary>();
+	const [students, studentsHandlers] = useListState<Student>();
 
 	const loadSummaries = async () => {
 		if (summaries.length > 0) summaries;
@@ -99,14 +100,16 @@ const StudentsProvider: React.FC = ({ children }) => {
 
 		const i = students.findIndex((student) => student.id === id);
 		if (i > 0) studentsHandlers.setItem(i, mergeStudent(students[i], data));
+
+		// TODO: update smmary
 	};
 
 	const remove = async (id: string) => {
 		const res = await axios.delete(`/students/${id}`);
 		if (res.status !== 200) throw Error(res.data.error);
 
-		const i = students.findIndex((student) => student.id === id);
-		if (i > 0) studentsHandlers.remove(i);
+		studentsHandlers.remove(students.findIndex((student) => student.id === id));
+		summariesHandlers.remove(students.findIndex((student) => student.id === id));
 	};
 
 	return (

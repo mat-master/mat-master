@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 import AuthProvider from './data/auth-context';
+import ResourcesProvider from './data/resources-provider';
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
 	axios.defaults.baseURL = 'api.matmaster.app/dev';
@@ -25,7 +26,9 @@ ReactDOM.render(
 
 			<AuthProvider>
 				<NotificationsProvider>
-					<App />
+					<ResourcesProvider>
+						<App />
+					</ResourcesProvider>
 				</NotificationsProvider>
 			</AuthProvider>
 		</MantineProvider>

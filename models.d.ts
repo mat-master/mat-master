@@ -5,22 +5,6 @@ interface User {
 	email: string;
 }
 
-interface Class {
-	id: string;
-	school: string;
-	name: string;
-	schedule: string;
-	duration: number;
-}
-
-interface ClassSummary {
-	id: string;
-	name: string;
-	studentAvatars: string[];
-	memberships: Array<string>;
-	schedule: string;
-}
-
 interface Membership {
 	id: string;
 	school: string;
