@@ -3,10 +3,9 @@
   "packageManager": "yarn@3.2.0",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w --preserveWatchOutput"
-  },
-  "installConfig": {
-    "hoistingLimits": "dependencies"
+    "watch": "tsc -w --preserveWatchOutput",
+    "dev": "yarn workspaces focus && rm -rf .aws-sam && overmind start",
+    "aws-build": "rm -rf node_modules && sam build"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.53.0",
