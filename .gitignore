@@ -18,6 +18,7 @@ dist
 
 test-ts
 
+.aws-sam
 env.json
 .overmind.sock
 tsconfig-only-handler.json
