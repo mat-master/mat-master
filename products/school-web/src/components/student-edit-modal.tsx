@@ -1,6 +1,5 @@
 import { MultiSelect, Select } from '@mantine/core';
 import type React from 'react';
-import { memberships } from '../pages/memberships';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
@@ -14,7 +13,8 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({ open, onClose }) =>
 		<Modal opened={open} onClose={onClose} title='Student Name'>
 			<MultiSelect
 				label='Memberships'
-				data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
+				data={[]}
+				// data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
 			/>
 
 			<Select label='TaeKwonDo Rank' data={['White', 'Yellow', 'Orange']} />

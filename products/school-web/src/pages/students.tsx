@@ -1,7 +1,7 @@
 import { Avatar, Badge, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import type React from 'react';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { UserPlus } from 'react-feather';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
@@ -9,15 +9,9 @@ import PageHeader from '../components/page-header';
 import StudentEditModal from '../components/student-edit-modal';
 import StudentInviteModal from '../components/student-invite-modal';
 import Table from '../components/table';
+import { studentsContext } from '../data/resources-provider';
+import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
-
-interface StudentSummary {
-	id: string;
-	name: string;
-	status: string;
-	memberships: string[];
-	avatarUrl?: string;
-}
 
 interface StudentsPageModals {
 	invite?: boolean | undefined;
@@ -25,20 +19,19 @@ interface StudentsPageModals {
 	deleteConfirmation?: string | undefined;
 }
 
-const students = Array<StudentSummary>(24).fill({
-	id: 'k93487hkf',
-	name: 'John Doe',
-	status: 'active',
-	memberships: ['Basic'],
-});
-
 const StudentsPage: React.FC = () => {
+	const students = useContext(studentsContext);
 	const [modals, setModals] = useSetState<StudentsPageModals>({});
 	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const filteredStudents = useMemo(
-		() => students.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase())),
-		[searchTerm]
-	);
+	const { summaries } = useResourceSummaries(students);
+
+	const filteredStudents = useMemo(() => {
+		console.log('re-filtering');
+		if (!summaries) return [];
+		return summaries.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [searchTerm, summaries]);
 
 	return (
 		<>
@@ -50,7 +43,7 @@ const StudentsPage: React.FC = () => {
 			/>
 
 			<Paper shadow='md' withBorder>
-				<Table<keyof (StudentSummary & { menu: never })>
+				<Table
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
 						{ key: 'name', name: 'Name', width: 4 },
@@ -64,7 +57,7 @@ const StudentsPage: React.FC = () => {
 							name: <Title order={6}>{student.name}</Title>,
 							status: (
 								<Badge variant='outline' color='green'>
-									{student.status}
+									{student.activityStatus}
 								</Badge>
 							),
 							memberships: student.memberships.join(', '),
