@@ -26,7 +26,7 @@ To create a local dev environment for the api run:
 $ yarn dev
 ```
 
-This command automatically setups up a local **node_modules** folder for development and SAM CLI. It uses overmind take advantage of the Procfile to spur up two instances at once
+This command automatically setups up a local **node_modules** folder for development and SAM CLI. It uses overmind take advantage of the Procfile to spur up two instances at once.
 
 To build the api for AWS Deployment run:
 ```

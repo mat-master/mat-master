@@ -22,4 +22,4 @@ You should then be free to enter into any project and run
 $ yarn dev
 ```
 
-**Extra tooling is required for the [API](https://github.com/mat-master/mat-master/tree/main/microservices/api/README.md)**
+**Extra tooling is required for the [API](https://github.com/mat-master/mat-master/tree/main/microservices/api)**
