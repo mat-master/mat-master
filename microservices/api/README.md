@@ -12,7 +12,9 @@ To run the API, the main project tooling and dependencies are required and the f
 Follow the AWS guides on installing the AWS CLI tools.
 
 Installing Make:
-> sudo apt-get install make
+```
+$ sudo apt-get install make
+```
 
 Follow the guide to install overmind [here](https://unix.stackexchange.com/a/647209)
 
@@ -20,11 +22,15 @@ Make sure to setup the environment variables by creating a new file named **env.
 
 ## Usage
 To create a local dev environment for the api run:
-> yarn dev
+```
+$ yarn dev
+```
 
 This command automatically setups up a local **node_modules** folder for development and SAM CLI. It uses overmind take advantage of the Procfile to spur up two instances at once
 
 To build the api for AWS Deployment run:
-> yarn aws-build
+```
+$ yarn aws-build
+```
 
 This command automatically removes the local node_modules folder if present to prevent a copy on every build task. This command then builds every single Lambda Function, Lambda Layer, and the API template.
