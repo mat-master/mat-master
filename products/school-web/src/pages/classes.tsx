@@ -1,13 +1,14 @@
 import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import type React from 'react';
-import { useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { Plus as PlusIcon } from 'react-feather';
 import ClassEditModal from '../components/class-edit-modal';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
+import ClassesProvider, { classesContext } from '../data/classes-context';
 import useSearchTerm from '../hooks/use-search-term';
 
 interface ClassSummary {
@@ -32,6 +33,7 @@ const classes = Array<ClassSummary>(36).fill({
 });
 
 const ClassesPage: React.FC = () => {
+	const ctx = useContext(classesContext);
 	const [modals, setModals] = useSetState<ClassesPageModals>({});
 	const [searchTerm, setSearchTerm] = useSearchTerm();
 	const filteredClasses = useMemo(
@@ -39,8 +41,16 @@ const ClassesPage: React.FC = () => {
 		[searchTerm]
 	);
 
+	useEffect(() => {
+		try {
+			ctx.getSummaries();
+		} catch (error) {
+			console.error(error);
+		}
+	}, []);
+
 	return (
-		<>
+		<ClassesProvider>
 			<PageHeader
 				title='Classes'
 				search={setSearchTerm}
@@ -94,7 +104,7 @@ const ClassesPage: React.FC = () => {
 				workingMessage='Deleting class...'
 				successMessage='Class deleted'
 			/>
-		</>
+		</ClassesProvider>
 	);
 };
 

@@ -1,8 +1,17 @@
 import { Global, MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
+import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
+import AuthProvider from './data/auth-context';
+import ResourcesProvider from './data/resources-provider';
+
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+	axios.defaults.baseURL = 'api.matmaster.app/dev';
+} else {
+	axios.defaults.baseURL = 'api.matmaster.app';
+}
 
 ReactDOM.render(
 	<React.StrictMode>
@@ -15,9 +24,13 @@ ReactDOM.render(
 				})}
 			/>
 
-			<NotificationsProvider>
-				<App />
-			</NotificationsProvider>
+			<AuthProvider>
+				<NotificationsProvider>
+					<ResourcesProvider>
+						<App />
+					</ResourcesProvider>
+				</NotificationsProvider>
+			</AuthProvider>
 		</MantineProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

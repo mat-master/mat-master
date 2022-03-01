@@ -1,4 +1,4 @@
-import { createStyles, MantineNumberSize, Text, Title } from '@mantine/core';
+import { createStyles, MantineNumberSize, Text, TextProps, Title } from '@mantine/core';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 
@@ -94,7 +94,7 @@ const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TablePr
 						style={{ cursor: item.href ? 'pointer' : undefined }}
 					>
 						{columns.map(({ key, defaultElement }, i) => {
-							const props = {
+							const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
 								key: key,
 								className: classes.cell,
 								style: { width: columnWidths[i] },
