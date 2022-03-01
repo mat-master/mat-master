@@ -8,7 +8,18 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Layers: 
+      - !Ref ApiLayer
+    Timeout: 5
+    Runtime: nodejs14.x
+    Environment:
+      Variables:
+        PGHOST:
+        PGPORT:
+        PGDATABASE:
+        PGUSER:
+        PGPASSWORD:
+        JWTPRIVATE:
 
 Resources:
   Api:
@@ -18,12 +29,11 @@ Resources:
       StageName: dev
   AuthLoginPOST:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      CodeUri: src/auth/login/POST
-      Handler: index.handler
-      Runtime: nodejs14.x
-      Architectures:
-        - x86_64
+      Handler: dist/auth/login/POST/index.handler
+      CodeUri: ./
       Events:
         ApiEvent:
           Type: Api
@@ -31,18 +41,12 @@ Resources:
             Path: /auth/login
             Method: POST
             RestApiId: Api
-    MetaData:
-      BuildMethod: esbuild,
-      BuildProperties:
-        Minify: true
-        Target: "es2016"
-        SourceMap: true
-        EntryPoints: 
-          - index.js
   ApiLayer:
     Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      ContentUri: api/layer.zip
+      ContentUri: .
       CompatibleRuntimes:
         - nodejs14.x
       Description: API Layer

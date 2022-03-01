@@ -17,3 +17,7 @@ dist
 .vscode
 
 test-ts
+
+env.json
+.overmind.sock
+tsconfig-only-handler.json

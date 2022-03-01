@@ -1,9 +1,8 @@
-require("/opt/nodejs/env");
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Client } from 'pg';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import validator from 'validator';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 export interface LoginPostBody {
     email: string,
@@ -12,13 +11,13 @@ export interface LoginPostBody {
 
 // Logs in a user.
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const body: LoginPostBody = JSON.parse(event.body);
-    if(!body) {
+    if(!event.body) {
         return {
           statusCode: 400,
           body: JSON.stringify({error: "No body submitted."})
         };
     }
+    const body: LoginPostBody = JSON.parse(event.body);
     const { email, password } = body;
     if(!validator.isEmail(email))
         return {
@@ -41,6 +40,6 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
     return {
         statusCode: 200,
-        body: JSON.stringify({jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE)})
+        body: JSON.stringify({jwt: jwt.sign(query.rows[0], process.env.JWTPRIVATE as string)})
     };
 };
