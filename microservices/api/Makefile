@@ -4,6 +4,8 @@
 
 build-AuthLoginPOST:
 	$(MAKE) HANDLER=src/auth/login/POST/index.ts build-lambda-common
+build-AuthSignupPOST:
+	$(MAKE) HANDLER=src/auth/signup/POST/index.ts build-lambda-common
 
 build-lambda-common:
 	cd $(shell echo "$(ARTIFACTS_DIR)" | sed 's@/.aws-sam.*@@')

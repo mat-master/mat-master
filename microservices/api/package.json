@@ -4,8 +4,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w --preserveWatchOutput",
-    "dev": "yarn config set nmHoistingLimits 'dependencies' && yarn workspaces focus && yarn config set nmHoistingLimits 'none' && rm -rf .aws-sam && overmind start",
-    "aws-build": "rm -rf node_modules && sam build"
+    "dev": "yarn config set nmHoistingLimits 'dependencies' && yarn install && yarn config set nmHoistingLimits 'none' && rm -rf .aws-sam && overmind start",
+    "aws-build": "rm -rf node_modules && sam build",
+    "fix": "rm -rf node_modules && yarn config set nmHoistingLimits 'none' && yarn install"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.53.0",

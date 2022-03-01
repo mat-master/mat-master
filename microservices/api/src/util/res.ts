@@ -1,7 +1,7 @@
 
 import type { APIGatewayProxyResult } from 'aws-lambda';
-
-export const res200 = (body: any): APIGatewayProxyResult => ({statusCode: 200, body: JSON.stringify(body)});
+   
+export const res200 = (body: any = ""): APIGatewayProxyResult => ({statusCode: 200, body: JSON.stringify(body)});
 
 /* Generates a basic error response. */
 export const resError = (statusCode: number, error: string): APIGatewayProxyResult => {

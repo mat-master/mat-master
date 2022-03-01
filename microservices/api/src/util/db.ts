@@ -8,8 +8,10 @@ let isConnected = false;
  * @param values the values for the query.
  * @returns the result of the query.
  */
-export const query = async (query: string, values?: [any]): Promise<QueryResult<any>> => {
-  if(!isConnected)
+export const query = async (query: string, values?: any[]): Promise<QueryResult<any>> => {
+  if(!isConnected) {
     await client.connect();
+    isConnected = true;
+  }
   return await client.query(query, values);
 };

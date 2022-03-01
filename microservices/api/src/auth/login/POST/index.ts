@@ -3,14 +3,14 @@ import * as bcrypt from 'bcryptjs';
 import validator from 'validator';
 import * as jwt from 'jsonwebtoken';
 import * as db from '../../../util/db';
-import { res400, res200 } from '../../../util/assert';
+import { res400, res200 } from '../../../util/res';
 
 export interface LoginPostBody {
     email: string,
     password: string
-  }
+}
 
-// Logs in a user.
+// Logs in a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     if(!event.body) 
         return res400("No body submitted");

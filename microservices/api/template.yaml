@@ -12,6 +12,7 @@ Globals:
       - !Ref ApiLayer
     Timeout: 5
     Runtime: nodejs14.x
+    CodeUri: ./
     Environment:
       Variables:
         PGHOST:
@@ -27,20 +28,32 @@ Resources:
     Properties:
       Name: backend
       StageName: dev
+  AuthSignupPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/auth/signup/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /auth/signup
+            Method: POST
+            RestApiId: !Ref Api
   AuthLoginPOST:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
       Handler: dist/auth/login/POST/index.handler
-      CodeUri: ./
       Events:
         ApiEvent:
           Type: Api
           Properties:
             Path: /auth/login
             Method: POST
-            RestApiId: Api
+            RestApiId: !Ref Api
   ApiLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
