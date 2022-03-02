@@ -12,6 +12,7 @@
     "module": "commonjs",
     "noEmit": false,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
   }
 }

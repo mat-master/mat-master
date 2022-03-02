@@ -1,4 +1,4 @@
-import type { User } from 'types/src/user';
+import type { User } from 'types';
 import * as db from './db';
 import * as jwt from 'jsonwebtoken';
 import type { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';

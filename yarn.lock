@@ -1659,15 +1659,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dotenv@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "@types/dotenv@npm:8.2.0"
-  dependencies:
-    dotenv: "*"
-  checksum: a1f524da7dc18b09bdb6c2613b9abbbe8ca575621cce4625efc7f98daf2ba07c7dbab622c9bb394507a12c5c515f9cbbbba4aeec17b801c88faeb8e8e656d460
-  languageName: node
-  linkType: hard
-
 "@types/json5@npm:^0.0.29":
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
@@ -1957,12 +1948,10 @@ __metadata:
     "@aws-sdk/client-ses": ^3.53.0
     "@types/aws-lambda": ^8.10.92
     "@types/bcryptjs": ^2.4.2
-    "@types/dotenv": ^8.2.0
     "@types/jsonwebtoken": ^8.5.8
     "@types/pg": ^8.6.4
     "@types/validator": ^13.7.1
     bcryptjs: ^2.4.3
-    dotenv: ^16.0.0
     jsonwebtoken: ^8.5.1
     pg: ^8.7.3
     stripe: ^8.205.0
@@ -2460,13 +2449,6 @@ __metadata:
     "@babel/runtime": ^7.8.7
     csstype: ^3.0.2
   checksum: 863ba9e086f7093df3376b43e74ce4422571d404fc9828bf2c56140963d5edf0e56160f9b2f3bb61b282c07f8fc8134f023c98fd684bddcb12daf7b0f14d951c
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:*, dotenv@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "dotenv@npm:16.0.0"
-  checksum: 664cebb51f0a9a1d1b930f51f0271e72e26d62feaecc9dc03df39453dd494b4e724809ca480fb3ec3213382b1ed3f791aaeb83569a137f9329ce58efd4853dbf
   languageName: node
   linkType: hard
 
@@ -3986,7 +3968,6 @@ __metadata:
     react: 17.0.2
     react-dom: 17.0.2
     react-feather: ^2.0.9
-    types: ^1.0.0
     typescript: 4.5.5
   languageName: unknown
   linkType: soft

@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import validator from 'validator';
 import * as db from '../../../util/db';
 import { res200, res400, resError } from '../../../util/res';

@@ -1,4 +1,4 @@
-import type { Privilege } from "types/src/user";
+import type { Privilege } from "types";
 
 export interface Payload {
   id: bigint,

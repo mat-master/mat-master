@@ -54,6 +54,19 @@ Resources:
             Path: /auth/login
             Method: POST
             RestApiId: !Ref Api
+  UsersIdGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: GET
+            RestApiId: !Ref Api
   ApiLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
