@@ -1,56 +1,38 @@
 import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import type React from 'react';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { Plus as PlusIcon } from 'react-feather';
 import ClassEditModal from '../components/class-edit-modal';
 import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
-import ClassesProvider, { classesContext } from '../data/classes-context';
+import { classesContext, ClassSummary } from '../data/resources-provider';
+import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
-
-interface ClassSummary {
-	id: string;
-	name: string;
-	students: number;
-	memberships: string[];
-	weeklyClassesCount: number;
-}
 
 interface ClassesPageModals {
 	edit?: string | undefined;
 	deleteConfirmation?: string | undefined;
 }
 
-const classes = Array<ClassSummary>(36).fill({
-	id: '3s564',
-	name: 'TaeKwonDo',
-	students: 12,
-	memberships: ['Basic', 'Advanced'],
-	weeklyClassesCount: 2,
-});
-
 const ClassesPage: React.FC = () => {
-	const ctx = useContext(classesContext);
+	const classes = useContext(classesContext);
 	const [modals, setModals] = useSetState<ClassesPageModals>({});
 	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const filteredClasses = useMemo(
-		() => classes.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase())),
-		[searchTerm]
-	);
+	const { summaries } = useResourceSummaries(classes);
 
-	useEffect(() => {
-		try {
-			ctx.getSummaries();
-		} catch (error) {
-			console.error(error);
-		}
-	}, []);
+	const filteredClasses = useMemo(() => {
+		console.log('re-filtering');
+		if (!summaries) return [];
+		return summaries.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [searchTerm, summaries]);
 
 	return (
-		<ClassesProvider>
+		<>
 			<PageHeader
 				title='Classes'
 				search={setSearchTerm}
@@ -62,27 +44,23 @@ const ClassesPage: React.FC = () => {
 				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
-						{ key: 'students', name: 'Students', width: 2 },
+						{ key: 'studentAvatars', name: 'Students', width: 2 },
 						{ key: 'memberships', name: 'Memberships', width: 3 },
-						{ key: 'weeklyClassesCount', name: 'Classes', width: 2 },
+						{ key: 'schedule', name: 'Schedule', width: 2 },
 						{ key: 'menu', name: '', width: 0.5 },
 					]}
-					items={filteredClasses.map(({ id, name, memberships, weeklyClassesCount }) => ({
+					items={filteredClasses.map(({ id, name, studentAvatars, memberships, schedule }) => ({
 						data: {
 							name: <Title order={6}>{name}</Title>,
-							students: (
+							studentAvatars: (
 								<AvatarsGroup limit={4} spacing='xl'>
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
-									<Avatar />
+									{studentAvatars.map((src, i) => (
+										<Avatar key={i} src={src} />
+									))}
 								</AvatarsGroup>
 							),
 							memberships: memberships.join(', '),
-							weeklyClassesCount: `${weeklyClassesCount} per week`,
+							schedule,
 							menu: (
 								<ItemMenu
 									onEdit={() => setModals({ edit: id })}
@@ -104,7 +82,7 @@ const ClassesPage: React.FC = () => {
 				workingMessage='Deleting class...'
 				successMessage='Class deleted'
 			/>
-		</ClassesProvider>
+		</>
 	);
 };
 

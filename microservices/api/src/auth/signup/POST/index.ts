@@ -1,9 +1,8 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as bcrypt from 'bcryptjs';
 import validator from 'validator';
-import * as jwt from 'jsonwebtoken';
 import * as db from '../../../util/db';
-import { res400, res200, resError } from '../../../util/res';
+import { res200, res400, resError } from '../../../util/res';
 
 export interface SignupPostBody {
     firstName: string,
