@@ -21,7 +21,7 @@ const pastTense = (actionType: ActionType) =>
 		? 'deleted'
 		: '';
 
-const useResourceAction = (
+const useAsyncAction = (
 	action: () => Promise<any>,
 	actionType: ActionType,
 	resourceLabel: string
@@ -55,4 +55,4 @@ const useResourceAction = (
 	};
 };
 
-export default useResourceAction;
+export default useAsyncAction;

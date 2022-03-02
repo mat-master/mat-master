@@ -1,5 +1,5 @@
 import type React from 'react';
-import useResourceAction, { ActionType } from '../hooks/use-resource-action';
+import useAsyncAction, { ActionType } from '../hooks/use-async-action';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
@@ -21,7 +21,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 		await action();
 	};
 
-	const handleConfirmation = useResourceAction(onConfirmation, actionType, resourceLabel);
+	const handleConfirmation = useAsyncAction(onConfirmation, actionType, resourceLabel);
 
 	return (
 		<Modal

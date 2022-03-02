@@ -3,8 +3,8 @@ import { useForm } from '@mantine/hooks';
 import type React from 'react';
 import { useContext, useEffect, useMemo } from 'react';
 import { Class, classesContext, membershipsContext } from '../data/resources-provider';
+import useAsyncAction from '../hooks/use-async-action';
 import usePromise from '../hooks/use-promise';
-import useResourceAction from '../hooks/use-resource-action';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';
 import ModalActions from './modal-actions';
@@ -48,7 +48,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 		}
 	};
 
-	const handleSave = useResourceAction(
+	const handleSave = useAsyncAction(
 		onSave,
 		classId ? 'update' : 'create',
 		form.values.name ?? 'New Class'

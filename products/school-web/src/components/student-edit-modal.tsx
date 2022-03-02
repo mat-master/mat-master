@@ -3,8 +3,8 @@ import { useForm } from '@mantine/hooks';
 import type React from 'react';
 import { useContext, useEffect, useMemo } from 'react';
 import { membershipsContext, Student, studentsContext } from '../data/resources-provider';
+import useAsyncAction from '../hooks/use-async-action';
 import usePromise from '../hooks/use-promise';
-import useResourceAction from '../hooks/use-resource-action';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
@@ -48,7 +48,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({ studentId, onClose 
 		}
 	};
 
-	const handleSave = useResourceAction(onSave, 'update', 'Student Name');
+	const handleSave = useAsyncAction(onSave, 'update', 'Student Name');
 
 	return (
 		<Modal onClose={onClose ?? (() => {})} title='Student Name' opened>
