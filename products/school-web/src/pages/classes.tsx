@@ -24,7 +24,6 @@ const ClassesPage: React.FC = () => {
 	const { summaries } = useResourceSummaries(classes);
 
 	const filteredClasses = useMemo(() => {
-		console.log('re-filtering');
 		if (!summaries) return [];
 		return summaries.filter(({ name }) =>
 			name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -77,14 +76,16 @@ const ClassesPage: React.FC = () => {
 				<ClassEditModal classId={modals.edit} onClose={() => setModals({ edit: undefined })} />
 			)}
 
-			<ConfirmationModal
-				resourceType='class'
-				open={!!modals.deleteConfirmation}
-				action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
-				onClose={() => setModals({ deleteConfirmation: undefined })}
-				workingMessage='Deleting class...'
-				successMessage='Class deleted'
-			/>
+			{modals.deleteConfirmation && (
+				<ConfirmationModal
+					actionType='delete'
+					resourceLabel={
+						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
+					}
+					action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
+					onClose={() => setModals({ deleteConfirmation: undefined })}
+				/>
+			)}
 		</>
 	);
 };

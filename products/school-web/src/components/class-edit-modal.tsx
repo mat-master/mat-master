@@ -1,10 +1,10 @@
 import { LoadingOverlay, MultiSelect, SelectItem, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
-import { useNotifications } from '@mantine/notifications';
 import type React from 'react';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { Class, classesContext, membershipsContext } from '../data/resources-provider';
 import usePromise from '../hooks/use-promise';
+import useResourceAction from '../hooks/use-resource-action';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';
 import ModalActions from './modal-actions';
@@ -12,14 +12,12 @@ import ModalActions from './modal-actions';
 type ClassData = Omit<Class, 'id'>;
 
 export interface ClassEditModalProps {
-	onClose: VoidFunction;
+	onClose?: VoidFunction;
 	classId?: string;
 }
 
 const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => {
 	const classesSrc = useContext(classesContext);
-	const notifications = useNotifications();
-
 	const membershipsSrc = useContext(membershipsContext);
 	const membershipOptions: SelectItem[] = useMemo(() => {
 		const { summaries } = membershipsSrc;
@@ -40,49 +38,24 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 		classData && form.setValues(classData);
 	}, [classData]);
 
-	const handleSave = useCallback(
-		async (data: ClassData) => {
-			onClose();
+	const onSave = async () => {
+		onClose && onClose();
 
-			const gerund = classId ? 'Updating' : 'Creating';
-			const pastTense = classId ? 'updated' : 'created';
+		if (classId) {
+			await classesSrc.update(classId, form.values);
+		} else {
+			await classesSrc.create(form.values);
+		}
+	};
 
-			const notificationID = notifications.showNotification({
-				message: `${gerund} '${data.name}'`,
-				loading: true,
-				autoClose: false,
-				disallowClose: true,
-			});
-
-			try {
-				if (classId) {
-					await classesSrc.update(classId, data);
-				} else {
-					await classesSrc.create(data);
-				}
-
-				await new Promise((resolve) => setTimeout(resolve, 2000));
-
-				notifications.updateNotification(notificationID, {
-					id: notificationID,
-					message: `Successfully ${pastTense} '${data.name}'`,
-					loading: false,
-				});
-			} catch (error) {
-				console.log(error);
-
-				notifications.updateNotification(notificationID, {
-					id: notificationID,
-					message: `Something went wrong while ${gerund.toLowerCase()} '${name}'`,
-					loading: false,
-				});
-			}
-		},
-		[classId]
+	const handleSave = useResourceAction(
+		onSave,
+		classId ? 'update' : 'create',
+		form.values.name ?? 'New Class'
 	);
 
 	return (
-		<Modal opened onClose={onClose} title='Class Name'>
+		<Modal opened onClose={onClose ?? (() => {})} title={classData?.name ?? 'New Class'}>
 			<LoadingOverlay visible={loading} radius='sm' />
 			<TextInput label='Name' {...form.getInputProps('name')} />
 
@@ -95,7 +68,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 			<ClassScheduleInput {...form.getInputProps('schedule')} />
 
 			<ModalActions
-				primaryAction={() => handleSave(form.values)}
+				primaryAction={handleSave}
 				primaryLabel='Save'
 				secondaryAction={onClose}
 				secondaryLabel='Cancel'

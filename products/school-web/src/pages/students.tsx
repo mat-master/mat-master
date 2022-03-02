@@ -73,19 +73,24 @@ const StudentsPage: React.FC = () => {
 			</Paper>
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
-			<StudentEditModal
-				open={!!modals.edit}
-				studentId={modals.edit}
-				onClose={() => setModals({ edit: undefined })}
-			/>
-			<ConfirmationModal
-				resourceType='student'
-				open={!!modals.deleteConfirmation}
-				action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
-				onClose={() => setModals({ deleteConfirmation: undefined })}
-				workingMessage='Deleting student...'
-				successMessage='Student deleted'
-			/>
+
+			{modals.edit && (
+				<StudentEditModal
+					studentId={modals.edit}
+					onClose={() => setModals({ edit: undefined })}
+				/>
+			)}
+
+			{modals.deleteConfirmation && (
+				<ConfirmationModal
+					actionType='delete'
+					resourceLabel={
+						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
+					}
+					action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
+					onClose={() => setModals({ deleteConfirmation: undefined })}
+				/>
+			)}
 		</>
 	);
 };
