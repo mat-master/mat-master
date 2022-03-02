@@ -1,105 +1,104 @@
-import { LoadingOverlay, MultiSelect, TextInput } from '@mantine/core';
+import { LoadingOverlay, MultiSelect, SelectItem, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import type React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import { classesContext } from '../data/resources-provider';
-import type { ClassTime } from '../utils/class-time-serialization';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Class, classesContext, membershipsContext } from '../data/resources-provider';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
-export interface ClassData {
-	name: string;
-	memberships: string[];
-	schedule: ClassTime[];
-}
+type ClassData = Omit<Class, 'id'>;
 
 export interface ClassEditModalProps {
-	open: boolean;
 	onClose: VoidFunction;
 	classId?: string;
 }
 
-const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose, classId }) => {
-	const classes = useContext(classesContext);
+const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => {
+	const classesSrc = useContext(classesContext);
 	const notifications = useNotifications();
-
 	const initialValues: ClassData = { name: '', memberships: [], schedule: [] };
 	const form = useForm<ClassData>({ initialValues });
 
+	const membershipsSrc = useContext(membershipsContext);
+	const membershipOptions: SelectItem[] = useMemo(() => {
+		const { summaries } = membershipsSrc;
+		if (!summaries) return [];
+		return summaries?.map(({ id, name }) => ({ value: id, label: name }));
+	}, [membershipsSrc.summaries]);
+
 	const [loading, setLoading] = useState(true);
-	const effect = async () => {
-		if (!classId) return setLoading(false);
-
-		try {
-			const data = await classes.get(classId);
-		} catch (error) {}
-	};
-
 	useEffect(() => {
-		effect();
-	}, []);
+		const membershipsPromise = membershipsSrc.getSummaries();
+		const classPromise = classId ? classesSrc.get(classId) : Promise.resolve(initialValues);
 
-	const handleClose = () => {
-		onClose();
-	};
+		Promise.all([membershipsPromise, classPromise])
+			.then(([_, classData]) => {
+				form.setValues(classData);
+				setLoading(false);
+			})
+			.catch(console.error);
+	}, [classId]);
 
-	const handleSave = async () => {
-		handleClose();
+	const handleSave = useCallback(
+		async (data: ClassData) => {
+			onClose();
 
-		const gerund = classId ? 'Updating' : 'Creating';
-		const pastTense = classId ? 'updated' : 'created';
-		const { name } = form.values;
+			const gerund = classId ? 'Updating' : 'Creating';
+			const pastTense = classId ? 'updated' : 'created';
 
-		const notificationID = notifications.showNotification({
-			message: `${gerund} '${name}'`,
-			loading: true,
-			autoClose: false,
-			disallowClose: true,
-		});
-
-		try {
-			// if (initialValues) {
-			// 	await classes.update('', form.values);
-			// } else {
-			// 	await classes.create(form.values);
-			// }
-
-			await new Promise((resolve) => setTimeout(resolve, 2000));
-
-			notifications.updateNotification(notificationID, {
-				id: notificationID,
-				message: `Successfully ${pastTense} '${form.values.name}'`,
-				loading: false,
+			const notificationID = notifications.showNotification({
+				message: `${gerund} '${data.name}'`,
+				loading: true,
+				autoClose: false,
+				disallowClose: true,
 			});
-		} catch (error) {
-			console.log(error);
 
-			notifications.updateNotification(notificationID, {
-				id: notificationID,
-				message: `Something went wrong while ${gerund.toLowerCase()} '${name}'`,
-				loading: false,
-			});
-		}
-	};
+			try {
+				console.log(data);
+
+				if (classId) {
+					await classesSrc.update(classId, data);
+				} else {
+					await classesSrc.create(data);
+				}
+
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+
+				notifications.updateNotification(notificationID, {
+					id: notificationID,
+					message: `Successfully ${pastTense} '${data.name}'`,
+					loading: false,
+				});
+			} catch (error) {
+				console.log(error);
+
+				notifications.updateNotification(notificationID, {
+					id: notificationID,
+					message: `Something went wrong while ${gerund.toLowerCase()} '${name}'`,
+					loading: false,
+				});
+			}
+		},
+		[classId]
+	);
 
 	return (
-		<Modal opened={open} onClose={onClose} title='Class Name'>
-			<LoadingOverlay radius='sm' visible />
+		<Modal opened onClose={onClose} title='Class Name'>
+			<LoadingOverlay visible={loading} radius='sm' />
 			<TextInput label='Name' {...form.getInputProps('name')} />
 
 			<MultiSelect
 				label='Memberships'
-				data={[]}
-				// data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
+				data={membershipOptions}
 				{...form.getInputProps('memberships')}
 			/>
 
 			<ClassScheduleInput {...form.getInputProps('schedule')} />
 
 			<ModalActions
-				primaryAction={handleSave}
+				primaryAction={() => handleSave(form.values)}
 				primaryLabel='Save'
 				secondaryAction={onClose}
 				secondaryLabel='Cancel'

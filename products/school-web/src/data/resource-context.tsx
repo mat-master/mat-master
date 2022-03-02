@@ -1,5 +1,5 @@
 import { randomId, useListState } from '@mantine/hooks';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 export interface RemoteResource {
 	id: string;
@@ -48,37 +48,43 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 	const [summaries, summariesHandlers] = useListState<S>(defaultSummaries);
 	const [summariesLoaded, setSummariesLoaded] = useState(!!defaultSummaries);
 
-	const getSummaries = async () => {
+	const getSummaries = useCallback(async () => {
 		if (summariesLoaded) return summaries;
 
 		// TODO: connect remote data source
 		throw Error('remote data source not implemented');
-	};
+	}, [summariesLoaded, summaries]);
 
-	const create = async (data: Omit<T, 'id'>) => {
+	const create = useCallback(async (data: Omit<T, 'id'>) => {
 		const item = { id: randomId(), ...data } as T;
 		itemHandlers.append(item);
 
 		// TODO: connect remote data source
 		// TODO: create item summary
-	};
+	}, []);
 
-	const get = async (id: string) => {
-		const local = items.find((item) => item.id === id);
-		if (local) return local;
+	const get = useCallback(
+		async (id: string) => {
+			const local = items.find((item) => item.id === id);
+			if (local) return local;
 
-		// TODO: connect remote data source
-		throw Error('remote data source not implemented');
-	};
+			// TODO: connect remote data source
+			throw Error('remote data source not implemented');
+		},
+		[items]
+	);
 
-	const update = async () => {};
+	const update = useCallback(async () => {}, []);
 
-	const remove = async (id: string) => {
-		itemHandlers.remove(items.findIndex((item) => item.id === id));
-		summariesHandlers.remove(summaries.findIndex((summary) => summary.id === id));
+	const remove = useCallback(
+		async (id: string) => {
+			itemHandlers.remove(items.findIndex((item) => item.id === id));
+			summariesHandlers.remove(summaries.findIndex((summary) => summary.id === id));
 
-		// TODO: connect remote data source
-	};
+			// TODO: connect remote data source
+		},
+		[items, summaries]
+	);
 
 	return (
 		<context.Provider

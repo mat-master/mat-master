@@ -1,19 +1,20 @@
-import { createStyles, InputWrapper, Select, Text } from '@mantine/core';
-import { TimeInput } from '@mantine/dates';
+import { createStyles, InputWrapper, Select } from '@mantine/core';
+import { TimeRangeInput } from '@mantine/dates';
+import { parseExpression } from 'cron-parser';
 import dayjs from 'dayjs';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import type React from 'react';
-import { useEffect, useState } from 'react';
-import {
-	ClassTime,
-	deserializeClassTime,
-	serializeClassTime,
-} from '../utils/class-time-serialization';
+import { useState } from 'react';
 
 dayjs.extend(weekdayPlugin);
 
+export interface ClassTime {
+	schedule: string;
+	duration: number;
+}
+
 export interface ClassTimeInputProps {
-	initialValue?: ClassTime;
+	value?: ClassTime;
 	onChange: (value: ClassTime) => void;
 }
 
@@ -34,61 +35,52 @@ const useStyles = createStyles((theme) => ({
 	},
 }));
 
-const ClassTimeInput: React.FC<ClassTimeInputProps> = ({ initialValue, onChange }) => {
+const getState = (value: ClassTime): ClassTimeInputState => {
+	const start = parseExpression(value.schedule).next().toDate();
+	const end = dayjs(start).add(value.duration, 'minutes').toDate();
+
+	return { day: WEEKDAYS[start.getDay()], start, end };
+};
+
+const getValue = (state: ClassTimeInputState): ClassTime | null => {
+	if (!state.start || !state.end || !state.day) return null;
+
+	const dayIndex = WEEKDAYS.findIndex((item) => item === state.day);
+	if (dayIndex < 0) return null;
+
+	const start = dayjs(state.start).weekday(dayIndex);
+	const end = dayjs(state.end).year(start.year()).month(start.month()).date(start.date());
+
+	const schedule = `${start.minute()} ${start.hour()} * * ${start.day()}`;
+	const duration = Math.round(end.diff(start, 'milliseconds') / 1000 / 60);
+
+	return { schedule, duration };
+};
+
+const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
+	value: controlledValue,
+	onChange,
+}) => {
 	const { classes } = useStyles();
-	const [classTime, setClassTime] = useState<ClassTimeInputState>({});
+	const [uncontrolledState, setUncontrolledState] = useState<ClassTimeInputState>({});
+	const state = controlledValue ? getState(controlledValue) : uncontrolledState;
 
-	useEffect(() => {
-		if (!initialValue) return;
+	const handleChange = (data: Partial<ClassTimeInputState>) => {
+		const newState = { ...state, ...data };
+		if (!controlledValue) setUncontrolledState(newState);
 
-		try {
-			const [start, end] = deserializeClassTime(initialValue);
-			setClassTime({ day: WEEKDAYS[start.getDay()], start, end });
-		} catch (error) {
-			console.error(`Error deserializing class time ${error}`);
-		}
-	}, []);
-
-	const handleChange = (value: Partial<ClassTimeInputState>) => {
-		const newClassTime = { ...classTime, ...value };
-		setClassTime(newClassTime);
-
-		if (typeof newClassTime.day !== 'string') return;
-		if (!(newClassTime.start instanceof Date)) return;
-		if (!(newClassTime.end instanceof Date)) return;
-
-		const dayIndex = WEEKDAYS.findIndex((item) => item === newClassTime.day);
-		const start = dayjs(newClassTime.start).weekday(dayIndex).toDate();
-		onChange(serializeClassTime(start, newClassTime.end));
+		const value = getValue(newState);
+		if (value) onChange(value);
 	};
-
-	// const handleStartChange = (value: Date) => {
-	// 	const duration = classTime.end && classTime.start
-	// 		? Math.max(0, classTime.end.getTime() - classTime.start?.getTime())
-	// 		: defaultDuration * 60 * 1000;
-
-	// 	const end = dayjs(value).add(duration, 'ms').toDate();
-	// 	handleChange({ start: value, end });
-	// };
-
-	// const handleEndChange = (value: Date) => {
-	// 	if (value.getTime() < (classTime.start?.getTime() ?? 0)) {
-	// 		handleChange({ end: classTime.start });
-	// 	} else {
-	// 		handleChange({ end: value });
-	// 	}
-	// };
 
 	return (
 		<InputWrapper className={classes.root}>
-			<Select data={WEEKDAYS} value={classTime.day} onChange={(day) => handleChange({ day })} />
-			<TimeInput
+			<Select data={WEEKDAYS} value={state.day} onChange={(day) => handleChange({ day })} />
+			<TimeRangeInput
 				format='12'
-				value={classTime.start}
-				onChange={(start) => handleChange({ start })}
+				value={[state.start ?? null, state.end ?? null]}
+				onChange={([start, end]) => handleChange({ start, end })}
 			/>
-			<Text>-</Text>
-			<TimeInput format='12' value={classTime.end} onChange={(end) => handleChange({ end })} />
 		</InputWrapper>
 	);
 };
