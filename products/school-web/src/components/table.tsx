@@ -49,7 +49,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		width: '100%',
 		height: '100%',
 		maxHeight: '100%',
-		overflowY: 'scroll',
+		overflowY: 'auto',
 	},
 	item: {
 		paddingTop: theme.fn.size({ size: itemPadding, sizes: theme.spacing }),

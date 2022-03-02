@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { ClassTime } from '../utils/class-time-serialization';
+import type { ClassTime } from '../components/class-time-input';
 import ResourceProvider, { createResourceContext, RemoteResource } from './resource-context';
 
 export type ActivityStatus = 'active' | 'inactive' | 'deleted';
@@ -63,7 +63,10 @@ const testClasses = Array<Class>(6).fill({
 	id: '483hfewi',
 	name: 'TaeKwonDo',
 	memberships: ['4893hfueowa'],
-	schedule: [' 0 18 * * 1 : 60', ' 0 18 * * 3 : 60'],
+	schedule: [
+		{ schedule: '0 18 * * 1', duration: 60 },
+		{ schedule: '0 18 * * 3', duration: 60 },
+	],
 });
 
 const testClassSummaries = Array<ClassSummary>(6).fill({
