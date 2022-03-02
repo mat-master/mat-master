@@ -12,23 +12,6 @@ export interface School {
 	address: Address;
 }
 
-export interface User {
-	/** Universally unique user ID */
-	id: string;
-
-	/** The users first name */
-	firstName: string;
-
-	/** The users last name */
-	lastName: string;
-
-	/** The users email address */
-	email: string;
-
-	/** The users phone number */
-	phone?: string;
-}
-
 export type StudentStatus = 'active' | 'inactive' | 'deleted';
 
 export interface SutudentSummary {

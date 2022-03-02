@@ -4,9 +4,6 @@
     "src/**.ts"
   ],
   "compilerOptions": {
-    "composite": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "noEmit": false
+    "composite": true
   }
 }

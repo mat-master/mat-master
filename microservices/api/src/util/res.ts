@@ -14,6 +14,12 @@ export const resError = (statusCode: number, error: string): APIGatewayProxyResu
 /* Response for bad data. */
 export const res400 = (error: string) => resError(400, error);
 /* Response for unauthorized. */
+export const res401 = (error: string) => resError(401, error);
+/* Response for unauthorized. */
 export const res403 = (error: string) => resError(403, error);
 /* Response for resource not found. */
 export const res404 = (error: string) => resError(404, error);
+
+export const isResponse = (res: any): res is APIGatewayProxyResult => {
+    return res.statusCode !== undefined && res.body !== undefined;
+}

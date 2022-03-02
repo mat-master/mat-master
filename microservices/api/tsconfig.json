@@ -1,4 +1,9 @@
 {
+  "references": [
+    {
+      "path": "../../common/types"
+    }
+  ],
   "extends": "../../tsconfig.json",
   "include": ["src/**/*.ts"],
   "compilerOptions": {
