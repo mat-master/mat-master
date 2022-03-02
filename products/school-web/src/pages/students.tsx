@@ -26,7 +26,6 @@ const StudentsPage: React.FC = () => {
 	const { summaries } = useResourceSummaries(students);
 
 	const filteredStudents = useMemo(() => {
-		console.log('re-filtering');
 		if (!summaries) return [];
 		return summaries.filter(({ name }) =>
 			name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -74,7 +73,11 @@ const StudentsPage: React.FC = () => {
 			</Paper>
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
-			<StudentEditModal open={!!modals.edit} onClose={() => setModals({ edit: undefined })} />
+			<StudentEditModal
+				open={!!modals.edit}
+				studentId={modals.edit}
+				onClose={() => setModals({ edit: undefined })}
+			/>
 			<ConfirmationModal
 				resourceType='student'
 				open={!!modals.deleteConfirmation}

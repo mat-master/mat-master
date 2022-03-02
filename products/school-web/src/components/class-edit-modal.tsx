@@ -2,8 +2,9 @@ import { LoadingOverlay, MultiSelect, SelectItem, TextInput } from '@mantine/cor
 import { useForm } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import type React from 'react';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { Class, classesContext, membershipsContext } from '../data/resources-provider';
+import usePromise from '../hooks/use-promise';
 import ClassScheduleInput from './class-schedule-input';
 import Modal from './modal';
 import ModalActions from './modal-actions';
@@ -18,8 +19,6 @@ export interface ClassEditModalProps {
 const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => {
 	const classesSrc = useContext(classesContext);
 	const notifications = useNotifications();
-	const initialValues: ClassData = { name: '', memberships: [], schedule: [] };
-	const form = useForm<ClassData>({ initialValues });
 
 	const membershipsSrc = useContext(membershipsContext);
 	const membershipOptions: SelectItem[] = useMemo(() => {
@@ -28,18 +27,18 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 		return summaries?.map(({ id, name }) => ({ value: id, label: name }));
 	}, [membershipsSrc.summaries]);
 
-	const [loading, setLoading] = useState(true);
-	useEffect(() => {
-		const membershipsPromise = membershipsSrc.getSummaries();
-		const classPromise = classId ? classesSrc.get(classId) : Promise.resolve(initialValues);
+	const initialValues: ClassData = { name: '', memberships: [], schedule: [] };
+	const form = useForm<ClassData>({ initialValues });
 
-		Promise.all([membershipsPromise, classPromise])
-			.then(([_, classData]) => {
-				form.setValues(classData);
-				setLoading(false);
-			})
-			.catch(console.error);
+	const { loading, error, value } = usePromise(async () => {
+		const classPromise = classId ? classesSrc.get(classId) : Promise.resolve(initialValues);
+		return Promise.all([membershipsSrc.getSummaries(), classPromise]);
 	}, [classId]);
+	const [_, classData] = value ? value : [undefined, undefined];
+
+	useEffect(() => {
+		classData && form.setValues(classData);
+	}, [classData]);
 
 	const handleSave = useCallback(
 		async (data: ClassData) => {
@@ -56,8 +55,6 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 			});
 
 			try {
-				console.log(data);
-
 				if (classId) {
 					await classesSrc.update(classId, data);
 				} else {
