@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { RemoteResource, ResourceContext } from '../data/resource-context';
+import type { RemoteResource, ResourceContext } from '../data/resource-provider';
 
 interface SummariesResult<S extends RemoteResource> {
 	loading: boolean;

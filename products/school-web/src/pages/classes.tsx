@@ -8,7 +8,7 @@ import ConfirmationModal from '../components/confirmation-modal';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
-import { classesContext, ClassSummary } from '../data/resources-provider';
+import classesContext, { type ClassSummary } from '../data/classes-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
 
