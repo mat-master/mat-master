@@ -1,15 +1,29 @@
-import type { User } from 'types';
+import { Privilege, User } from 'types';
 import * as db from './db';
 import * as jwt from 'jsonwebtoken';
 import type { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';
-import { res401, res404 } from './res';
+import { res401, res404, res400, res403 } from './res';
 import type { Payload } from './payload';
+
+export const getUser = async (event: APIGatewayProxyEvent, payload: Payload): Promise<User | APIGatewayProxyResult> => {
+  // Check for id in path
+  if(!event.pathParameters || !event.pathParameters.id)
+    return res400("No id provided");
+
+    // Check the id of the requested user
+  const userId = event.pathParameters.id;
+  if(userId !== "me" && payload.id !== BigInt(userId) && payload.privilege !== Privilege.Admin)
+    return res403("You do not have permission to view this user");
+
+  // Get the user
+  return await getUserId(userId === "me" ? payload.id : BigInt(userId));
+}
 
 /**
  * Get a user by id.
  * @param id id of the user to get
  */
-export const getUser = async (id: bigint): Promise<User | APIGatewayProxyResult> => {
+export const getUserId = async (id: bigint): Promise<User | APIGatewayProxyResult> => {
   const user = await db.query('SELECT * FROM users WHERE id=$1 LIMIT 1', [id]);
   if (user.rows.length === 0)
     return res404('User not found');
@@ -43,6 +57,7 @@ export const authUser = async (event: APIGatewayProxyEvent): Promise<Payload | A
 
   return {
     id: payload.id,
+    email: payload.email,
     privilege: payload.privilege
   };
 }
