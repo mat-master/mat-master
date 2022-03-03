@@ -1269,6 +1269,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/core@npm:^3.6.13":
+  version: 3.6.13
+  resolution: "@mantine/core@npm:3.6.13"
+  dependencies:
+    "@mantine/styles": 3.6.13
+    "@popperjs/core": ^2.9.3
+    "@radix-ui/react-scroll-area": ^0.1.1
+    clsx: ^1.1.1
+    react-popper: ^2.2.5
+    react-textarea-autosize: ^8.3.2
+  peerDependencies:
+    "@mantine/hooks": 3.6.13
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 1fffe94e75211056e6fa51262525f77e22f1bfc93f169350c27b2e44b820cd25584bc62d2f38e2fa0dc5ec6fabe2e9cc2f27d0e38586e071f0d8a1ad7c80cb80
+  languageName: node
+  linkType: hard
+
 "@mantine/core@npm:^3.6.7, @mantine/core@npm:^3.6.9":
   version: 3.6.11
   resolution: "@mantine/core@npm:3.6.11"
@@ -1300,6 +1318,15 @@ __metadata:
     dayjs: ^1.10.5
     react: ">=16.8.0"
   checksum: 497478f23394560706a58e6fa2f154e095a565bb37637c76db22e9e86aae3786bb8e2ca1c1c08644301a2f9e066c5a73b08e5211e42134e2b90d6ece0bbe87b4
+  languageName: node
+  linkType: hard
+
+"@mantine/hooks@npm:^3.6.13":
+  version: 3.6.13
+  resolution: "@mantine/hooks@npm:3.6.13"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 71d6807e2bafb8af3426558b90481f68d5c0b3fa6e77a20bb5aa3a4b0011d5dd499cc8b938a3e3af7ebe48021c88862a20d4dfbc852a8f0e427162254de05393
   languageName: node
   linkType: hard
 
@@ -1341,6 +1368,23 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: 165c17b647c75ec315d1894794550b42f00695481d4544f6044bf1a0e864a62eddd637b9820945a378048a22f0a1153bd308be0f5ba19aad934907088584b46e
+  languageName: node
+  linkType: hard
+
+"@mantine/styles@npm:3.6.13":
+  version: 3.6.13
+  resolution: "@mantine/styles@npm:3.6.13"
+  dependencies:
+    "@emotion/cache": ^11.7.1
+    "@emotion/react": ^11.7.1
+    "@emotion/serialize": ^1.0.2
+    "@emotion/utils": ^1.0.0
+    clsx: ^1.1.1
+    csstype: ^3.0.9
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: d1be1ed2fba1c21e831e8e72dbc9bcc61e05cef267cc2f962a4131c7a479057c4c380d27056c33423820dcbe87dbe40be14c7087e6bbcf8fc741ea2e69c13977
   languageName: node
   linkType: hard
 
@@ -2055,6 +2099,22 @@ __metadata:
   checksum: a26dcc2182ffee111cad7c471759b0bda22d3b7ebacf27c348b22c55f16896b18ab0a4d03b85b4020dce7f3e634b8f00b593888f622915096ea1927fa51866c4
   languageName: node
   linkType: hard
+
+"auth.matmaster.app@workspace:products/auth.matmaster.app":
+  version: 0.0.0-use.local
+  resolution: "auth.matmaster.app@workspace:products/auth.matmaster.app"
+  dependencies:
+    "@mantine/core": ^3.6.13
+    "@mantine/hooks": ^3.6.13
+    "@types/react": ^17.0.33
+    "@types/react-dom": ^17.0.10
+    "@vitejs/plugin-react": ^1.0.7
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    typescript: ^4.5.4
+    vite: ^2.8.0
+  languageName: unknown
+  linkType: soft
 
 "axe-core@npm:^4.3.5":
   version: 4.4.1
