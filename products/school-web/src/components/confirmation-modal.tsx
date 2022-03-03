@@ -1,57 +1,37 @@
-import { useNotifications } from '@mantine/notifications';
 import type React from 'react';
+import useAsyncAction, { ActionType } from '../hooks/use-async-action';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
 export interface ConfirmationModalProps {
-	open: boolean;
 	onClose: VoidFunction;
-	resourceType: string;
-	actionType?: string | undefined;
+	resourceLabel: string;
+	actionType: ActionType;
 	action: () => void | Promise<void>;
-	successMessage: string;
-	workingMessage: string;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-	open,
 	onClose,
-	resourceType,
-	actionType = 'delete',
+	resourceLabel,
+	actionType,
 	action,
-	successMessage,
-	workingMessage,
 }) => {
-	const notifications = useNotifications();
-
-	const handleConfirmation = async () => {
+	const onConfirmation = async () => {
 		onClose();
-
-		const notificationId = notifications.showNotification({
-			message: workingMessage,
-			loading: true,
-			autoClose: false,
-			disallowClose: true,
-		});
-
 		await action();
-
-		notifications.updateNotification(notificationId, {
-			id: notificationId,
-			message: successMessage,
-			loading: false,
-		});
 	};
+
+	const handleConfirmation = useAsyncAction(onConfirmation, actionType, resourceLabel);
 
 	return (
 		<Modal
-			opened={open}
+			title={`Are you sure you want to ${actionType} ${resourceLabel}?`}
 			onClose={onClose}
-			title={`Are you sure you want to ${actionType} this ${resourceType}?`}
+			opened
 		>
 			<ModalActions
 				primaryAction={handleConfirmation}
-				primaryLabel={`Yes, ${actionType} this ${resourceType}`}
+				primaryLabel={`Yes, ${actionType} ${resourceLabel}`}
 				secondaryAction={onClose}
 				secondaryLabel='Cancel'
 			/>

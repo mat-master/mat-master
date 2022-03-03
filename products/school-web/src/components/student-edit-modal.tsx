@@ -1,26 +1,66 @@
-import { MultiSelect, Select } from '@mantine/core';
+import { LoadingOverlay, MultiSelect, SelectItem } from '@mantine/core';
+import { useForm } from '@mantine/hooks';
 import type React from 'react';
+import { useContext, useEffect, useMemo } from 'react';
+import { membershipsContext, Student, studentsContext } from '../data/resources-provider';
+import useAsyncAction from '../hooks/use-async-action';
+import usePromise from '../hooks/use-promise';
 import Modal from './modal';
 import ModalActions from './modal-actions';
 
+type StudentData = Omit<Student, 'id'>;
+
 export interface StudentEditModalProps {
-	open: boolean;
-	onClose: VoidFunction;
+	studentId: string;
+	onClose?: VoidFunction;
 }
 
-const StudentEditModal: React.FC<StudentEditModalProps> = ({ open, onClose }) => {
+const StudentEditModal: React.FC<StudentEditModalProps> = ({ studentId, onClose }) => {
+	const studentsSrc = useContext(studentsContext);
+	const membershipsSrc = useContext(membershipsContext);
+	const membershipOptions: SelectItem[] = useMemo(() => {
+		const { summaries } = membershipsSrc;
+		if (!summaries) return [];
+		return summaries?.map(({ id, name }) => ({ value: id, label: name }));
+	}, [membershipsSrc.summaries]);
+
+	const initialValues: StudentData = { memberships: [] };
+	const form = useForm<StudentData>({ initialValues });
+
+	const { loading, error, value } = usePromise(
+		async () => Promise.all([membershipsSrc.getSummaries(), studentsSrc.get(studentId)]),
+		[studentId]
+	);
+
+	const [_, student] = value ? value : [undefined, undefined];
+
+	useEffect(() => {
+		student && form.setValues(student);
+	}, [student]);
+
+	const onSave = async () => {
+		onClose && onClose();
+
+		if (studentId) {
+			await studentsSrc.update(studentId, form.values);
+		} else {
+			await studentsSrc.create(form.values);
+		}
+	};
+
+	const handleSave = useAsyncAction(onSave, 'update', 'Student Name');
+
 	return (
-		<Modal opened={open} onClose={onClose} title='Student Name'>
+		<Modal onClose={onClose ?? (() => {})} title='Student Name' opened>
+			<LoadingOverlay visible={loading} radius='sm' />
 			<MultiSelect
 				label='Memberships'
-				data={[]}
-				// data={memberships.map(({ id, name }) => ({ value: id, label: name }))}
+				data={membershipOptions}
+				{...form.getInputProps('memberships')}
 			/>
 
-			<Select label='TaeKwonDo Rank' data={['White', 'Yellow', 'Orange']} />
-
 			<ModalActions
-				primaryAction={() => {}}
+				primaryAction={handleSave}
 				primaryLabel='Save'
 				secondaryAction={onClose}
 				secondaryLabel='Cancel'

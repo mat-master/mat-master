@@ -5,7 +5,6 @@ import ResourceProvider, { createResourceContext, RemoteResource } from './resou
 export type ActivityStatus = 'active' | 'inactive' | 'deleted';
 
 export interface Student extends RemoteResource {
-	activityStatus: ActivityStatus;
 	memberships: Array<string>;
 }
 
@@ -48,7 +47,6 @@ export const membershipsContext = createResourceContext<Membership, MembershipSu
 
 const testStudents = Array<Student>(36).fill({
 	id: '7439yh',
-	activityStatus: 'active',
 	memberships: ['4893hfueowa'],
 });
 
