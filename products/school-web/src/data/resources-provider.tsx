@@ -17,7 +17,7 @@ export interface StudentSummary extends RemoteResource {
 export interface Class extends RemoteResource {
 	name: string;
 	memberships: string[];
-	schedule: ClassTime[];
+	schedule: (ClassTime | null)[];
 }
 
 export interface ClassSummary extends RemoteResource {

@@ -25,7 +25,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 		return summaries?.map(({ id, name }) => ({ value: id, label: name }));
 	}, [membershipsSrc.summaries]);
 
-	const initialValues: ClassData = { name: '', memberships: [], schedule: [] };
+	const initialValues: ClassData = { name: '', memberships: [], schedule: [null] };
 	const form = useForm<ClassData>({ initialValues });
 
 	const { loading, error, value } = usePromise(async () => {
@@ -55,7 +55,7 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ onClose, classId }) => 
 	);
 
 	return (
-		<Modal opened onClose={onClose ?? (() => {})} title={classData?.name ?? 'New Class'}>
+		<Modal opened onClose={onClose ?? (() => {})} title={classData?.name || 'New Class'}>
 			<LoadingOverlay visible={loading} radius='sm' />
 			<TextInput label='Name' {...form.getInputProps('name')} />
 

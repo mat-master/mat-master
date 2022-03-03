@@ -33,9 +33,10 @@ export const createResourceContext = <T extends RemoteResource, S extends Remote
 
 export interface ResourceProviderProps<T extends RemoteResource, S extends RemoteResource> {
 	context: React.Context<ResourceContext<T, S>>;
+	children: React.ReactNode;
 	defaultItems?: T[];
 	defaultSummaries?: S[];
-	children: React.ReactNode;
+	mergeItem?: (base: T, data: Partial<T>) => T | Promise<T>;
 }
 
 const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
@@ -43,6 +44,7 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 	children,
 	defaultItems,
 	defaultSummaries,
+	mergeItem,
 }: ResourceProviderProps<T, S>) => {
 	const [items, itemHandlers] = useListState<T>(defaultItems);
 	const [summaries, summariesHandlers] = useListState<S>(defaultSummaries);
@@ -74,7 +76,14 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 		[items]
 	);
 
-	const update = useCallback(async () => {}, []);
+	const update = useCallback(async (id: string, data: Partial<T>) => {
+		const itemIndex = items.findIndex((item) => item.id === id);
+		const newItem = mergeItem
+			? await mergeItem(items[itemIndex], data)
+			: { ...items[itemIndex], ...data };
+
+		itemHandlers.setItem(itemIndex, newItem);
+	}, []);
 
 	const remove = useCallback(
 		async (id: string) => {
