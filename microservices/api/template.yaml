@@ -54,6 +54,19 @@ Resources:
             Path: /auth/login
             Method: POST
             RestApiId: !Ref Api
+  AuthVerifyPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/auth/verify/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /auth/verify
+            Method: POST
+            RestApiId: !Ref Api
   UsersIdGET:
     Type: AWS::Serverless::Function
     Metadata:
@@ -66,6 +79,19 @@ Resources:
           Properties:
             Path: /users/{id}
             Method: GET
+            RestApiId: !Ref Api
+  UsersIdVerifyPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/verify/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}/verify
+            Method: POST
             RestApiId: !Ref Api
   ApiLayer:
     Type: AWS::Serverless::LayerVersion
