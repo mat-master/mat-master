@@ -3,7 +3,16 @@
   "include": [
     "src/**.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "noEmit": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
   }
 }

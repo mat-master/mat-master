@@ -1652,6 +1652,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/axios@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@types/axios@npm:0.14.0"
+  dependencies:
+    axios: "*"
+  checksum: 12a230b9404055d81804cb57fe4739b2317111b28a39e2477b2513250e8b85725e6f6ce509fc2a9494a6da60facb8d80df875fcd747f62f6c3abebc7db60ae66
+  languageName: node
+  linkType: hard
+
 "@types/bcryptjs@npm:^2.4.2":
   version: 2.4.2
   resolution: "@types/bcryptjs@npm:2.4.2"
@@ -1948,11 +1957,14 @@ __metadata:
   dependencies:
     "@aws-sdk/client-ses": ^3.53.0
     "@types/aws-lambda": ^8.10.92
+    "@types/axios": ^0.14.0
     "@types/bcryptjs": ^2.4.2
     "@types/jsonwebtoken": ^8.5.8
     "@types/pg": ^8.6.4
     "@types/validator": ^13.7.1
+    axios: ^0.26.0
     bcryptjs: ^2.4.3
+    crypto: ^1.0.1
     jsonwebtoken: ^8.5.1
     pg: ^8.7.3
     stripe: ^8.205.0
@@ -2052,7 +2064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.26.0":
+"axios@npm:*, axios@npm:^0.26.0":
   version: 0.26.0
   resolution: "axios@npm:0.26.0"
   dependencies:
@@ -2341,6 +2353,13 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
+  languageName: node
+  linkType: hard
+
+"crypto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "crypto@npm:1.0.1"
+  checksum: 087fe3165bd94c333a49e6ed66a0193911f63eac38a24f379b3001a5fe260a59c413646e53a0f67875ba13902b2686d81dc703cb2c147a4ec727dcdc04e5645e
   languageName: node
   linkType: hard
 
