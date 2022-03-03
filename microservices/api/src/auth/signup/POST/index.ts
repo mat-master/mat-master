@@ -1,7 +1,8 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import validator from 'validator';
 import * as db from '../../../util/db';
+import { generateSnowflake, getLambdaIp } from '../../../util/snowflake';
 import { res200, res400, resError } from '../../../util/res';
 
 export interface SignupPostBody {
@@ -34,7 +35,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     // Hash and salt password, create new user
     const hashed = await bcrypt.hash(password, 5);
-    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege, creation_date) VALUES (DEFAULT, $1, $2, $3, $4, 0, DEFAULT)", [firstName, lastName, email, hashed]);
+    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege, creation_date) VALUES ($1, $2, $3, $4, $5, 0, DEFAULT)", [generateSnowflake(), firstName, lastName, email, hashed]);
     
     return res200();
 };
