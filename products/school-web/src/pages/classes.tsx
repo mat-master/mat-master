@@ -13,7 +13,7 @@ import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
 
 interface ClassesPageModals {
-	edit?: string | undefined;
+	edit?: { open: boolean; classId?: string };
 	deleteConfirmation?: string | undefined;
 }
 
@@ -36,7 +36,12 @@ const ClassesPage: React.FC = () => {
 				title='Classes'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[{ icon: <PlusIcon size={18} />, action: () => {} }]}
+				actions={[
+					{
+						icon: <PlusIcon size={18} />,
+						action: () => setModals({ edit: { open: true, classId: undefined } }),
+					},
+				]}
 			/>
 
 			<Paper shadow='md' withBorder>
@@ -62,7 +67,7 @@ const ClassesPage: React.FC = () => {
 							schedule,
 							menu: (
 								<ItemMenu
-									onEdit={() => setModals({ edit: id })}
+									onEdit={() => setModals({ edit: { open: true, classId: id } })}
 									onDelete={() => setModals({ deleteConfirmation: id })}
 								/>
 							),
@@ -72,8 +77,11 @@ const ClassesPage: React.FC = () => {
 				/>
 			</Paper>
 
-			{modals.edit && (
-				<ClassEditModal classId={modals.edit} onClose={() => setModals({ edit: undefined })} />
+			{modals.edit?.open && (
+				<ClassEditModal
+					classId={modals.edit.classId}
+					onClose={() => setModals({ edit: undefined })}
+				/>
 			)}
 
 			{modals.deleteConfirmation && (
