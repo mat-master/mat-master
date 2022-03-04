@@ -27,7 +27,6 @@ interface StylesProps {
 const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 	root: {
 		width: '100%',
-		height: '100%',
 		maxHeight: '100%',
 		display: 'grid',
 		gridAutoColumns: '1fr',
@@ -45,9 +44,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		borderBottom: `1px solid ${theme.colors.gray[2]}`,
 	},
 	body: {
-		display: 'block',
 		width: '100%',
-		height: '100%',
 		maxHeight: '100%',
 		overflowY: 'auto',
 	},
@@ -63,7 +60,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		display: 'inline-block',
 		textAlign: 'left',
 	},
-}));
+}))
 
 const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding });

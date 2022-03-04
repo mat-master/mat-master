@@ -29,11 +29,11 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 const useStyles = createStyles((theme) => ({
 	root: {
 		display: 'grid',
-		gridTemplateColumns: '1fr min-content max-content min-content',
+		gridTemplateColumns: '1fr min-content',
 		columnGap: theme.spacing.sm,
 		alignItems: 'center',
 	},
-}));
+}))
 
 const getState = (value: ClassTime): ClassTimeInputState => {
 	const start = parseExpression(value.schedule).next().toDate();

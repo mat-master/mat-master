@@ -14,14 +14,13 @@ const useStyles = createStyles((theme) => ({
 	},
 	content: {
 		width: '100%',
-		height: '100%',
 		maxHeight: '100%',
 		display: 'grid',
-		gridTemplateColumns: '1fr',
 		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		rowGap: theme.spacing.md,
 		padding: theme.spacing.xl,
 	},
-}));
+}))
 
 const Layout: React.FC = () => {
 	const { classes } = useStyles();

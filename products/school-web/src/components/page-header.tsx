@@ -19,7 +19,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, search, searchT
 	const theme = useMantineTheme();
 
 	return (
-		<Box component='header' mb='md'>
+		<Box component='header'>
 			<Group position='apart' align='center'>
 				<Title>{title}</Title>
 
@@ -40,7 +40,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, search, searchT
 				</Group>
 			</Group>
 		</Box>
-	);
+	)
 };
 
 export default PageHeader;
