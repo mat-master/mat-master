@@ -6,17 +6,17 @@ import stripe from '../../util/stripe';
 import { query } from '../../util/db';
 import { generateSnowflake } from '../../util/snowflake';
 import ms from 'ms';
+import type { InferType } from 'yup';
+import { validator } from '@common/util';
+import { validateBody } from '../../util/validation';
 
-export interface SchoolPostBody {
-    name: string,
-    address: Address
-}
+export type SchoolPostBody = InferType<typeof validator.schoolCreateSchema>;
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // Parse body
-    if(!event.body) 
-        return res400("No body submitted");
-    const {name, address}: SchoolPostBody = JSON.parse(event.body);
+    const body = await validateBody(validator.schoolCreateSchema, event.body);
+    if(isResponse(body))
+        return body;
+    const {name, address} = body;
 
     // Determine requesting user
     const user = await authUser(event);

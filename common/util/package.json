@@ -1,4 +1,15 @@
 {
-  "name": "util",
-  "packageManager": "yarn@3.2.0"
+  "name": "@common/util",
+  "version": "1.0.0",
+  "license": "MIT",
+  "packageManager": "yarn@3.2.0",
+  "main": "./dist/index.js",
+  "dependencies": {
+    "@common/types": "^1.0.0",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@types/yup": "^0",
+    "typescript": "^4.6.2"
+  }
 }

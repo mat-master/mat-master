@@ -2,11 +2,15 @@
   "references": [
     {
       "path": "../../common/types"
+    },
+    {
+      "path": "../../common/util"
     }
   ],
   "extends": "../../tsconfig.json",
   "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "composite": true,
     "sourceMap": true,
     "moduleResolution": "node",
     "module": "commonjs",
