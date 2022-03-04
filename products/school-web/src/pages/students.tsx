@@ -9,7 +9,7 @@ import PageHeader from '../components/page-header';
 import StudentEditModal from '../components/student-edit-modal';
 import StudentInviteModal from '../components/student-invite-modal';
 import Table from '../components/table';
-import { studentsContext } from '../data/resources-provider';
+import studentsContext from '../data/students-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
 

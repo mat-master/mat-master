@@ -2,7 +2,8 @@ import { LoadingOverlay, MultiSelect, SelectItem, TextInput } from '@mantine/cor
 import { useForm } from '@mantine/hooks';
 import type React from 'react';
 import { useContext, useEffect, useMemo } from 'react';
-import { Class, classesContext, membershipsContext } from '../data/resources-provider';
+import classesContext, { type Class } from '../data/classes-context';
+import membershipsContext from '../data/memberships-context';
 import useAsyncAction from '../hooks/use-async-action';
 import usePromise from '../hooks/use-promise';
 import ClassScheduleInput from './class-schedule-input';

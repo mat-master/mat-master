@@ -1,15 +1,23 @@
-import { Avatar, Box, createStyles, Group, Text, UnstyledButton } from '@mantine/core';
-import type React from 'react';
+import {
+	Avatar,
+	Box,
+	createStyles,
+	Group,
+	Text,
+	UnstyledButton,
+	useMantineTheme,
+} from '@mantine/core'
+import type React from 'react'
 import {
 	CreditCard as MembershipsIcon,
 	Grid as DashboardIcon,
 	List as ClassesIcon,
 	Users as StudentsIcon,
-} from 'react-feather';
-import { getHighlightColor } from '../utils/get-colors';
-import NavButton from './nav-button';
+} from 'react-feather'
+import { getHighlightColor } from '../utils/get-colors'
+import NavButton from './nav-button'
 
-const ICON_SIZE = 18;
+const ICON_SIZE = 18
 
 const useStyles = createStyles((theme) => ({
 	user: {
@@ -25,10 +33,11 @@ const useStyles = createStyles((theme) => ({
 		borderTop: `1px solid ${theme.colors.gray[2]}`,
 		paddingTop: theme.spacing.sm,
 	},
-}));
+}))
 
 const SideNav: React.FC = () => {
-	const { classes } = useStyles();
+	const { classes } = useStyles()
+	const theme = useMantineTheme()
 
 	return (
 		<Box
@@ -52,7 +61,7 @@ const SideNav: React.FC = () => {
 			<div className={classes.userWrapper}>
 				<UnstyledButton className={classes.user}>
 					<Group direction='row'>
-						<Avatar radius='xl' color='red'>
+						<Avatar radius='xl' color={theme.primaryColor}>
 							JD
 						</Avatar>
 						<div>
@@ -67,7 +76,7 @@ const SideNav: React.FC = () => {
 				</UnstyledButton>
 			</div>
 		</Box>
-	);
-};
+	)
+}
 
-export default SideNav;
+export default SideNav

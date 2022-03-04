@@ -5,7 +5,7 @@ import { Plus as PlusIcon } from 'react-feather';
 import ItemMenu from '../components/item-menu';
 import PageHeader from '../components/page-header';
 import Table from '../components/table';
-import { membershipsContext } from '../data/resources-provider';
+import membershipsContext from '../data/memberships-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
 

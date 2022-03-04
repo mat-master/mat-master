@@ -4,7 +4,7 @@ import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-import AuthProvider from './data/auth-context';
+import AuthProvider from './data/auth-provider';
 import ResourcesProvider from './data/resources-provider';
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

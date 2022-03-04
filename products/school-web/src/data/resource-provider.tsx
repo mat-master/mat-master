@@ -37,6 +37,7 @@ export interface ResourceProviderProps<T extends RemoteResource, S extends Remot
 	defaultItems?: T[];
 	defaultSummaries?: S[];
 	mergeItem?: (base: T, data: Partial<T>) => T | Promise<T>;
+	summarizeItem?: (item: T) => S | Promise<S>;
 }
 
 const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
@@ -45,6 +46,7 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 	defaultItems,
 	defaultSummaries,
 	mergeItem,
+	summarizeItem,
 }: ResourceProviderProps<T, S>) => {
 	const [items, itemHandlers] = useListState<T>(defaultItems);
 	const [summaries, summariesHandlers] = useListState<S>(defaultSummaries);
@@ -60,6 +62,11 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 	const create = useCallback(async (data: Omit<T, 'id'>) => {
 		const item = { id: randomId(), ...data } as T;
 		itemHandlers.append(item);
+
+		if (summarizeItem) {
+			const summary = await summarizeItem(item);
+			summariesHandlers.append(summary);
+		}
 
 		// TODO: connect remote data source
 		// TODO: create item summary
@@ -83,6 +90,12 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 			: { ...items[itemIndex], ...data };
 
 		itemHandlers.setItem(itemIndex, newItem);
+
+		if (summarizeItem) {
+			const summaryIndex = summaries.findIndex((summary) => summary.id === id);
+			const summary = await summarizeItem(newItem);
+			summariesHandlers.setItem(summaryIndex, summary);
+		}
 	}, []);
 
 	const remove = useCallback(

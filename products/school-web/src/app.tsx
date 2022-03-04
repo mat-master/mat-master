@@ -2,10 +2,12 @@ import type React from 'react';
 import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import Layout from './layout';
-import ClassesPage from './pages/classes';
-import DashboardPage from './pages/dashboard';
-import MembershipsPage from './pages/memberships';
-import StudentsPage from './pages/students';
+import SignInPage from './pages/auth/sign-in'
+import SignUpPage from './pages/auth/sign-up'
+import ClassesPage from './pages/classes'
+import DashboardPage from './pages/dashboard'
+import MembershipsPage from './pages/memberships'
+import StudentsPage from './pages/students'
 
 const App: React.FC = () => (
 	<BrowserRouter>
@@ -19,9 +21,14 @@ const App: React.FC = () => (
 				<Route path='/account' element='Account' />
 			</Route>
 
+			<Route path='/auth'>
+				<Route path='sign-in' element={<SignInPage />} />
+				<Route path='sign-up' element={<SignUpPage />} />
+			</Route>
+
 			<Route path='*' element='404' />
 		</Routes>
 	</BrowserRouter>
-);
+)
 
 export default App;
