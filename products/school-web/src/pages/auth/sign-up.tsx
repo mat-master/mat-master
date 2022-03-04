@@ -24,7 +24,6 @@ const signUpSchema: yup.SchemaOf<SignUpData> = yup.object({
 	lastName: yup.string().required('Required'),
 	email: yup.string().email('Invalid email').required('Required'),
 	password: yup.string().min(6, 'Minimum of 6 characters').required('Required'),
-	termsAndConditions: yup.bool().required().isTrue(),
 })
 
 const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
@@ -32,7 +31,6 @@ const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
 	lastName: yup.string(),
 	email: yup.string(),
 	password: yup.string(),
-	termsAndConditions: yup.string(),
 })
 
 const SignUpPage: React.FC = ({}) => {
@@ -78,7 +76,7 @@ const SignUpPage: React.FC = ({}) => {
 							{...getInputProps(form, 'firstName')}
 						/>
 						<TextInput label='Last Name' {...getInputProps(form, 'lastName')} />
-						<TextInput type='email' label='Email' {...getInputProps(form, 'email')} />
+						<TextInput autoComplete='email' label='Email' {...getInputProps(form, 'email')} />
 						<PasswordInput label='Password' {...getInputProps(form, 'password')} />
 
 						<Button type='submit' loading={form.isSubmitting}>

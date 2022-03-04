@@ -35,15 +35,13 @@ const SignInPage: React.FC = ({}) => {
 
 	const [globalError, setGlobalError] = useState<string>()
 	const form = useFormik<SignInData>({
-		initialValues: {
-			email: '',
-			password: '',
-		},
+		initialValues: { email: '', password: '' },
 		validateOnBlur: false,
 		validateOnChange: false,
 		validationSchema: signInSchema,
 		onSubmit: async (values) => {
 			try {
+				setGlobalError(undefined)
 				await auth.signin(values)
 				navigate('/')
 			} catch (error) {
@@ -65,13 +63,14 @@ const SignInPage: React.FC = ({}) => {
 						<Title order={2}>Sign in</Title>
 
 						<TextInput
-							type='email'
 							label='Email'
 							style={{ width: '36ch' }}
 							{...getInputProps(form, 'email')}
 						/>
 						<PasswordInput label='Password' {...getInputProps(form, 'password')} />
-						<Button type='submit'>Sign In</Button>
+						<Button type='submit' loading={form.isSubmitting}>
+							Sign In
+						</Button>
 
 						{globalError && (
 							<Text align='center' color='red'>
