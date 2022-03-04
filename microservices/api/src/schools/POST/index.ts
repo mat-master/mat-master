@@ -1,10 +1,11 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Address, Privilege, Tier } from '@common/types';
+import { Address, Privilege, SCHOOL_TRIAL_PERIOD, Tier } from '@common/types';
 import { isResponse, res200, res400, res500 } from '../../util/res';
 import { authUser } from '../../util/user';
 import stripe from '../../util/stripe';
 import { query } from '../../util/db';
 import { generateSnowflake } from '../../util/snowflake';
+import ms from 'ms';
 
 export interface SchoolPostBody {
     name: string,
@@ -52,12 +53,24 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         }
     });
 
+    // Create school subscription with stripe
+    const subscription = await stripe.subscriptions.create({
+        customer: user.stripeCustomerId,
+        items: [{
+            price: "price_1KW88vGsHxGKM7KBG946ldmZ"
+        }],
+        trial_end: Math.floor((Date.now() + ms(SCHOOL_TRIAL_PERIOD)) / 1000),
+        metadata: {
+            id: schoolId.toString()
+        }
+    })
+
     // Create school in database
     const res = await query(`
     WITH addressId AS (INSERT INTO addresses (id, state, city, postal_code, line_1, line_2) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id) 
-    INSERT INTO schools (id, owner, name, address, tier, stripe_account_id) VALUES ($7, $8, $9, (SELECT id from addressId), $10, $11)`.trim(), 
+    INSERT INTO schools (id, owner, name, address, tier, stripe_account_id, stripe_subscription_id) VALUES ($7, $8, $9, (SELECT id from addressId), $10, $11, $12)`.trim(), 
     [addressId, address.state, address.city, address.postalCode, address.line1, address.line2, 
-        schoolId, user.id, name, Tier.TRIAL, account.id]);
+        schoolId, user.id, name, Tier.TRIAL, account.id, subscription.id]);
     if(!res)
         return res500("Internal server error");
     

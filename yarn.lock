@@ -1974,6 +1974,7 @@ __metadata:
     axios: ^0.26.0
     bcryptjs: ^2.4.3
     jsonwebtoken: ^8.5.1
+    ms: 3.0.0-canary.1
     pg: ^8.7.3
     stripe: ^8.205.0
     typescript: ^4.0.5
@@ -4137,6 +4138,13 @@ __metadata:
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: 673cdb2c3133eb050c745908d8ce632ed2c02d85640e2edb3ace856a2266a813b30c613569bf3354fdf4ea7d1a1494add3bfa95e2713baa27d0c2c71fc44f58f
+  languageName: node
+  linkType: hard
+
+"ms@npm:3.0.0-canary.1":
+  version: 3.0.0-canary.1
+  resolution: "ms@npm:3.0.0-canary.1"
+  checksum: 5ec76c0932cf83ac3e7f70f1a4c0d4db4dbc91de6ea5f7d336c67b48f513c8cb4c0fce3a07e3d84ee931dbdc9a48f33ed1c485e834279fff8906d385e86684ae
   languageName: node
   linkType: hard
 

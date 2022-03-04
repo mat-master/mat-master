@@ -58,6 +58,7 @@ export const authUser = async (event: APIGatewayProxyEvent): Promise<Payload | A
   return {
     id: payload.id,
     email: payload.email,
-    privilege: payload.privilege
+    privilege: payload.privilege,
+    stripeCustomerId: payload.stripeCustomerId,
   };
 }
