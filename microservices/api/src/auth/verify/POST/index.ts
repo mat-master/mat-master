@@ -35,6 +35,9 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if(isResponse(user))
         return res400("Invalid verification token, please try requesting a new verification email");
 
+    if(user.privilege === Privilege.Verified)
+        return res200("User already verified");
+
     // Since user is now verified, we can create a stripe customer for them
     const customer = await stripe.customers.create({
         name: `${user.firstName} ${user.lastName}`,
