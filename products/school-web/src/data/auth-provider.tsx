@@ -8,53 +8,60 @@ export interface User {
 	email: string;
 }
 
-export interface AuthContext {
-	user: User | null;
-	signup: (
-		firtName: string,
-		lastName: string,
-		email: string,
-		password: string
-	) => Promise<void>;
-	signin: (email: string, password: string) => Promise<void>;
-	signout: () => Promise<void>;
+export interface SignUpData {
+	firstName: string
+	lastName: string
+	email: string
+	password: string
 }
 
-const UNKNOWN_ERROR = Error('An unknown error has occurred');
+export interface SignInData {
+	email: string
+	password: string
+}
+
+export interface AuthContext {
+	user: User | null
+	signup: (data: SignUpData) => Promise<void>
+	signin: (data: SignInData) => Promise<void>
+	signout: () => Promise<void>
+}
+
+const UNKNOWN_ERROR = Error('An unknown error has occurred')
 
 const validateUser = (user: unknown): user is User => {
-	if (!user || typeof user !== 'object') return false;
+	if (!user || typeof user !== 'object') return false
 
 	const structure: { [_ in keyof User]: string } = {
 		id: 'string',
 		firstName: 'string',
 		lastName: 'string',
 		email: 'string',
-	};
-
-	for (const [key, type] of Object.entries(structure)) {
-		if (!(key in user)) return false;
-		if (typeof (user as any)[key] !== type) return false;
 	}
 
-	return true;
-};
+	for (const [key, type] of Object.entries(structure)) {
+		if (!(key in user)) return false
+		if (typeof (user as any)[key] !== type) return false
+	}
 
-const signup = async (firstName: string, lastName: string, email: string, password: string) => {
-	const res = await axios.post('/auth/signup', { firstName, lastName, email, password });
-	if (res.status !== 200) throw Error(res.data.error);
-};
+	return true
+}
 
-const signin = async (email: string, password: string) => {
-	const res = await axios.post('/auth/signin', { email, password });
-	if (res.status !== 200) throw Error(res.data.error);
+const signup = async (data: SignUpData) => {
+	const res = await axios.post('/auth/signup', data)
+	if (res.status !== 200) throw Error(res.data.error)
+}
 
-	const { jwt } = res.data;
-	if (typeof jwt !== 'string') throw UNKNOWN_ERROR;
+const signin = async (data: SignInData) => {
+	const res = await axios.post('/auth/signin', data)
+	if (res.status !== 200) throw Error(res.data.error)
 
-	localStorage.setItem('jwt', jwt);
-	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
-};
+	const { jwt } = res.data
+	if (typeof jwt !== 'string') throw UNKNOWN_ERROR
+
+	localStorage.setItem('jwt', jwt)
+	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
+}
 
 const signout = async () => {
 	const res = await axios.post('/auth/signout');

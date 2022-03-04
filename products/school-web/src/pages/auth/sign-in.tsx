@@ -9,57 +9,70 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core'
-import { useForm } from '@mantine/hooks'
+import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { authContext } from '../../data/auth-provider'
+import * as yup from 'yup'
+import { authContext, SignInData } from '../../data/auth-provider'
 import getErrorMessage from '../../utils/get-error-message'
-import validateEmail from '../../utils/validate-email'
+import getInputProps from '../../utils/get-input-props'
 
-interface Credential {
-	email: string
-	password: string
-}
+type SignInErrors = { [_ in keyof SignInData]?: string | undefined }
+
+const signInSchema: yup.SchemaOf<SignInData> = yup.object({
+	email: yup.string().email('Invalid email').required('Required'),
+	password: yup.string().min(6, 'Minimum of 6 characters').required('Required'),
+})
+
+const signInErrorSchema: yup.SchemaOf<SignInErrors> = yup.object({
+	email: yup.string().notRequired(),
+	password: yup.string().notRequired(),
+})
 
 const SignInPage: React.FC = ({}) => {
 	const auth = useContext(authContext)
 	const navigate = useNavigate()
 
-	const [working, setWorking] = useState(false)
-	const [globalError, setGlobalError] = useState('')
-	const form = useForm<Credential>({
-		initialValues: { email: '', password: '' },
-		validationRules: { email: validateEmail },
-		errorMessages: { email: 'Invalid email address' },
+	const [globalError, setGlobalError] = useState<string>()
+	const form = useFormik<SignInData>({
+		initialValues: {
+			email: '',
+			password: '',
+		},
+		validateOnBlur: false,
+		validateOnChange: false,
+		validationSchema: signInSchema,
+		onSubmit: async (values) => {
+			try {
+				await auth.signin(values)
+				navigate('/')
+			} catch (error) {
+				const message = await getErrorMessage<SignInErrors>(error, signInErrorSchema)
+				if (typeof message === 'string') {
+					setGlobalError(message)
+				} else {
+					form.setErrors(message)
+				}
+			}
+		},
 	})
-
-	const handleSubmit = async (value: Credential) => {
-		try {
-			if (working) return
-			setWorking(true)
-
-			setGlobalError('')
-			await auth.signin(value.email, value.password)
-			navigate('/')
-		} catch (error) {
-			setGlobalError(getErrorMessage(error))
-		}
-	}
 
 	return (
 		<Center style={{ flexDirection: 'column' }}>
 			<Paper padding='lg' mt='xl' mb='sm' shadow='sm' withBorder>
-				<form onSubmit={form.onSubmit(handleSubmit)}>
+				<form onSubmit={form.handleSubmit}>
 					<Group direction='column' spacing='sm' grow>
 						<Title order={2}>Sign in</Title>
+
 						<TextInput
 							type='email'
 							label='Email'
 							style={{ width: '36ch' }}
-							{...form.getInputProps('email')}
+							{...getInputProps(form, 'email')}
 						/>
-						<PasswordInput label='Password' {...form.getInputProps('password')} />
+						<PasswordInput label='Password' {...getInputProps(form, 'password')} />
 						<Button type='submit'>Sign In</Button>
+
 						{globalError && (
 							<Text align='center' color='red'>
 								{globalError}
