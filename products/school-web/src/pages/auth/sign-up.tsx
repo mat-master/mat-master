@@ -14,9 +14,10 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { authContext, SignUpData } from '../../data/auth-provider'
+import getErrorMessage from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
 
-type SignUpFormErrors = { [_ in keyof SignUpData]?: string | undefined }
+type SignUpErrors = { [_ in keyof SignUpData]?: string | undefined }
 
 const signUpSchema: yup.SchemaOf<SignUpData> = yup.object({
 	firstName: yup.string().required('Required'),
@@ -26,7 +27,7 @@ const signUpSchema: yup.SchemaOf<SignUpData> = yup.object({
 	termsAndConditions: yup.bool().required().isTrue(),
 })
 
-const signUpErrorSchema: yup.SchemaOf<SignUpFormErrors> = yup.object({
+const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
 	firstName: yup.string(),
 	lastName: yup.string(),
 	email: yup.string(),
@@ -54,14 +55,11 @@ const SignUpPage: React.FC = ({}) => {
 				await auth.signup(values)
 				navigate('/')
 			} catch (error) {
-				if (error instanceof Error) {
-					setGlobalError(error.message)
-				} else if (typeof error === 'string') {
-					setGlobalError(error)
-				} else if (await signUpErrorSchema.validate(error)) {
-					form.setErrors(error as SignUpFormErrors)
+				const message = await getErrorMessage<SignUpErrors>(error, signUpErrorSchema)
+				if (typeof message === 'string') {
+					setGlobalError(message)
 				} else {
-					setGlobalError('An unknown error ocurred')
+					form.setErrors(message)
 				}
 			}
 		},

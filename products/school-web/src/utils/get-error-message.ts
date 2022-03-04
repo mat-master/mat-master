@@ -1,8 +1,15 @@
-const getErrorMessage = (error: unknown) =>
-	error instanceof Error
-		? error.message
-		: typeof error === 'string'
-		? error
-		: 'An unknown error occurred';
+import type { SchemaOf } from 'yup'
 
-export default getErrorMessage;
+const getErrorMessage = async <T>(error: unknown, schema?: SchemaOf<T>) => {
+	if (typeof error === 'string') {
+		return error
+	} else if (error instanceof Error) {
+		return error.message
+	} else if (schema && (await schema.validate(error))) {
+		return error as T
+	} else {
+		return 'An unknown error ocurred'
+	}
+}
+
+export default getErrorMessage
