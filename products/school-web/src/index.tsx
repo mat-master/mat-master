@@ -8,9 +8,9 @@ import AuthProvider from './data/auth-provider';
 import ResourcesProvider from './data/resources-provider';
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-	axios.defaults.baseURL = 'api.matmaster.app/dev';
+	axios.defaults.baseURL = 'http://127.0.0.1:3030'
 } else {
-	axios.defaults.baseURL = 'api.matmaster.app';
+	axios.defaults.baseURL = 'https://api.matmaster.app';
 }
 
 ReactDOM.render(

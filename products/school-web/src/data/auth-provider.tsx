@@ -53,7 +53,7 @@ const signup = async (data: SignUpData) => {
 }
 
 const signin = async (data: SignInData) => {
-	const res = await axios.post('/auth/signin', data)
+	const res = await axios.post('/auth/login', data)
 	if (res.status !== 200) throw Error(res.data.error)
 
 	const { jwt } = res.data
