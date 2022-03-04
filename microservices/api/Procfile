@@ -1,2 +1,2 @@
-sam: sam local start-api --env-vars=env.json --debug --port 3030 2>&1 | tr "\r" "\n"
+sam: sam local start-api --env-vars=env.json --port 3030 2>&1 | tr "\r" "\n"
 tsc: yarn watch

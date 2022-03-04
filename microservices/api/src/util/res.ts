@@ -1,13 +1,20 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
 
+const responseHeaders =  {
+    "Access-Control-Allow-Headers" : "Content-Type,Authorization",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE,PATCH"
+}
+
 export type Response = APIGatewayProxyResult;
 
-export const res200 = (body: any = null): Response => ({statusCode: 200, body: body ? JSON.stringify(body) : ""});
+export const res200 = (body: any = null): Response => ({statusCode: 200, headers: responseHeaders, body: body ? JSON.stringify(body) : ""});
 
 /* Generates a basic error response. */
 export const resError = (statusCode: number, error: string): Response => {
     return {
         statusCode: statusCode,
+        headers: responseHeaders,
         body: JSON.stringify({error: error})
     };
 }

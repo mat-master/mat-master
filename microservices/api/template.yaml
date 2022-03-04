@@ -23,6 +23,11 @@ Globals:
         PG_PASSWORD:
         JWT_SECRET:
         STRIPE_SECRET_KEY:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
 
 Resources:
   Api:
