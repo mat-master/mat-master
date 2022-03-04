@@ -12,25 +12,25 @@ import Table from '../components/table';
 import studentsContext from '../data/students-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
+import useShrinkwrap from '../hooks/use-shrinkwrap'
 
 interface StudentsPageModals {
-	invite?: boolean | undefined;
-	edit?: string | undefined;
-	deleteConfirmation?: string | undefined;
+	invite?: boolean | undefined
+	edit?: string | undefined
+	deleteConfirmation?: string | undefined
 }
 
 const StudentsPage: React.FC = () => {
-	const students = useContext(studentsContext);
-	const [modals, setModals] = useSetState<StudentsPageModals>({});
-	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const { summaries } = useResourceSummaries(students);
+	const students = useContext(studentsContext)
+	const [modals, setModals] = useSetState<StudentsPageModals>({})
+	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const { summaries } = useResourceSummaries(students)
+	const paperRef = useShrinkwrap<HTMLDivElement>()
 
 	const filteredStudents = useMemo(() => {
-		if (!summaries) return [];
-		return summaries.filter(({ name }) =>
-			name.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-	}, [searchTerm, summaries]);
+		if (!summaries) return []
+		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
+	}, [searchTerm, summaries])
 
 	return (
 		<>
@@ -41,7 +41,7 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
 			/>
 
-			<Paper shadow='md' withBorder>
+			<Paper ref={paperRef} shadow='md' withBorder>
 				<Table
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
@@ -92,7 +92,7 @@ const StudentsPage: React.FC = () => {
 				/>
 			)}
 		</>
-	);
-};
+	)
+}
 
 export default StudentsPage;

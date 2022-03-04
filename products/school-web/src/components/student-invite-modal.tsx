@@ -1,24 +1,24 @@
-import { TextInput } from '@mantine/core';
-import { useNotifications } from '@mantine/notifications';
-import React, { useRef, useState } from 'react';
-import Modal from './modal';
-import ModalActions from './modal-actions';
+import { Modal, TextInput, Title } from '@mantine/core'
+import { useNotifications } from '@mantine/notifications'
+import React, { useRef, useState } from 'react'
+import validateEmail from '../utils/validate-email'
+import ModalActions from './modal-actions'
 
 export interface StudentInviteFormProps {
-	open: boolean;
-	onClose: VoidFunction;
+	open: boolean
+	onClose: VoidFunction
 }
 
 const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) => {
-	const emailInputRef = useRef<HTMLInputElement>(null);
-	const [error, setError] = useState<string>();
-	const notifications = useNotifications();
+	const emailInputRef = useRef<HTMLInputElement>(null)
+	const [error, setError] = useState<string>()
+	const notifications = useNotifications()
 
 	const handleSubmit = async () => {
-		const email = emailInputRef.current?.value;
-		if (!email) return setError('Enter a valid email');
-		setError(undefined);
-		onClose();
+		const email = emailInputRef.current?.value
+		if (!validateEmail(email)) return setError('Enter a valid email')
+		setError(undefined)
+		onClose()
 
 		const notificationId = notifications.showNotification({
 			title: 'Sending invitation',
@@ -26,24 +26,25 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 			loading: true,
 			autoClose: false,
 			disallowClose: true,
-		});
+		})
 
 		// TODO: Send api request
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 2000))
 
 		notifications.updateNotification(notificationId, {
 			id: notificationId,
 			title: `Invitation sent`,
 			message: 'You will be notified when they accept the invitation',
 			loading: false,
-		});
-	};
+		})
+	}
 
 	return (
-		<Modal opened={open} onClose={onClose} title='Invite a student'>
+		<Modal opened={open} onClose={onClose} title={<Title order={3}>Invite A Student</Title>}>
 			<TextInput
-				ref={emailInputRef}
+				type='email'
 				placeholder='Email'
+				ref={emailInputRef}
 				error={error}
 				style={{ width: '100%' }}
 			/>
@@ -55,7 +56,7 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 				secondaryLabel='Cancel'
 			/>
 		</Modal>
-	);
-};
+	)
+}
 
-export default StudentInviteForm;
+export default StudentInviteForm

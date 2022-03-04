@@ -8,19 +8,19 @@ import Table from '../components/table';
 import membershipsContext from '../data/memberships-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
+import useShrinkwrap from '../hooks/use-shrinkwrap'
 
 const MembershipsPage: React.FC = () => {
-	const memberships = useContext(membershipsContext);
-	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const { summaries } = useResourceSummaries(memberships);
+	const memberships = useContext(membershipsContext)
+	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const { summaries } = useResourceSummaries(memberships)
+	const paperRef = useShrinkwrap<HTMLDivElement>()
 
 	const filteredMemberships = useMemo(() => {
-		console.log('re-filtering');
-		if (!summaries) return [];
-		return summaries.filter(({ name }) =>
-			name.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-	}, [searchTerm]);
+		console.log('re-filtering')
+		if (!summaries) return []
+		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
+	}, [searchTerm])
 
 	return (
 		<>
@@ -31,7 +31,7 @@ const MembershipsPage: React.FC = () => {
 				actions={[{ icon: <PlusIcon size={18} />, action: () => {} }]}
 			/>
 
-			<Paper shadow='sm' withBorder>
+			<Paper ref={paperRef} shadow='sm' withBorder>
 				<Table
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
@@ -59,7 +59,7 @@ const MembershipsPage: React.FC = () => {
 				/>
 			</Paper>
 		</>
-	);
-};
+	)
+}
 
 export default MembershipsPage;

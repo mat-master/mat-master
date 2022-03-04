@@ -14,7 +14,7 @@ const ModalActions: React.FC<ModalActionsProps> = ({
 	secondaryAction,
 	secondaryLabel,
 }) => (
-	<Group position='right' style={{ width: '100%' }}>
+	<Group position='right' mt='sm' style={{ width: '100%' }}>
 		{secondaryAction && (
 			<Button variant='outline' onClick={secondaryAction}>
 				{secondaryLabel}
@@ -23,6 +23,6 @@ const ModalActions: React.FC<ModalActionsProps> = ({
 
 		<Button onClick={primaryAction}>{primaryLabel}</Button>
 	</Group>
-);
+)
 
 export default ModalActions;
