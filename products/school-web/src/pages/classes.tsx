@@ -1,17 +1,17 @@
-import { Avatar, AvatarsGroup, Paper, Title } from '@mantine/core';
-import { useSetState } from '@mantine/hooks';
-import type React from 'react';
-import { useContext, useMemo } from 'react';
-import { Plus as PlusIcon } from 'react-feather';
-import ClassEditModal from '../components/class-edit-modal';
-import ConfirmationModal from '../components/confirmation-modal';
-import ItemMenu from '../components/item-menu';
-import PageHeader from '../components/page-header';
-import Table from '../components/table';
-import classesContext, { type ClassSummary } from '../data/classes-context';
-import useResourceSummaries from '../hooks/use-resource-summaries';
-import useSearchTerm from '../hooks/use-search-term';
-import useShrinkwrap from '../hooks/use-shrinkwrap'
+import { Avatar, AvatarsGroup, Title } from '@mantine/core'
+import { useSetState } from '@mantine/hooks'
+import type React from 'react'
+import { useContext, useMemo } from 'react'
+import { Plus as PlusIcon } from 'react-feather'
+import ClassEditModal from '../components/class-edit-modal'
+import ConfirmationModal from '../components/confirmation-modal'
+import DataCard from '../components/data-card'
+import ItemMenu from '../components/item-menu'
+import PageHeader from '../components/page-header'
+import Table from '../components/table'
+import classesContext, { type ClassSummary } from '../data/classes-context'
+import useResourceSummaries from '../hooks/use-resource-summaries'
+import useSearchTerm from '../hooks/use-search-term'
 
 interface ClassesPageModals {
 	edit?: { open: boolean; classId?: string }
@@ -22,8 +22,7 @@ const ClassesPage: React.FC = () => {
 	const classes = useContext(classesContext)
 	const [modals, setModals] = useSetState<ClassesPageModals>({})
 	const [searchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries } = useResourceSummaries(classes)
-	const paperRef = useShrinkwrap<HTMLDivElement>()
+	const { summaries, loading } = useResourceSummaries(classes)
 
 	const filteredClasses = useMemo(() => {
 		if (!summaries) return []
@@ -44,7 +43,7 @@ const ClassesPage: React.FC = () => {
 				]}
 			/>
 
-			<Paper ref={paperRef} shadow='md' withBorder>
+			<DataCard loading={loading}>
 				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
@@ -75,7 +74,7 @@ const ClassesPage: React.FC = () => {
 					}))}
 					itemPadding={4}
 				/>
-			</Paper>
+			</DataCard>
 
 			{modals.edit?.open && (
 				<ClassEditModal
@@ -98,4 +97,4 @@ const ClassesPage: React.FC = () => {
 	)
 }
 
-export default ClassesPage;
+export default ClassesPage

@@ -1,18 +1,18 @@
-import { Avatar, Badge, Paper, Title } from '@mantine/core';
-import { useSetState } from '@mantine/hooks';
-import type React from 'react';
-import { useContext, useMemo } from 'react';
-import { UserPlus } from 'react-feather';
-import ConfirmationModal from '../components/confirmation-modal';
-import ItemMenu from '../components/item-menu';
-import PageHeader from '../components/page-header';
-import StudentEditModal from '../components/student-edit-modal';
-import StudentInviteModal from '../components/student-invite-modal';
-import Table from '../components/table';
-import studentsContext from '../data/students-context';
-import useResourceSummaries from '../hooks/use-resource-summaries';
-import useSearchTerm from '../hooks/use-search-term';
-import useShrinkwrap from '../hooks/use-shrinkwrap'
+import { Avatar, Badge, Title } from '@mantine/core'
+import { useSetState } from '@mantine/hooks'
+import type React from 'react'
+import { useContext, useMemo } from 'react'
+import { UserPlus } from 'react-feather'
+import ConfirmationModal from '../components/confirmation-modal'
+import DataCard from '../components/data-card'
+import ItemMenu from '../components/item-menu'
+import PageHeader from '../components/page-header'
+import StudentEditModal from '../components/student-edit-modal'
+import StudentInviteModal from '../components/student-invite-modal'
+import Table from '../components/table'
+import studentsContext from '../data/students-context'
+import useResourceSummaries from '../hooks/use-resource-summaries'
+import useSearchTerm from '../hooks/use-search-term'
 
 interface StudentsPageModals {
 	invite?: boolean | undefined
@@ -24,8 +24,7 @@ const StudentsPage: React.FC = () => {
 	const students = useContext(studentsContext)
 	const [modals, setModals] = useSetState<StudentsPageModals>({})
 	const [searchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries } = useResourceSummaries(students)
-	const paperRef = useShrinkwrap<HTMLDivElement>()
+	const { summaries, loading } = useResourceSummaries(students)
 
 	const filteredStudents = useMemo(() => {
 		if (!summaries) return []
@@ -41,7 +40,7 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
 			/>
 
-			<Paper ref={paperRef} shadow='md' withBorder>
+			<DataCard loading={loading}>
 				<Table
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
@@ -70,7 +69,7 @@ const StudentsPage: React.FC = () => {
 					}))}
 					itemPadding={4}
 				/>
-			</Paper>
+			</DataCard>
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
 
@@ -95,4 +94,4 @@ const StudentsPage: React.FC = () => {
 	)
 }
 
-export default StudentsPage;
+export default StudentsPage
