@@ -1,8 +1,7 @@
-import { TextInput } from '@mantine/core';
-import { useNotifications } from '@mantine/notifications';
-import React, { useRef, useState } from 'react';
+import { Modal, TextInput, Title } from '@mantine/core'
+import { useNotifications } from '@mantine/notifications'
+import React, { useRef, useState } from 'react'
 import validateEmail from '../utils/validate-email'
-import Modal from './modal'
 import ModalActions from './modal-actions'
 
 export interface StudentInviteFormProps {
@@ -41,7 +40,7 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 	}
 
 	return (
-		<Modal opened={open} onClose={onClose} title='Invite A Student'>
+		<Modal opened={open} onClose={onClose} title={<Title order={3}>Invite A Student</Title>}>
 			<TextInput
 				type='email'
 				placeholder='Email'
@@ -60,4 +59,4 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 	)
 }
 
-export default StudentInviteForm;
+export default StudentInviteForm

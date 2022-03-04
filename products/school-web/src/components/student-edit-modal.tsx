@@ -1,58 +1,57 @@
-import { LoadingOverlay, MultiSelect, SelectItem } from '@mantine/core';
-import { useForm } from '@mantine/hooks';
-import type React from 'react';
-import { useContext, useEffect, useMemo } from 'react';
-import membershipsContext from '../data/memberships-context';
-import studentsContext, { type Student } from '../data/students-context';
-import useAsyncAction from '../hooks/use-async-action';
-import usePromise from '../hooks/use-promise';
-import Modal from './modal';
-import ModalActions from './modal-actions';
+import { LoadingOverlay, Modal, MultiSelect, SelectItem, Title } from '@mantine/core'
+import { useForm } from '@mantine/hooks'
+import type React from 'react'
+import { useContext, useEffect, useMemo } from 'react'
+import membershipsContext from '../data/memberships-context'
+import studentsContext, { type Student } from '../data/students-context'
+import useAsyncAction from '../hooks/use-async-action'
+import usePromise from '../hooks/use-promise'
+import ModalActions from './modal-actions'
 
-type StudentData = Omit<Student, 'id'>;
+type StudentData = Omit<Student, 'id'>
 
 export interface StudentEditModalProps {
-	studentId: string;
-	onClose?: VoidFunction;
+	studentId: string
+	onClose?: VoidFunction
 }
 
 const StudentEditModal: React.FC<StudentEditModalProps> = ({ studentId, onClose }) => {
-	const studentsSrc = useContext(studentsContext);
-	const membershipsSrc = useContext(membershipsContext);
+	const studentsSrc = useContext(studentsContext)
+	const membershipsSrc = useContext(membershipsContext)
 	const membershipOptions: SelectItem[] = useMemo(() => {
-		const { summaries } = membershipsSrc;
-		if (!summaries) return [];
-		return summaries?.map(({ id, name }) => ({ value: id, label: name }));
-	}, [membershipsSrc.summaries]);
+		const { summaries } = membershipsSrc
+		if (!summaries) return []
+		return summaries?.map(({ id, name }) => ({ value: id, label: name }))
+	}, [membershipsSrc.summaries])
 
-	const initialValues: StudentData = { memberships: [] };
-	const form = useForm<StudentData>({ initialValues });
+	const initialValues: StudentData = { memberships: [] }
+	const form = useForm<StudentData>({ initialValues })
 
 	const { loading, error, value } = usePromise(
 		async () => Promise.all([membershipsSrc.getSummaries(), studentsSrc.get(studentId)]),
 		[studentId]
-	);
+	)
 
-	const [_, student] = value ? value : [undefined, undefined];
+	const [_, student] = value ? value : [undefined, undefined]
 
 	useEffect(() => {
-		student && form.setValues(student);
-	}, [student]);
+		student && form.setValues(student)
+	}, [student])
 
 	const onSave = async () => {
-		onClose && onClose();
+		onClose && onClose()
 
 		if (studentId) {
-			await studentsSrc.update(studentId, form.values);
+			await studentsSrc.update(studentId, form.values)
 		} else {
-			await studentsSrc.create(form.values);
+			await studentsSrc.create(form.values)
 		}
-	};
+	}
 
-	const handleSave = useAsyncAction(onSave, 'update', 'Student Name');
+	const handleSave = useAsyncAction(onSave, 'update', 'Student Name')
 
 	return (
-		<Modal onClose={onClose ?? (() => {})} title='Student Name' opened>
+		<Modal onClose={onClose ?? (() => {})} title={<Title order={3}>Student Name</Title>} opened>
 			<LoadingOverlay visible={loading} radius='sm' />
 			<MultiSelect
 				label='Memberships'
@@ -67,7 +66,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({ studentId, onClose 
 				secondaryLabel='Cancel'
 			/>
 		</Modal>
-	);
-};
+	)
+}
 
-export default StudentEditModal;
+export default StudentEditModal

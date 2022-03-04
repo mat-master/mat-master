@@ -1,13 +1,13 @@
-import type React from 'react';
-import useAsyncAction, { ActionType } from '../hooks/use-async-action';
-import Modal from './modal';
-import ModalActions from './modal-actions';
+import { Modal, Title } from '@mantine/core'
+import type React from 'react'
+import useAsyncAction, { ActionType } from '../hooks/use-async-action'
+import ModalActions from './modal-actions'
 
 export interface ConfirmationModalProps {
-	onClose: VoidFunction;
-	resourceLabel: string;
-	actionType: ActionType;
-	action: () => void | Promise<void>;
+	onClose: VoidFunction
+	resourceLabel: string
+	actionType: ActionType
+	action: () => void | Promise<void>
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -17,15 +17,17 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	action,
 }) => {
 	const onConfirmation = async () => {
-		onClose();
-		await action();
-	};
+		onClose()
+		await action()
+	}
 
-	const handleConfirmation = useAsyncAction(onConfirmation, actionType, resourceLabel);
+	const handleConfirmation = useAsyncAction(onConfirmation, actionType, resourceLabel)
 
 	return (
 		<Modal
-			title={`Are you sure you want to ${actionType} ${resourceLabel}?`}
+			title={
+				<Title order={3}>{`Are you sure you want to ${actionType} ${resourceLabel}?`}</Title>
+			}
 			onClose={onClose}
 			opened
 		>
@@ -36,7 +38,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 				secondaryLabel='Cancel'
 			/>
 		</Modal>
-	);
-};
+	)
+}
 
-export default ConfirmationModal;
+export default ConfirmationModal
