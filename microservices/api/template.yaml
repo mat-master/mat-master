@@ -11,22 +11,29 @@ Globals:
     Layers: 
       - !Ref ApiLayer
     Timeout: 5
+    MemorySize: 256
     Runtime: nodejs14.x
     CodeUri: ./
     Environment:
       Variables:
-        PGHOST:
-        PGPORT:
-        PGDATABASE:
-        PGUSER:
-        PGPASSWORD:
-        JWTPRIVATE:
+        PG_HOST:
+        PG_PORT:
+        PG_DATABASE:
+        PG_USER:
+        PG_PASSWORD:
+        JWT_SECRET:
+        STRIPE_SECRET_KEY:
 
 Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
       Name: backend
+      StageName: dev
+  Webhooks:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: backend-webhooks
       StageName: dev
   AuthSignupPOST:
     Type: AWS::Serverless::Function
@@ -93,6 +100,32 @@ Resources:
             Path: /users/{id}/verify
             Method: POST
             RestApiId: !Ref Api
+  SchoolsPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools
+            Method: POST
+            RestApiId: !Ref Api
+  WebhookStripe:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/webhooks/stripe/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /stripe
+            Method: POST
+            RestApiId: !Ref Webhooks
   ApiLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:

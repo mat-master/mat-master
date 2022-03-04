@@ -4,6 +4,7 @@ import validator from 'validator';
 import * as db from '../../../util/db';
 import { generateSnowflake, getLambdaIp } from '../../../util/snowflake';
 import { res200, res400, resError } from '../../../util/res';
+import { Privilege } from '@common/types';
 
 export interface SignupPostBody {
     firstName: string,
@@ -35,7 +36,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     // Hash and salt password, create new user
     const hashed = await bcrypt.hash(password, 5);
-    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege, creation_date) VALUES ($1, $2, $3, $4, $5, 0, DEFAULT)", [generateSnowflake(), firstName, lastName, email, hashed]);
+    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege) VALUES ($1, $2, $3, $4, $5, $6)", [generateSnowflake(), firstName, lastName, email, hashed, Privilege.Unverified]);
     
     return res200();
 };

@@ -4,3 +4,6 @@ export { SignupPostBody } from './auth/signup/POST/index';
 export { VerifyPostBody} from './auth/verify/POST/index';
 
 // Users
+
+// Schools
+export { SchoolPostBody } from './schools/POST/index';

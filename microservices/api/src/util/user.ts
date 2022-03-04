@@ -1,4 +1,4 @@
-import { Privilege, User } from 'types';
+import { Privilege, User } from '@common/types';
 import * as db from './db';
 import * as jwt from 'jsonwebtoken';
 import type { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';
@@ -51,7 +51,7 @@ export const authUser = async (event: APIGatewayProxyEvent): Promise<Payload | A
     return res401("Invalid authorization header");
   const authToken = authHeader.substring(7);
 
-  const payload: jwt.JwtPayload = await jwt.verify(authToken, process.env.JWTPRIVATE as jwt.Secret) as jwt.JwtPayload;
+  const payload: jwt.JwtPayload = await jwt.verify(authToken, process.env.JWT_SECRET as jwt.Secret) as jwt.JwtPayload;
   if(!payload)
     return res401("Invalid authorization token");
 

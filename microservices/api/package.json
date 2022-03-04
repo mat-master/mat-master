@@ -7,7 +7,7 @@
     "build": "tsc --build",
     "watch": "tsc --build -w --preserveWatchOutput",
     "dev-old": "yarn config set nmHoistingLimits 'workspaces' && yarn install && yarn config set nmHoistingLimits 'none' && rm -rf .aws-sam && overmind start",
-    "dev": "yarn install && rm -rf .aws-sam && rm -rf ./node_modules/types && cp -r ../../common/types ./node_modules && overmind start",
+    "dev": "yarn install && rm -rf .aws-sam && rm -rf ./node_modules/@common/ && cp -r ../../common/ ./node_modules/@common && overmind start",
     "aws-build": "sam build",
     "fix": "rm -rf node_modules && yarn config set nmHoistingLimits 'none' && yarn install"
   },
@@ -17,12 +17,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.53.0",
+    "@common/types": "^1.0.0",
     "axios": "^0.26.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
     "stripe": "^8.205.0",
-    "types": "^1.0.0",
     "validator": "^13.7.0"
   },
   "devDependencies": {

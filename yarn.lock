@@ -1089,6 +1089,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@common/types@^1.0.0, @common/types@workspace:common/types":
+  version: 0.0.0-use.local
+  resolution: "@common/types@workspace:common/types"
+  dependencies:
+    typescript: ^4.6.2
+  languageName: unknown
+  linkType: soft
+
 "@emotion/babel-plugin@npm:^11.7.1":
   version: 11.7.2
   resolution: "@emotion/babel-plugin@npm:11.7.2"
@@ -1956,6 +1964,7 @@ __metadata:
   resolution: "api@workspace:microservices/api"
   dependencies:
     "@aws-sdk/client-ses": ^3.53.0
+    "@common/types": ^1.0.0
     "@types/aws-lambda": ^8.10.92
     "@types/axios": ^0.14.0
     "@types/bcryptjs": ^2.4.2
@@ -1967,7 +1976,6 @@ __metadata:
     jsonwebtoken: ^8.5.1
     pg: ^8.7.3
     stripe: ^8.205.0
-    types: ^1.0.0
     typescript: ^4.0.5
     validator: ^13.7.0
   languageName: unknown
@@ -5312,14 +5320,6 @@ __metadata:
   checksum: 4fb3272df21ad1c552486f8a2f8e115c09a521ad7a8db3d56d53718d0c907b62c6e9141ba5f584af3f6830d0872c521357e512381f24f7c44acae583ad517d73
   languageName: node
   linkType: hard
-
-"types@^1.0.0, types@workspace:common/types":
-  version: 0.0.0-use.local
-  resolution: "types@workspace:common/types"
-  dependencies:
-    typescript: ^4.6.2
-  languageName: unknown
-  linkType: soft
 
 "typescript@npm:4.5.5, typescript@npm:^4.0.5, typescript@npm:^4.5.4":
   version: 4.5.5

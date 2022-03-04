@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Privilege } from 'types';
+import { Privilege } from '@common/types';
 import { res400, res200, isResponse, res403 } from '../../../util/res';
 import { authUser, getUser } from '../../../util/user';
 

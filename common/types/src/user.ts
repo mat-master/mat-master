@@ -24,7 +24,7 @@ export enum Privilege {
 	Unverified = 0,
 
 	/** Verified email, normal user */
-	Normal = 1,
+	Verified = 1,
 
 	/** Admin user */
 	Admin = 2

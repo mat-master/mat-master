@@ -14,6 +14,12 @@ build-UsersIdGET:
 build-UsersIdVerifyPOST:
 	$(MAKE) HANDLER=src/users/{id}/verify/POST/index.ts build-lambda-common
 
+build-SchoolsPOST:
+	$(MAKE) HANDLER=src/schools/POST/index.ts build-lambda-common
+
+build-WebhookStripe:
+	$(MAKE) HANDLER=src/webhooks/stripe/index.ts build-lambda-common
+
 build-lambda-common:
 	cd $(shell echo "$(ARTIFACTS_DIR)" | sed 's@/.aws-sam.*@@')
 	rm -rf dist
