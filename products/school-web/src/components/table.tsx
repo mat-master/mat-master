@@ -55,6 +55,9 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		'&:hover': {
 			backgroundColor: theme.colors.gray[0],
 		},
+		'&:last-child': {
+			border: 'none',
+		},
 	},
 	cell: {
 		display: 'inline-block',

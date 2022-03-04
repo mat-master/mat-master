@@ -11,24 +11,24 @@ import Table from '../components/table';
 import classesContext, { type ClassSummary } from '../data/classes-context';
 import useResourceSummaries from '../hooks/use-resource-summaries';
 import useSearchTerm from '../hooks/use-search-term';
+import useShrinkwrap from '../hooks/use-shrinkwrap'
 
 interface ClassesPageModals {
-	edit?: { open: boolean; classId?: string };
-	deleteConfirmation?: string | undefined;
+	edit?: { open: boolean; classId?: string }
+	deleteConfirmation?: string | undefined
 }
 
 const ClassesPage: React.FC = () => {
-	const classes = useContext(classesContext);
-	const [modals, setModals] = useSetState<ClassesPageModals>({});
-	const [searchTerm, setSearchTerm] = useSearchTerm();
-	const { summaries } = useResourceSummaries(classes);
+	const classes = useContext(classesContext)
+	const [modals, setModals] = useSetState<ClassesPageModals>({})
+	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const { summaries } = useResourceSummaries(classes)
+	const paperRef = useShrinkwrap<HTMLDivElement>()
 
 	const filteredClasses = useMemo(() => {
-		if (!summaries) return [];
-		return summaries.filter(({ name }) =>
-			name.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-	}, [searchTerm, summaries]);
+		if (!summaries) return []
+		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
+	}, [searchTerm, summaries])
 
 	return (
 		<>
@@ -44,7 +44,7 @@ const ClassesPage: React.FC = () => {
 				]}
 			/>
 
-			<Paper shadow='md' withBorder>
+			<Paper ref={paperRef} shadow='md' withBorder>
 				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
@@ -95,7 +95,7 @@ const ClassesPage: React.FC = () => {
 				/>
 			)}
 		</>
-	);
-};
+	)
+}
 
 export default ClassesPage;
