@@ -48,7 +48,7 @@ const MembershipsPage: React.FC = () => {
 						{ key: 'price', name: 'Price', width: 1 },
 						{ key: 'menu', name: '', width: 0.5 },
 					]}
-					items={filteredMemberships.map(({ name, classes, studentAvatars, price }) => ({
+					items={filteredMemberships.map(({ id, name, classes, studentAvatars, price }) => ({
 						data: {
 							name: <Title order={6}>{name}</Title>,
 							classes: classes.join(', '),
@@ -60,7 +60,7 @@ const MembershipsPage: React.FC = () => {
 								</AvatarsGroup>
 							),
 							price: `$${price} / mo.`,
-							menu: <ItemMenu />,
+							menu: <ItemMenu onEdit={() => setModals({ edit: { open: true, id } })} />,
 						},
 					}))}
 					itemPadding={4}
@@ -69,6 +69,7 @@ const MembershipsPage: React.FC = () => {
 
 			<MembershipEditModal
 				open={!!modals.edit && modals.edit.open}
+				membershipId={modals.edit?.id}
 				onClose={() => setModals({ edit: { open: false } })}
 			/>
 		</>

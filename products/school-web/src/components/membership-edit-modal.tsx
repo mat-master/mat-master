@@ -1,14 +1,25 @@
-import { Group, Modal, MultiSelect, NumberInput, Select, TextInput, Title } from '@mantine/core'
+import {
+	Group,
+	LoadingOverlay,
+	Modal,
+	MultiSelect,
+	NumberInput,
+	Select,
+	TextInput,
+	Title,
+} from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
 import { useFormik } from 'formik'
 import type React from 'react'
 import { useContext } from 'react'
 import { DollarSign } from 'react-feather'
 import * as yup from 'yup'
+import classesContext from '../data/classes-context'
 import type { Membership } from '../data/memberships-context'
 import membershipsContext from '../data/memberships-context'
 import type { ResourceData } from '../data/resource-provider'
-import getErrorMessage, { MappedErrors } from '../utils/get-error-message'
+import usePromise from '../hooks/use-promise'
+import getErrorMessage from '../utils/get-error-message'
 import ModalActions from './modal-actions'
 
 export interface MembershipEditModalProps {
@@ -29,19 +40,15 @@ const membershipSchema: yup.SchemaOf<MembershipData> = yup.object({
 	price: yup.number().min(0).required('Required'),
 })
 
-const membershipErrorSchema: yup.SchemaOf<MappedErrors<MembershipData>> = yup.object({
-	name: yup.string().notRequired(),
-	classes: yup.array().of(yup.string()).notRequired(),
-	price: yup.string().notRequired(),
-})
-
 const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 	open,
 	onClose,
 	membershipId,
 }) => {
-	const membershipCtx = useContext(membershipsContext)
+	const membershipsSrc = useContext(membershipsContext)
+	const classesSrc = useContext(classesContext)
 	const notifications = useNotifications()
+
 	const form = useFormik<MembershipData>({
 		initialValues: { name: '', classes: [], price: 0 },
 		validateOnBlur: false,
@@ -59,8 +66,8 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 			form.resetForm()
 
 			try {
-				if (membershipId) await membershipCtx.update(membershipId, values)
-				if (!membershipId) await membershipCtx.create(values)
+				if (membershipId) await membershipsSrc.update(membershipId, values)
+				if (!membershipId) await membershipsSrc.create(values)
 
 				notifications.updateNotification(notificationId, {
 					id: notificationId,
@@ -80,6 +87,17 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 		},
 	})
 
+	const { loading: classesLoading, value: classOptions } = usePromise(async () => {
+		const summaries = await classesSrc.getSummaries()
+		return summaries.map(({ id, name }) => ({ value: id, label: name }))
+	}, [classesSrc.summaries])
+
+	const { loading: membershipLoading } = usePromise(async () => {
+		if (!membershipId) return
+		const membership = await membershipsSrc.get(membershipId)
+		form.setValues(membership)
+	}, [membershipId])
+
 	const handleClose = () => {
 		form.resetForm()
 		onClose()
@@ -87,6 +105,8 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 
 	return (
 		<Modal opened={open} onClose={handleClose} title={<Title order={2}>Membership</Title>}>
+			<LoadingOverlay visible={classesLoading || membershipLoading} />
+
 			<form onSubmit={form.handleSubmit}>
 				<Group direction='column' spacing='sm' grow>
 					<TextInput
@@ -101,7 +121,7 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 						id='classes'
 						label='Classes'
 						value={form.values.classes}
-						data={['TaeKwonDo', 'Jiu-Jitsu', 'Kickboxing']}
+						data={classOptions ?? []}
 						onChange={(value) => form.setFieldValue('classes', value)}
 						onBlur={form.handleBlur}
 						error={form.errors.classes}
