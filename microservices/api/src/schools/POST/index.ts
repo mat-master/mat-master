@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Address, Privilege, SCHOOL_TRIAL_PERIOD, Tier } from '@common/types';
+import { Address, Privilege, School, SCHOOL_TRIAL_PERIOD, Tier } from '@common/types';
 import { isResponse, res200, res400, res500 } from '../../util/res';
 import { authUser } from '../../util/user';
 import stripe from '../../util/stripe';
@@ -11,6 +11,12 @@ import { validator } from '@common/util';
 import { validateBody } from '../../util/validation';
 
 export type SchoolPostBody = InferType<typeof validator.schoolCreateSchema>;
+export interface SchoolPostResponse {
+    id: string,
+    name: string,
+    address: Address,
+    tier: Tier
+};
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const body = await validateBody(validator.schoolCreateSchema, event.body);
@@ -75,12 +81,10 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         return res500("Internal server error");
     
 
-    return res200({
-        school: {
+    return res200<SchoolPostResponse>({
             id: schoolId.toString(),
             name: name,
             address: address,
-            tier: Tier.TRIAL,
-        }
-    });
+            tier: Tier.TRIAL
+        });
 }

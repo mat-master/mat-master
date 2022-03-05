@@ -105,6 +105,19 @@ Resources:
             Path: /users/{id}/verify
             Method: POST
             RestApiId: !Ref Api
+  UsersIdInvitesGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/invites/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}/invites
+            Method: GET
+            RestApiId: !Ref Api
   SchoolsPOST:
     Type: AWS::Serverless::Function
     Metadata:

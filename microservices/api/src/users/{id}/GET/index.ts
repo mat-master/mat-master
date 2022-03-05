@@ -1,18 +1,21 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Privilege } from '@common/types';
-import { res400, res200, isResponse, res403 } from '../../../util/res';
+import type { Privilege, User } from '@common/types';
+import { res400, res200, isResponse, res403, Response } from '../../../util/res';
 import { authUser, getUser } from '../../../util/user';
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export type UserGetResponse = User;
+
+export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
   // Auth the requesting user with Bearer token
   const payload = await authUser(event);
   if(isResponse(payload))
     return payload;
 
-  const user = await getUser(event, payload);
+  // Get the user from url
+  const user = await getUser(payload, event);
   if(isResponse(user))
     return user;
 
   // Return the user
-  return res200(user);
+  return res200<UserGetResponse>(user);
 }

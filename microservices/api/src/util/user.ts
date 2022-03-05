@@ -5,7 +5,13 @@ import type { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';
 import { res401, res404, res400, res403 } from './res';
 import type { Payload } from './payload';
 
-export const getUser = async (event: APIGatewayProxyEvent, payload: Payload): Promise<User | APIGatewayProxyResult> => {
+/**
+ * Gets a user by the user id in the path.
+ * @param payload the payload of the requesting user.
+ * @param event the event of the lambda function.
+ * @returns the user object or response if there is an error.
+ */
+export const getUser = async (payload: Payload, event: APIGatewayProxyEvent): Promise<User | APIGatewayProxyResult> => {
   // Check for id in path
   if(!event.pathParameters || !event.pathParameters.id)
     return res400("No id provided");

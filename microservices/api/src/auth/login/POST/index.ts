@@ -11,6 +11,10 @@ import { validateBody } from '../../../util/validation';
 
 export type LoginPostBody = InferType<typeof validator.loginSchema>;
 
+export interface LoginPostResponse {
+    jwt: string;
+}
+
 // Logs in a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const body: LoginPostBody | Response = await validateBody(validator.loginSchema, event.body);
@@ -36,5 +40,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     };
 
     // Create JWT
-    return res200({jwt: jwt.sign(payload, process.env.JWT_SECRET as string)});
+    return res200<LoginPostResponse>({
+        jwt: jwt.sign(payload, process.env.JWT_SECRET as string)
+    });
 };

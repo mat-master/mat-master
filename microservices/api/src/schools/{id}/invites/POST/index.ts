@@ -22,7 +22,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if(isResponse(user))
         return user;
 
-    const school = await getSchoolAuth(user.id, event);
+    const school = await getSchoolAuth(user, event);
     if(isResponse(school))
         return school;
     

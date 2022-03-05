@@ -8,7 +8,7 @@ const responseHeaders =  {
 
 export type Response = APIGatewayProxyResult;
 
-export const res200 = (body: any = null): Response => ({statusCode: 200, headers: responseHeaders, body: body ? JSON.stringify(body) : ""});
+export const res200 = <resType extends any>(body?: resType): Response => ({statusCode: 200, headers: responseHeaders, body: body ? JSON.stringify(body) : ""});
 
 /* Generates a basic error response. */
 export const resError = (statusCode: number, error: string): Response => {
@@ -28,7 +28,7 @@ export const res403 = (error: string): Response => resError(403, error);
 /** Response for resource not found. */
 export const res404 = (error: string): Response => resError(404, error);
 /** Internal server error. */
-export const res500 = (error: string): Response => resError(500, error);
+export const res500 = (error?: string): Response => resError(500, !error ? "Internal server error" : error);
 
 export const isResponse = (res: any): res is Response => {
     return res.statusCode !== undefined && res.body !== undefined;

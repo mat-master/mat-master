@@ -1,6 +1,7 @@
-import type { School } from "@common/types"
+import { Privilege, School } from "@common/types"
 import type { APIGatewayProxyEvent } from "aws-lambda"
 import { query } from "./db";
+import type { Payload } from "./payload";
 import { isResponse, res400, res403, res404, Response } from "./res";
 
 /**
@@ -9,11 +10,11 @@ import { isResponse, res400, res403, res404, Response } from "./res";
  * @param event the request event.
  * @returns the requested school.
  */
-export const getSchoolAuth = async (userId: bigint, event: APIGatewayProxyEvent): Promise<School | Response> => {
+export const getSchoolAuth = async (payload: Payload, event: APIGatewayProxyEvent): Promise<School | Response> => {
     const school = await getSchool(event);
     if(isResponse(school))
         return school;
-    if(school.owner !== userId)
+    if(school.owner !== payload.id && payload.privilege !== Privilege.Admin)
         return res403("You do not have permission to view this school");
     return school;
 }
