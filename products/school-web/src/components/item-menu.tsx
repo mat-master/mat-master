@@ -4,18 +4,16 @@ import {
 	Edit2 as EditIcon,
 	MoreHorizontal as MenuIcon,
 	Trash as DeleteIcon,
-} from 'react-feather';
+} from 'react-feather'
 
 export interface ItemMenuProps {
-	onEdit?: VoidFunction;
-	onDelete?: VoidFunction;
+	onEdit?: VoidFunction
+	onDelete?: VoidFunction
 }
 
 const ItemMenu: React.FC<ItemMenuProps> = ({ onEdit, onDelete }) => {
 	return (
 		<Menu
-			closeOnScroll
-			withinPortal={false}
 			control={
 				<ActionIcon>
 					<MenuIcon size={16} />
@@ -29,7 +27,7 @@ const ItemMenu: React.FC<ItemMenuProps> = ({ onEdit, onDelete }) => {
 				Delete
 			</Menu.Item>
 		</Menu>
-	);
-};
+	)
+}
 
 export default ItemMenu;
