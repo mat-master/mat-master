@@ -11,8 +11,8 @@ const getInputProps = <T>(form: FormHandlers<T>, id: keyof T) => {
 	const error = form.errors[id]
 
 	const onChange = (e: React.ChangeEvent<any>) => {
-		if (error) form.validateField(id)
 		form.handleChange(e)
+		if (error) form.validateField(id)
 	}
 
 	const onBlur = (e: React.FocusEvent) => {

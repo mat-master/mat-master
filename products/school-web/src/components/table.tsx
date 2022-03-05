@@ -62,15 +62,18 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 	cell: {
 		display: 'inline-block',
 		textAlign: 'left',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		whiteSpace: 'nowrap',
 	},
 }))
 
 const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
-	const { classes } = useStyles({ itemPadding });
-	const navigate = useNavigate();
+	const { classes } = useStyles({ itemPadding })
+	const navigate = useNavigate()
 
-	const totalColumnWidth = columns.reduce((sum, { width = 1 }) => sum + width, 0);
-	const columnWidths = columns.map(({ width = 1 }) => `${(width / totalColumnWidth) * 100}%`);
+	const totalColumnWidth = columns.reduce((sum, { width = 1 }) => sum + width, 0)
+	const columnWidths = columns.map(({ width = 1 }) => `${(width / totalColumnWidth) * 100}%`)
 
 	return (
 		<table className={classes.root}>
@@ -97,21 +100,21 @@ const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TablePr
 							const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
 								key: key,
 								className: classes.cell,
-								style: { width: columnWidths[i] },
+								style: { width: columnWidths[i], maxWidth: columnWidths[i] },
 								children: item.data[key] ?? defaultElement,
-							};
+							}
 
 							return typeof props.children === 'string' ? (
 								<Text component='td' {...props} />
 							) : (
 								<td {...props} />
-							);
+							)
 						})}
 					</tr>
 				))}
 			</tbody>
 		</table>
-	);
-};
+	)
+}
 
 export default Table;

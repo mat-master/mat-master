@@ -8,7 +8,7 @@ import AuthProvider from './data/auth-provider';
 import ResourcesProvider from './data/resources-provider';
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-	axios.defaults.baseURL = 'http://127.0.0.1:3030'
+	axios.defaults.baseURL = `http://${window.location.hostname}:3030`
 } else {
 	axios.defaults.baseURL = 'https://api.matmaster.app';
 }

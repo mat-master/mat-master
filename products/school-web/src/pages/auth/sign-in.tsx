@@ -14,17 +14,15 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { authContext, SignInData } from '../../data/auth-provider'
-import getErrorMessage from '../../utils/get-error-message'
+import getErrorMessage, { MappedErrors } from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
-
-type SignInErrors = { [_ in keyof SignInData]?: string | undefined }
 
 const signInSchema: yup.SchemaOf<SignInData> = yup.object({
 	email: yup.string().email('Invalid email').required('Required'),
 	password: yup.string().min(6, 'Minimum of 6 characters').required('Required'),
 })
 
-const signInErrorSchema: yup.SchemaOf<SignInErrors> = yup.object({
+const signInErrorSchema: yup.SchemaOf<MappedErrors<SignInData>> = yup.object({
 	email: yup.string().notRequired(),
 	password: yup.string().notRequired(),
 })
@@ -35,19 +33,17 @@ const SignInPage: React.FC = ({}) => {
 
 	const [globalError, setGlobalError] = useState<string>()
 	const form = useFormik<SignInData>({
-		initialValues: {
-			email: '',
-			password: '',
-		},
+		initialValues: { email: '', password: '' },
 		validateOnBlur: false,
 		validateOnChange: false,
 		validationSchema: signInSchema,
 		onSubmit: async (values) => {
 			try {
+				setGlobalError(undefined)
 				await auth.signin(values)
 				navigate('/')
 			} catch (error) {
-				const message = await getErrorMessage<SignInErrors>(error, signInErrorSchema)
+				const message = await getErrorMessage<SignInData>(error, signInErrorSchema)
 				if (typeof message === 'string') {
 					setGlobalError(message)
 				} else {
@@ -65,13 +61,14 @@ const SignInPage: React.FC = ({}) => {
 						<Title order={2}>Sign in</Title>
 
 						<TextInput
-							type='email'
 							label='Email'
 							style={{ width: '36ch' }}
 							{...getInputProps(form, 'email')}
 						/>
 						<PasswordInput label='Password' {...getInputProps(form, 'password')} />
-						<Button type='submit'>Sign In</Button>
+						<Button type='submit' loading={form.isSubmitting}>
+							Sign In
+						</Button>
 
 						{globalError && (
 							<Text align='center' color='red'>
