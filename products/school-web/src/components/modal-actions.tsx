@@ -2,10 +2,10 @@ import { Button, Group } from '@mantine/core';
 import type React from 'react';
 
 export interface ModalActionsProps {
-	primaryAction: VoidFunction;
-	primaryLabel: React.ReactNode;
-	secondaryAction?: VoidFunction;
-	secondaryLabel?: React.ReactNode;
+	primaryLabel: React.ReactNode
+	primaryAction?: VoidFunction
+	secondaryLabel?: React.ReactNode
+	secondaryAction?: VoidFunction
 }
 
 const ModalActions: React.FC<ModalActionsProps> = ({
@@ -14,14 +14,16 @@ const ModalActions: React.FC<ModalActionsProps> = ({
 	secondaryAction,
 	secondaryLabel,
 }) => (
-	<Group position='right' mt='sm' style={{ width: '100%' }}>
+	<Group mt='sm' style={{ width: '100%' }} grow>
 		{secondaryAction && (
 			<Button variant='outline' onClick={secondaryAction}>
 				{secondaryLabel}
 			</Button>
 		)}
 
-		<Button onClick={primaryAction}>{primaryLabel}</Button>
+		<Button type={primaryAction ? 'button' : 'submit'} onClick={primaryAction}>
+			{primaryLabel}
+		</Button>
 	</Group>
 )
 

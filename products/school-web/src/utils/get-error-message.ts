@@ -1,12 +1,14 @@
 import type { SchemaOf } from 'yup'
 
-const getErrorMessage = async <T>(error: unknown, schema?: SchemaOf<T>) => {
+export type MappedErrors<T> = { [_ in keyof T]?: string }
+
+const getErrorMessage = async <T>(error: unknown, schema?: SchemaOf<MappedErrors<T>>) => {
 	if (typeof error === 'string') {
 		return error
 	} else if (error instanceof Error) {
 		return error.message
 	} else if (schema && (await schema.validate(error))) {
-		return error as T
+		return error as MappedErrors<T>
 	} else {
 		return 'An unknown error ocurred'
 	}
