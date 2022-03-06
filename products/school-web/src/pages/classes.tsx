@@ -76,16 +76,14 @@ const ClassesPage: React.FC = () => {
 				/>
 			</DataCard>
 
-			{modals.edit?.open && (
-				<ClassEditModal
-					classId={modals.edit.classId}
-					onClose={() => setModals({ edit: undefined })}
-				/>
-			)}
+			<ClassEditModal
+				open={!!modals.edit?.open}
+				classId={modals.edit?.classId}
+				onClose={() => setModals({ edit: undefined })}
+			/>
 
 			{modals.deleteConfirmation && (
 				<ConfirmationModal
-					actionType='delete'
 					resourceLabel={
 						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
 					}

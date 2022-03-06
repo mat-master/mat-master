@@ -1,70 +1,79 @@
-import { LoadingOverlay, Modal, MultiSelect, SelectItem, Title } from '@mantine/core'
-import { useForm } from '@mantine/hooks'
+import { Group, LoadingOverlay, Modal, MultiSelect, Title } from '@mantine/core'
+import { useNotifications } from '@mantine/notifications'
+import { useFormik } from 'formik'
 import type React from 'react'
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext } from 'react'
+import * as yup from 'yup'
 import membershipsContext from '../data/memberships-context'
+import type { ResourceData } from '../data/resource-provider'
 import studentsContext, { type Student } from '../data/students-context'
-import useAsyncAction from '../hooks/use-async-action'
 import usePromise from '../hooks/use-promise'
+import setRemoteResource from '../utils/set-remote-resource'
 import ModalActions from './modal-actions'
 
-type StudentData = Omit<Student, 'id'>
-
 export interface StudentEditModalProps {
-	studentId: string
-	onClose?: VoidFunction
+	open: boolean
+	onClose: VoidFunction
+	studentId?: string
 }
 
-const StudentEditModal: React.FC<StudentEditModalProps> = ({ studentId, onClose }) => {
+type StudentData = ResourceData<Student>
+
+const studentSchema: yup.SchemaOf<StudentData> = yup.object({
+	memberships: yup.array().of(yup.string().required()).required(),
+})
+
+const StudentEditModal: React.FC<StudentEditModalProps> = ({ open, studentId, onClose }) => {
 	const studentsSrc = useContext(studentsContext)
 	const membershipsSrc = useContext(membershipsContext)
-	const membershipOptions: SelectItem[] = useMemo(() => {
-		const { summaries } = membershipsSrc
-		if (!summaries) return []
-		return summaries?.map(({ id, name }) => ({ value: id, label: name }))
+	const notifications = useNotifications()
+
+	const form = useFormik<StudentData>({
+		initialValues: { memberships: [] },
+		validateOnBlur: false,
+		validateOnChange: false,
+		validationSchema: studentSchema,
+		onSubmit: (values) => {
+			onClose()
+			form.resetForm()
+			setRemoteResource(studentsSrc, values, {
+				id: studentId,
+				resourceLabel: 'Student',
+				notifications,
+			})
+		},
+	})
+
+	const { loading: membershipsLoading, value: membershipOptions } = usePromise(async () => {
+		const summaries = await membershipsSrc.getSummaries()
+		return summaries.map(({ id, name }) => ({ value: id, label: name }))
 	}, [membershipsSrc.summaries])
 
-	const initialValues: StudentData = { memberships: [] }
-	const form = useForm<StudentData>({ initialValues })
-
-	const { loading, error, value } = usePromise(
-		async () => Promise.all([membershipsSrc.getSummaries(), studentsSrc.get(studentId)]),
-		[studentId]
-	)
-
-	const [_, student] = value ? value : [undefined, undefined]
-
-	useEffect(() => {
-		student && form.setValues(student)
-	}, [student])
-
-	const onSave = async () => {
-		onClose && onClose()
-
-		if (studentId) {
-			await studentsSrc.update(studentId, form.values)
-		} else {
-			await studentsSrc.create(form.values)
-		}
-	}
-
-	const handleSave = useAsyncAction(onSave, 'update', 'Student Name')
+	const { loading: studentLoading, value: student } = usePromise(async () => {
+		if (!studentId) return form.resetForm()
+		const student = await studentsSrc.get(studentId)
+		form.setValues(student)
+	}, [studentId])
 
 	return (
-		<Modal onClose={onClose ?? (() => {})} title={<Title order={3}>Student Name</Title>} opened>
-			<LoadingOverlay visible={loading} radius='sm' />
-			<MultiSelect
-				label='Memberships'
-				data={membershipOptions}
-				{...form.getInputProps('memberships')}
-			/>
+		<Modal opened={open} onClose={onClose} title={<Title order={3}>Student Name</Title>}>
+			<LoadingOverlay visible={membershipsLoading || studentLoading} radius='sm' />
 
-			<ModalActions
-				primaryAction={handleSave}
-				primaryLabel='Save'
-				secondaryAction={onClose}
-				secondaryLabel='Cancel'
-			/>
+			<form onSubmit={form.handleSubmit}>
+				<Group direction='column' spacing='sm' grow>
+					<MultiSelect
+						id='memberships'
+						label='Memberships'
+						value={form.values.memberships}
+						data={membershipOptions ?? []}
+						onChange={(value) => form.setFieldValue('memberships', value)}
+						onBlur={form.handleBlur}
+						error={form.errors.memberships}
+					/>
+				</Group>
+
+				<ModalActions primaryLabel='Save' secondaryAction={onClose} secondaryLabel='Cancel' />
+			</form>
 		</Modal>
 	)
 }

@@ -73,16 +73,13 @@ const StudentsPage: React.FC = () => {
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
 
-			{modals.edit && (
-				<StudentEditModal
-					studentId={modals.edit}
-					onClose={() => setModals({ edit: undefined })}
-				/>
-			)}
-
+			<StudentEditModal
+				open={!!modals.edit}
+				studentId={modals.edit}
+				onClose={() => setModals({ edit: undefined })}
+			/>
 			{modals.deleteConfirmation && (
 				<ConfirmationModal
-					actionType='delete'
 					resourceLabel={
 						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
 					}

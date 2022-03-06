@@ -19,7 +19,7 @@ import type { Membership } from '../data/memberships-context'
 import membershipsContext from '../data/memberships-context'
 import type { ResourceData } from '../data/resource-provider'
 import usePromise from '../hooks/use-promise'
-import getErrorMessage from '../utils/get-error-message'
+import setRemoteResource from '../utils/set-remote-resource'
 import ModalActions from './modal-actions'
 
 export interface MembershipEditModalProps {
@@ -55,35 +55,13 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 		validateOnChange: false,
 		validationSchema: membershipSchema,
 		onSubmit: async (values) => {
-			const notificationId = notifications.showNotification({
-				message: `${membershipId ? 'Updating' : 'Creating'} ${values.name}`,
-				loading: true,
-				autoClose: false,
-				disallowClose: true,
-			})
-
 			onClose()
 			form.resetForm()
-
-			try {
-				if (membershipId) await membershipsSrc.update(membershipId, values)
-				if (!membershipId) await membershipsSrc.create(values)
-
-				notifications.updateNotification(notificationId, {
-					id: notificationId,
-					message: `${membershipId ? 'Updated' : 'Created'} ${values.name}`,
-				})
-			} catch (error) {
-				let message = await getErrorMessage(error)
-				if (typeof message !== 'string') message = 'An unkown error Ocurred'
-
-				notifications.updateNotification(notificationId, {
-					id: notificationId,
-					title: `Error ${membershipId ? 'updating' : 'creating'} ${values.name}`,
-					color: 'red',
-					message,
-				})
-			}
+			setRemoteResource(membershipsSrc, values, {
+				id: membershipId,
+				resourceLabel: values.name,
+				notifications,
+			})
 		},
 	})
 
@@ -93,19 +71,14 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 	}, [classesSrc.summaries])
 
 	const { loading: membershipLoading } = usePromise(async () => {
-		if (!membershipId) return
+		if (!membershipId) return form.resetForm()
 		const membership = await membershipsSrc.get(membershipId)
 		form.setValues(membership)
 	}, [membershipId])
 
-	const handleClose = () => {
-		form.resetForm()
-		onClose()
-	}
-
 	return (
-		<Modal opened={open} onClose={handleClose} title={<Title order={2}>Membership</Title>}>
-			<LoadingOverlay visible={classesLoading || membershipLoading} />
+		<Modal opened={open} onClose={onClose} title={<Title order={3}>Membership</Title>}>
+			<LoadingOverlay visible={classesLoading || membershipLoading} radius='sm' />
 
 			<form onSubmit={form.handleSubmit}>
 				<Group direction='column' spacing='sm' grow>
@@ -143,11 +116,7 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 					/>
 				</Group>
 
-				<ModalActions
-					primaryLabel='Save'
-					secondaryAction={handleClose}
-					secondaryLabel='Cancel'
-				/>
+				<ModalActions primaryLabel='Save' secondaryAction={onClose} secondaryLabel='Cancel' />
 			</form>
 		</Modal>
 	)

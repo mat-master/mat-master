@@ -1,17 +1,25 @@
-import type { ClassTime } from '../components/class-time-input';
-import { createResourceContext, RemoteResource } from './resource-provider';
+import * as yup from 'yup'
+import { ClassTime, classTimeSchema } from '../components/class-time-input'
+import { createResourceContext, RemoteResource } from './resource-provider'
 
 export interface Class extends RemoteResource {
-	name: string;
-	memberships: string[];
-	schedule: (ClassTime | null)[];
+	name: string
+	memberships: string[]
+	schedule: (ClassTime | null)[]
 }
 
+export const classSchema: yup.SchemaOf<Class> = yup.object({
+	id: yup.string().required(),
+	name: yup.string().required('Required'),
+	memberships: yup.array(yup.string().required()).required('Required'),
+	schedule: yup.array().of(classTimeSchema.nullable()),
+})
+
 export interface ClassSummary extends RemoteResource {
-	name: string;
-	studentAvatars: Array<string | undefined>;
-	memberships: Array<string>;
-	schedule: string;
+	name: string
+	studentAvatars: Array<string | undefined>
+	memberships: Array<string>
+	schedule: string
 }
 
 export const testClasses = Array<Class>(6).fill({
@@ -22,7 +30,7 @@ export const testClasses = Array<Class>(6).fill({
 		{ schedule: '0 18 * * 1', duration: 60 },
 		{ schedule: '0 18 * * 3', duration: 60 },
 	],
-});
+})
 
 export const testClassSummaries = Array<ClassSummary>(6).fill({
 	id: '483hfewi',
@@ -30,8 +38,8 @@ export const testClassSummaries = Array<ClassSummary>(6).fill({
 	memberships: Array(3).fill('Basic'),
 	schedule: '2 classes per week',
 	studentAvatars: Array(6).fill(undefined),
-});
+})
 
-const classesContext = createResourceContext<Class, ClassSummary>();
+const classesContext = createResourceContext<Class, ClassSummary>()
 
-export default classesContext;
+export default classesContext
