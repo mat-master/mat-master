@@ -14,6 +14,7 @@ import Table from '../components/table'
 import studentsContext from '../data/students-context'
 import useResourceSummaries from '../hooks/use-resource-summaries'
 import useSearchTerm from '../hooks/use-search-term'
+import { getStatusColor } from '../utils/get-colors'
 import setRemoteResource from '../utils/set-remote-resource'
 
 interface StudentsPageModals {
@@ -60,7 +61,7 @@ const StudentsPage: React.FC = () => {
 							avatarUrl: <Avatar radius='xl' />,
 							name: <Title order={6}>{student.name}</Title>,
 							status: (
-								<Badge variant='outline' color='green'>
+								<Badge variant='outline' color={getStatusColor(student.activityStatus)}>
 									{student.activityStatus}
 								</Badge>
 							),
