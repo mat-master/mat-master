@@ -20,6 +20,8 @@ build-SchoolsPOST:
 	$(MAKE) HANDLER=src/schools/POST/index.ts build-lambda-common
 build-SchoolsIdInvitesPOST:
 	$(MAKE) HANDLER=src/schools/{id}/invites/POST/index.ts build-lambda-common
+build-SchoolsIdJoinPOST:
+	$(MAKE) HANDLER=src/schools/{id}/join/POST/index.ts build-lambda-common
 
 build-WebhookStripe:
 	$(MAKE) HANDLER=src/webhooks/stripe/index.ts build-lambda-common

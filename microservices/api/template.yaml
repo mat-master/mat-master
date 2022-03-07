@@ -144,6 +144,19 @@ Resources:
             Path: /schools/{id}/invites
             Method: POST
             RestApiId: !Ref Api
+  SchoolsIdJoinPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/join/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/join
+            Method: POST
+            RestApiId: !Ref Api
   WebhookStripe:
     Type: AWS::Serverless::Function
     Metadata:
