@@ -1,8 +1,10 @@
 import { Avatar, AvatarsGroup, Title } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
+import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { Plus as PlusIcon } from 'react-feather'
+import ConfirmationModal from '../components/confirmation-modal'
 import DataCard from '../components/data-card'
 import ItemMenu from '../components/item-menu'
 import MembershipEditModal from '../components/membership-edit-modal'
@@ -11,22 +13,29 @@ import Table from '../components/table'
 import membershipsContext from '../data/memberships-context'
 import useResourceSummaries from '../hooks/use-resource-summaries'
 import useSearchTerm from '../hooks/use-search-term'
+import setRemoteResource from '../utils/set-remote-resource'
 
 interface MembershipModals {
 	edit?: { open: boolean; id?: string }
+	deleteConfirmation?: string
 }
 
 const MembershipsPage: React.FC = () => {
-	const memberships = useContext(membershipsContext)
+	const membershipsSrc = useContext(membershipsContext)
 	const [searchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(memberships)
+	const { summaries, loading } = useResourceSummaries(membershipsSrc)
 	const [modals, setModals] = useSetState<MembershipModals>({})
+	const notifications = useNotifications()
 
 	const filteredMemberships = useMemo(() => {
 		console.log('re-filtering')
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
 	}, [searchTerm])
+
+	const deleteName =
+		membershipsSrc.summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ??
+		'membership'
 
 	return (
 		<>
@@ -60,7 +69,12 @@ const MembershipsPage: React.FC = () => {
 								</AvatarsGroup>
 							),
 							price: `$${price} / mo.`,
-							menu: <ItemMenu onEdit={() => setModals({ edit: { open: true, id } })} />,
+							menu: (
+								<ItemMenu
+									onEdit={() => setModals({ edit: { open: true, id } })}
+									onDelete={() => setModals({ deleteConfirmation: id })}
+								/>
+							),
 						},
 					}))}
 					itemPadding={4}
@@ -68,9 +82,22 @@ const MembershipsPage: React.FC = () => {
 			</DataCard>
 
 			<MembershipEditModal
-				open={!!modals.edit && modals.edit.open}
+				open={!!modals.edit?.open}
 				membershipId={modals.edit?.id}
 				onClose={() => setModals({ edit: { open: false } })}
+			/>
+			<ConfirmationModal
+				open={!!modals.deleteConfirmation}
+				actionType='delete'
+				resourceLabel={deleteName}
+				action={() =>
+					setRemoteResource(membershipsSrc, {
+						id: modals.deleteConfirmation,
+						resourceLabel: deleteName,
+						notifications,
+					})
+				}
+				onClose={() => setModals({ deleteConfirmation: undefined })}
 			/>
 		</>
 	)

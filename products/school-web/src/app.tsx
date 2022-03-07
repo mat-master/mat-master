@@ -12,18 +12,18 @@ import StudentsPage from './pages/students'
 const App: React.FC = () => (
 	<BrowserRouter>
 		<Routes>
-			<Route path='/' element={<Layout />}>
-				<Route index element={<DashboardPage />} />
-				<Route path='/students' element={<StudentsPage />} />
-				<Route path='/classes' element={<ClassesPage />} />
-				<Route path='/memberships' element={<MembershipsPage />} />
-				<Route path='/settings' element='Settings' />
-				<Route path='/account' element='Account' />
-			</Route>
-
-			<Route path='/auth'>
+			<Route path='auth'>
 				<Route path='sign-in' element={<SignInPage />} />
 				<Route path='sign-up' element={<SignUpPage />} />
+			</Route>
+
+			<Route path=':school' element={<Layout />}>
+				<Route index element={<DashboardPage />} />
+				<Route path='students' element={<StudentsPage />} />
+				<Route path='classes' element={<ClassesPage />} />
+				<Route path='memberships' element={<MembershipsPage />} />
+				<Route path='settings' element='Settings' />
+				<Route path='account' element='Account' />
 			</Route>
 
 			<Route path='*' element='404' />

@@ -1,5 +1,6 @@
 import { Avatar, Badge, Title } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
+import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { UserPlus } from 'react-feather'
@@ -13,6 +14,8 @@ import Table from '../components/table'
 import studentsContext from '../data/students-context'
 import useResourceSummaries from '../hooks/use-resource-summaries'
 import useSearchTerm from '../hooks/use-search-term'
+import { getStatusColor } from '../utils/get-colors'
+import setRemoteResource from '../utils/set-remote-resource'
 
 interface StudentsPageModals {
 	invite?: boolean | undefined
@@ -21,15 +24,19 @@ interface StudentsPageModals {
 }
 
 const StudentsPage: React.FC = () => {
-	const students = useContext(studentsContext)
+	const studentsSrc = useContext(studentsContext)
 	const [modals, setModals] = useSetState<StudentsPageModals>({})
 	const [searchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(students)
+	const { summaries, loading } = useResourceSummaries(studentsSrc)
+	const notifications = useNotifications()
 
 	const filteredStudents = useMemo(() => {
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
 	}, [searchTerm, summaries])
+
+	const deleteName =
+		summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'student'
 
 	return (
 		<>
@@ -54,7 +61,7 @@ const StudentsPage: React.FC = () => {
 							avatarUrl: <Avatar radius='xl' />,
 							name: <Title order={6}>{student.name}</Title>,
 							status: (
-								<Badge variant='outline' color='green'>
+								<Badge variant='outline' color={getStatusColor(student.activityStatus)}>
 									{student.activityStatus}
 								</Badge>
 							),
@@ -72,24 +79,24 @@ const StudentsPage: React.FC = () => {
 			</DataCard>
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
-
-			{modals.edit && (
-				<StudentEditModal
-					studentId={modals.edit}
-					onClose={() => setModals({ edit: undefined })}
-				/>
-			)}
-
-			{modals.deleteConfirmation && (
-				<ConfirmationModal
-					actionType='delete'
-					resourceLabel={
-						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
-					}
-					action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
-					onClose={() => setModals({ deleteConfirmation: undefined })}
-				/>
-			)}
+			<StudentEditModal
+				open={!!modals.edit}
+				studentId={modals.edit}
+				onClose={() => setModals({ edit: undefined })}
+			/>
+			<ConfirmationModal
+				open={!!modals.deleteConfirmation}
+				actionType='Delete'
+				resourceLabel={deleteName}
+				action={() =>
+					setRemoteResource(studentsSrc, {
+						id: modals.deleteConfirmation,
+						resourceLabel: deleteName,
+						notifications,
+					})
+				}
+				onClose={() => setModals({ deleteConfirmation: undefined })}
+			/>
 		</>
 	)
 }

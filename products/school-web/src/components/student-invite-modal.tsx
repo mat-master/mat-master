@@ -1,7 +1,7 @@
 import { Modal, TextInput, Title } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
 import React, { useRef, useState } from 'react'
-import validateEmail from '../utils/validate-email'
+import * as yup from 'yup'
 import ModalActions from './modal-actions'
 
 export interface StudentInviteFormProps {
@@ -16,7 +16,7 @@ const StudentInviteForm: React.FC<StudentInviteFormProps> = ({ open, onClose }) 
 
 	const handleSubmit = async () => {
 		const email = emailInputRef.current?.value
-		if (!validateEmail(email)) return setError('Enter a valid email')
+		if (!yup.string().email(email)) return setError('Enter a valid email')
 		setError(undefined)
 		onClose()
 

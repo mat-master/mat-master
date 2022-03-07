@@ -52,7 +52,7 @@ const SideNav: React.FC = () => {
 			})}
 		>
 			<Group direction='column' spacing='sm' mb='auto'>
-				<NavButton label='Dashboard' to='/' icon={<DashboardIcon size={ICON_SIZE} />} />
+				<NavButton label='Dashboard' to='.' icon={<DashboardIcon size={ICON_SIZE} />} />
 				<NavButton label='Students' icon={<StudentsIcon size={ICON_SIZE} />} />
 				<NavButton label='Classes' icon={<ClassesIcon size={ICON_SIZE} />} />
 				<NavButton label='Memberships' icon={<MembershipsIcon size={ICON_SIZE} />} />

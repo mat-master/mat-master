@@ -1,5 +1,6 @@
 import { Avatar, AvatarsGroup, Title } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
+import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { Plus as PlusIcon } from 'react-feather'
@@ -12,6 +13,7 @@ import Table from '../components/table'
 import classesContext, { type ClassSummary } from '../data/classes-context'
 import useResourceSummaries from '../hooks/use-resource-summaries'
 import useSearchTerm from '../hooks/use-search-term'
+import setRemoteResource from '../utils/set-remote-resource'
 
 interface ClassesPageModals {
 	edit?: { open: boolean; classId?: string }
@@ -19,15 +21,19 @@ interface ClassesPageModals {
 }
 
 const ClassesPage: React.FC = () => {
-	const classes = useContext(classesContext)
+	const classesSrc = useContext(classesContext)
 	const [modals, setModals] = useSetState<ClassesPageModals>({})
 	const [searchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(classes)
+	const { summaries, loading } = useResourceSummaries(classesSrc)
+	const notifications = useNotifications()
 
 	const filteredClasses = useMemo(() => {
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
 	}, [searchTerm, summaries])
+
+	const deleteName =
+		summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'class'
 
 	return (
 		<>
@@ -76,23 +82,24 @@ const ClassesPage: React.FC = () => {
 				/>
 			</DataCard>
 
-			{modals.edit?.open && (
-				<ClassEditModal
-					classId={modals.edit.classId}
-					onClose={() => setModals({ edit: undefined })}
-				/>
-			)}
-
-			{modals.deleteConfirmation && (
-				<ConfirmationModal
-					actionType='delete'
-					resourceLabel={
-						summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? ''
-					}
-					action={() => new Promise((resolve) => setTimeout(resolve, 2000))}
-					onClose={() => setModals({ deleteConfirmation: undefined })}
-				/>
-			)}
+			<ClassEditModal
+				open={!!modals.edit?.open}
+				classId={modals.edit?.classId}
+				onClose={() => setModals({ edit: undefined })}
+			/>
+			<ConfirmationModal
+				open={!!modals.deleteConfirmation}
+				actionType='delete'
+				resourceLabel={deleteName}
+				action={() =>
+					setRemoteResource(classesSrc, {
+						id: modals.deleteConfirmation,
+						resourceLabel: deleteName,
+						notifications,
+					})
+				}
+				onClose={() => setModals({ deleteConfirmation: undefined })}
+			/>
 		</>
 	)
 }

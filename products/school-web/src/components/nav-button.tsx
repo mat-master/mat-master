@@ -1,22 +1,22 @@
 import { Button } from '@mantine/core';
 import type React from 'react';
-import { useMatch } from 'react-router';
-import { Link } from 'react-router-dom';
+import { useHref, useMatch } from 'react-router'
+import { Link } from 'react-router-dom'
 
 export interface NavButtonProps {
-	label: string;
-	icon: React.ReactNode;
-	to?: string;
+	label: string
+	icon: React.ReactNode
+	to?: string
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ label, icon, to }) => {
-	to ??= `/${label}`.toLowerCase();
-	const active = !!useMatch(to);
+	const href = useHref(to ?? `./${label.toLowerCase()}`)
+	const active = !!useMatch(href)
 
 	return (
 		<Button
 			component={Link}
-			to={to}
+			to={href}
 			leftIcon={icon}
 			fullWidth
 			color={active ? undefined : 'gray'}
@@ -29,7 +29,7 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon, to }) => {
 		>
 			{label}
 		</Button>
-	);
-};
+	)
+}
 
 export default NavButton;

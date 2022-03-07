@@ -1,9 +1,14 @@
 import { randomId, useListState } from '@mantine/hooks';
 import React, { useCallback, useState } from 'react';
+import * as yup from 'yup'
 
 export interface RemoteResource {
-	id: string;
+	id: string
 }
+
+export const remoteResourceSchema: yup.SchemaOf<RemoteResource> = yup.object({
+	id: yup.string().required('Required'),
+})
 
 export type ResourceData<T extends RemoteResource> = Omit<T, 'id'>
 

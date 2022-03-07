@@ -5,13 +5,19 @@ import dayjs from 'dayjs';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import type React from 'react';
 import { useState } from 'react';
+import * as yup from 'yup'
 
-dayjs.extend(weekdayPlugin);
+dayjs.extend(weekdayPlugin)
 
 export interface ClassTime {
-	schedule: string;
-	duration: number;
+	schedule: string
+	duration: number
 }
+
+export const classTimeSchema: yup.SchemaOf<ClassTime> = yup.object({
+	schedule: yup.string().required('Required'),
+	duration: yup.number().integer().positive().required(),
+})
 
 export interface ClassTimeInputProps {
 	value?: ClassTime;
