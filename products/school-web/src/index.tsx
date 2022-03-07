@@ -6,11 +6,12 @@ import ReactDOM from 'react-dom';
 import App from './app';
 import AuthProvider from './data/auth-provider';
 import ResourcesProvider from './data/resources-provider';
+import SchoolProvider from './data/school-provider'
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
 	axios.defaults.baseURL = `http://${window.location.hostname}:3030`
 } else {
-	axios.defaults.baseURL = 'https://api.matmaster.app';
+	axios.defaults.baseURL = 'https://api.matmaster.app'
 }
 
 ReactDOM.render(
@@ -25,16 +26,18 @@ ReactDOM.render(
 			/>
 
 			<AuthProvider>
-				<NotificationsProvider>
+				<SchoolProvider>
 					<ResourcesProvider>
-						<App />
+						<NotificationsProvider>
+							<App />
+						</NotificationsProvider>
 					</ResourcesProvider>
-				</NotificationsProvider>
+				</SchoolProvider>
 			</AuthProvider>
 		</MantineProvider>
 	</React.StrictMode>,
 	document.getElementById('root')
-);
+)
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
 // Learn more: https://snowpack.dev/concepts/hot-module-replacement
