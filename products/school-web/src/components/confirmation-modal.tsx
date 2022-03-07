@@ -3,30 +3,33 @@ import type React from 'react'
 import ModalActions from './modal-actions'
 
 export interface ConfirmationModalProps {
+	open: boolean
 	onClose: VoidFunction
+	actionType: string
 	resourceLabel: string
 	action: () => void | Promise<void>
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+	open,
 	onClose,
-	resourceLabel,
+	actionType = '',
+	resourceLabel = '',
 	action,
 }) => {
-	const onConfirmation = async () => {
-		onClose()
-		await action()
-	}
-
 	return (
 		<Modal
+			opened={open}
 			title={
 				<Title order={3}>{`Are you sure you want to ${actionType} ${resourceLabel}?`}</Title>
 			}
 			onClose={onClose}
-			opened
 		>
 			<ModalActions
+				primaryAction={async () => {
+					onClose()
+					action()
+				}}
 				primaryLabel={`Yes, ${actionType} ${resourceLabel}`}
 				secondaryAction={onClose}
 				secondaryLabel='Cancel'

@@ -36,8 +36,9 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({ open, studentId, on
 		onSubmit: (values) => {
 			onClose()
 			form.resetForm()
-			setRemoteResource(studentsSrc, values, {
+			setRemoteResource(studentsSrc, {
 				id: studentId,
+				data: values,
 				resourceLabel: 'Student',
 				notifications,
 			})
@@ -49,7 +50,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({ open, studentId, on
 		return summaries.map(({ id, name }) => ({ value: id, label: name }))
 	}, [membershipsSrc.summaries])
 
-	const { loading: studentLoading, value: student } = usePromise(async () => {
+	const { loading: studentLoading } = usePromise(async () => {
 		if (!studentId) return form.resetForm()
 		const student = await studentsSrc.get(studentId)
 		form.setValues(student)

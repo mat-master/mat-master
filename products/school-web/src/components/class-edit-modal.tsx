@@ -40,8 +40,9 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose, classId 
 		onSubmit: (values) => {
 			onClose()
 			form.resetForm()
-			setRemoteResource(classesSrc, values, {
+			setRemoteResource(classesSrc, {
 				id: classId,
+				data: values,
 				resourceLabel: values.name,
 				notifications,
 			})

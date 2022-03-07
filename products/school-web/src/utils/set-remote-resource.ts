@@ -2,36 +2,41 @@ import type { NotificationsContextProps } from '@mantine/notifications/lib/types
 import type { RemoteResource, ResourceContext, ResourceData } from '../data/resource-provider'
 import getErrorMessage from './get-error-message'
 
-interface SetRemoteResourceOptions {
+interface SetRemoteResourceOptions<T extends RemoteResource> {
 	id?: string
+	data?: Partial<ResourceData<T>>
 	notifications?: NotificationsContextProps
 	resourceLabel?: string
 }
 
 const setRemoteResource = async <T extends RemoteResource>(
 	src: ResourceContext<T, any>,
-	data: Partial<ResourceData<T>>,
-	options?: SetRemoteResourceOptions
+	options?: SetRemoteResourceOptions<T>
 ) => {
-	const { id, notifications, resourceLabel = 'resource' } = options ?? {}
+	const { id, data, notifications, resourceLabel = 'resource' } = options ?? {}
+
+	const gerund = id && data ? 'Updating' : data ? 'Creating' : id ? 'Deleting' : ''
+	const pastTenst = id && data ? 'Updated' : data ? 'Created' : id ? 'Deleted' : ''
 
 	const notificationId = notifications?.showNotification({
-		message: `${id ? 'Updating' : 'Creating'} ${resourceLabel}`,
+		message: `${gerund} ${resourceLabel}`,
 		loading: true,
 		autoClose: false,
 		disallowClose: true,
 	})
 
 	try {
-		if (id) {
+		if (id && data) {
 			await src.update(id, data)
-		} else {
+		} else if (data) {
 			await src.create(data as T)
+		} else if (id) {
+			await src.remove(id)
 		}
 
 		notifications?.updateNotification(notificationId!, {
 			id: notificationId,
-			message: `${id ? 'Updated' : 'Created'} ${resourceLabel}`,
+			message: `${pastTenst} ${resourceLabel}`,
 		})
 	} catch (error) {
 		let message = await getErrorMessage(error)
@@ -39,7 +44,7 @@ const setRemoteResource = async <T extends RemoteResource>(
 
 		notifications?.updateNotification(notificationId!, {
 			id: notificationId,
-			title: `Error ${id ? 'updating' : 'creating'} ${resourceLabel}`,
+			title: `Error ${gerund.toLowerCase()} ${resourceLabel}`,
 			color: 'red',
 			message,
 		})

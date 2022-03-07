@@ -57,8 +57,9 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 		onSubmit: async (values) => {
 			onClose()
 			form.resetForm()
-			setRemoteResource(membershipsSrc, values, {
+			setRemoteResource(membershipsSrc, {
 				id: membershipId,
+				data: values,
 				resourceLabel: values.name,
 				notifications,
 			})
@@ -70,14 +71,19 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 		return summaries.map(({ id, name }) => ({ value: id, label: name }))
 	}, [classesSrc.summaries])
 
-	const { loading: membershipLoading } = usePromise(async () => {
+	const { loading: membershipLoading, value: membership } = usePromise(async () => {
 		if (!membershipId) return form.resetForm()
 		const membership = await membershipsSrc.get(membershipId)
 		form.setValues(membership)
+		return membership
 	}, [membershipId])
 
 	return (
-		<Modal opened={open} onClose={onClose} title={<Title order={3}>Membership</Title>}>
+		<Modal
+			opened={open}
+			onClose={onClose}
+			title={<Title order={3}>{membership?.name ?? 'New Membership'}</Title>}
+		>
 			<LoadingOverlay visible={classesLoading || membershipLoading} radius='sm' />
 
 			<form onSubmit={form.handleSubmit}>
