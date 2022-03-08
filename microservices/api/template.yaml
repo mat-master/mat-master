@@ -131,6 +131,19 @@ Resources:
             Path: /schools
             Method: POST
             RestApiId: !Ref Api
+  SchoolsIdGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}
+            Method: GET
+            RestApiId: !Ref Api
   SchoolsIdInvitesPOST:
     Type: AWS::Serverless::Function
     Metadata:
@@ -219,14 +232,3 @@ Resources:
         - nodejs14.x
       Description: API Layer
       LayerName: api
-
-Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
