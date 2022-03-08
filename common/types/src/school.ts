@@ -26,3 +26,15 @@ export interface Student {
     user: User,
     stripeCustomerId: string
 }
+
+/** An object describing one recurring class schedule */
+export interface ClassTime {
+    /** A 5 segment crontab describing the class schedule
+     * example: 0 19 * * 1
+     * meaning: every moday starting at 7:00 pm
+     */
+    schedule: string
+    
+    /** The duration of the class in minutes */
+	duration: number
+}
