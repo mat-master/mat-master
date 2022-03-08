@@ -7,7 +7,7 @@ import type { InferType } from 'yup';
 import { validateBody } from '../../../../util/validation';
 import { validator } from '@common/util';
 
-export type SchoolInvitePostBody = InferType<typeof validator.schoolInviteSchema>;
+export type SchoolInviteDeleteBody = InferType<typeof validator.schoolInviteSchema>;
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const body = await validateBody(validator.schoolInviteSchema, event.body);
@@ -22,11 +22,9 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if(isResponse(school))
         return school;
     
-    const res = await query("INSERT INTO invites (school, email) VALUES ($1, $2) ON CONFLICT DO NOTHING;", [school.id, body.email]);
+    const res = await query("DELETE FROM invites WHERE school = $1 AND email = $2;", [school.id, body.email]);
     if(!res)
         return res500("Internal server error trying to send invite");
-
-    // Send email here
 
     return res200();
 }

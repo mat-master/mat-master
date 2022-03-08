@@ -5,7 +5,7 @@ import { authUser, getUser } from '../../../../util/user';
 import { query } from '../../../../util/db';
 import { getSchoolAuth } from '../../../../util/school';
 
-export type SchoolStudentsGetResponse = Student[];
+export type SchoolInvitesGetResponse = string[];
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const user = await authUser(event);
@@ -16,21 +16,10 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     if(isResponse(school))
         return school;
 
-    const students = await query("SELECT * FROM students INNER JOIN users ON students.\"user\" = users.id WHERE students.school = $1", [school.id]);
-    if(!students)
+    const invites = await query("SELECT email FROM invites WHERE school = $1", [school.id]);
+    if(!invites)
         return res500();
 
-    //Return the students
-    return res200<SchoolStudentsGetResponse>(students.rows.map(student => ({
-            id: student.id,
-            school: school,
-            user: {
-                id: student.user,
-                firstName: student.first_name,
-                lastName: student.lastame,
-                email: student.email,
-                privilege: student.privilege
-            },
-            stripeCustomerId: student.stripeCustomerId
-    })));
+    //Return the invites
+    return res200<SchoolInvitesGetResponse>(invites.rows.map(invite => invite.email));
 }
