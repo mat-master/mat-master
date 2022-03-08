@@ -157,6 +157,19 @@ Resources:
             Path: /schools/{id}/join
             Method: POST
             RestApiId: !Ref Api
+  SchoolsIdStudentsGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/students/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/students
+            Method: GET
+            RestApiId: !Ref Api
   WebhookStripe:
     Type: AWS::Serverless::Function
     Metadata:
@@ -180,28 +193,6 @@ Resources:
         - nodejs14.x
       Description: API Layer
       LayerName: api
-  # HelloWorldFunction:
-  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-  #   Properties:
-  #     CodeUri: hello-world/
-  #     Handler: app.lambdaHandler
-  #     Runtime: nodejs14.x
-  #     Architectures:
-  #       - x86_64
-  #     Events:
-  #       HelloWorld:
-  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  #         Properties:
-  #           Path: /hello
-  #           Method: get
-  #   Metadata: # Manage esbuild properties
-  #     BuildMethod: esbuild
-  #     BuildProperties:
-  #       Minify: true
-  #       Target: "es2020"
-  #       Sourcemap: true
-  #       EntryPoints:
-  #         - app.ts
 
 Outputs:
   HelloWorldApi:
