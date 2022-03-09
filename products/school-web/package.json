@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@common/types": "workspace:^",
+    "@common/util": "workspace:^",
     "@mantine/core": "^3.6.9",
     "@mantine/dates": "^3.6.9",
     "@mantine/hooks": "^3.6.9",

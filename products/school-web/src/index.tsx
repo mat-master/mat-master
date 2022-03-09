@@ -3,9 +3,8 @@ import { NotificationsProvider } from '@mantine/notifications';
 import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app';
-import AuthProvider from './data/auth-provider';
-import ResourcesProvider from './data/resources-provider';
+import App from './app'
+import ResourcesProvider from './data/resources-provider'
 import SchoolProvider from './data/school-provider'
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -25,15 +24,13 @@ ReactDOM.render(
 				})}
 			/>
 
-			<AuthProvider>
-				<SchoolProvider>
-					<ResourcesProvider>
-						<NotificationsProvider>
-							<App />
-						</NotificationsProvider>
-					</ResourcesProvider>
-				</SchoolProvider>
-			</AuthProvider>
+			<SchoolProvider>
+				<ResourcesProvider>
+					<NotificationsProvider>
+						<App />
+					</NotificationsProvider>
+				</ResourcesProvider>
+			</SchoolProvider>
 		</MantineProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

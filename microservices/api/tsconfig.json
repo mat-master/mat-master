@@ -14,6 +14,7 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "module": "commonjs",
+    "target": "ES6",
     "noEmit": false,
     "rootDir": "./src",
     "outDir": "./dist",

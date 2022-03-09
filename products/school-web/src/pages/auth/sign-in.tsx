@@ -1,3 +1,5 @@
+import type { LoginPostBody } from '@common/types'
+import { validator } from '@common/util'
 import {
 	Anchor,
 	Button,
@@ -10,40 +12,34 @@ import {
 	Title,
 } from '@mantine/core'
 import { useFormik } from 'formik'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { authContext, SignInData } from '../../data/auth-provider'
+import { signin } from '../../data/auth'
 import getErrorMessage, { MappedErrors } from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
 
-const signInSchema: yup.SchemaOf<SignInData> = yup.object({
-	email: yup.string().email('Invalid email').required('Required'),
-	password: yup.string().min(6, 'Minimum of 6 characters').required('Required'),
-})
-
-const signInErrorSchema: yup.SchemaOf<MappedErrors<SignInData>> = yup.object({
+const signInErrorSchema: yup.SchemaOf<MappedErrors<LoginPostBody>> = yup.object({
 	email: yup.string().notRequired(),
 	password: yup.string().notRequired(),
 })
 
 const SignInPage: React.FC = ({}) => {
-	const auth = useContext(authContext)
 	const navigate = useNavigate()
 
 	const [globalError, setGlobalError] = useState<string>()
-	const form = useFormik<SignInData>({
+	const form = useFormik<LoginPostBody>({
 		initialValues: { email: '', password: '' },
 		validateOnBlur: false,
 		validateOnChange: false,
-		validationSchema: signInSchema,
+		validationSchema: validator.loginSchema,
 		onSubmit: async (values) => {
 			try {
 				setGlobalError(undefined)
-				await auth.signin(values)
+				await signin(values)
 				navigate('/')
 			} catch (error) {
-				const message = await getErrorMessage<SignInData>(error, signInErrorSchema)
+				const message = await getErrorMessage<LoginPostBody>(error, signInErrorSchema)
 				if (typeof message === 'string') {
 					setGlobalError(message)
 				} else {

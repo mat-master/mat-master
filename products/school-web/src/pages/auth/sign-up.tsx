@@ -10,10 +10,10 @@ import {
 	Title,
 } from '@mantine/core'
 import { useFormik } from 'formik'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { authContext, SignUpData } from '../../data/auth-provider'
+import { signup, SignUpData } from '../../data/auth'
 import getErrorMessage from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
 
@@ -34,7 +34,6 @@ const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
 })
 
 const SignUpPage: React.FC = ({}) => {
-	const auth = useContext(authContext)
 	const navigate = useNavigate()
 
 	const [globalError, setGlobalError] = useState<string>()
@@ -50,7 +49,7 @@ const SignUpPage: React.FC = ({}) => {
 		validationSchema: signUpSchema,
 		onSubmit: async (values) => {
 			try {
-				await auth.signup(values)
+				await signup(values)
 				navigate('/')
 			} catch (error) {
 				const message = await getErrorMessage<SignUpErrors>(error, signUpErrorSchema)
