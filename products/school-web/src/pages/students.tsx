@@ -26,14 +26,14 @@ interface StudentsPageModals {
 const StudentsPage: React.FC = () => {
 	const studentsSrc = useContext(studentsContext)
 	const [modals, setModals] = useSetState<StudentsPageModals>({})
-	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const { summaries, loading } = useResourceSummaries(studentsSrc)
 	const notifications = useNotifications()
 
 	const filteredStudents = useMemo(() => {
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [searchTerm, summaries])
+	}, [debouncedSearchTerm, summaries])
 
 	const deleteName =
 		summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'student'

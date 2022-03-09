@@ -22,7 +22,7 @@ interface MembershipModals {
 
 const MembershipsPage: React.FC = () => {
 	const membershipsSrc = useContext(membershipsContext)
-	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const { summaries, loading } = useResourceSummaries(membershipsSrc)
 	const [modals, setModals] = useSetState<MembershipModals>({})
 	const notifications = useNotifications()
@@ -31,7 +31,7 @@ const MembershipsPage: React.FC = () => {
 		console.log('re-filtering')
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [searchTerm])
+	}, [debouncedSearchTerm, summaries])
 
 	const deleteName =
 		membershipsSrc.summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ??

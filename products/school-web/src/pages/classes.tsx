@@ -23,14 +23,14 @@ interface ClassesPageModals {
 const ClassesPage: React.FC = () => {
 	const classesSrc = useContext(classesContext)
 	const [modals, setModals] = useSetState<ClassesPageModals>({})
-	const [searchTerm, setSearchTerm] = useSearchTerm()
+	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const { summaries, loading } = useResourceSummaries(classesSrc)
 	const notifications = useNotifications()
 
 	const filteredClasses = useMemo(() => {
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [searchTerm, summaries])
+	}, [debouncedSearchTerm, summaries])
 
 	const deleteName =
 		summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'class'
