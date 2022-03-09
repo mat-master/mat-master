@@ -48,7 +48,7 @@ const MembershipsPage: React.FC = () => {
 				]}
 			/>
 
-			<DataCard loading={loading}>
+			<DataCard>
 				<Table
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
@@ -78,6 +78,7 @@ const MembershipsPage: React.FC = () => {
 						},
 					}))}
 					itemPadding={4}
+					loading={loading}
 				/>
 			</DataCard>
 

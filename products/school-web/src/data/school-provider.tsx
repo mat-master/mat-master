@@ -18,7 +18,6 @@ const SchoolProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 		// TODO: Get school data
 	}, [school])
-	console.log(school)
 
 	return (
 		<schoolContext.Provider value={{ name: 'Fountain Hills Martial Arts', id: school }}>

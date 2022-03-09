@@ -47,7 +47,7 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
 			/>
 
-			<DataCard loading={loading}>
+			<DataCard>
 				<Table
 					columns={[
 						{ key: 'avatarUrl', name: '', width: 0.8 },
@@ -75,6 +75,7 @@ const StudentsPage: React.FC = () => {
 						},
 					}))}
 					itemPadding={4}
+					loading={loading}
 				/>
 			</DataCard>
 

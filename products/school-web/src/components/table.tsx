@@ -1,27 +1,28 @@
-import { createStyles, MantineNumberSize, Text, TextProps, Title } from '@mantine/core';
-import type React from 'react';
-import { useNavigate } from 'react-router';
+import { createStyles, Loader, MantineNumberSize, Text, TextProps, Title } from '@mantine/core'
+import type React from 'react'
+import { useNavigate } from 'react-router'
 
 interface Column<T extends string> {
-	key: T;
-	name?: string;
-	width?: number;
-	defaultElement?: React.ReactNode | undefined;
+	key: T
+	name?: string
+	width?: number
+	defaultElement?: React.ReactNode | undefined
 }
 
 interface ItemData<T extends string> {
-	href?: string | undefined;
-	data: { [_ in T]?: React.ReactNode };
+	href?: string | undefined
+	data: { [_ in T]?: React.ReactNode }
 }
 
 export interface TableProps<T extends string> {
-	columns: Column<T>[];
-	items: ItemData<T>[];
-	itemPadding?: MantineNumberSize | number | undefined;
+	columns: Column<T>[]
+	items: ItemData<T>[]
+	itemPadding?: MantineNumberSize | number | undefined
+	loading?: boolean
 }
 
 interface StylesProps {
-	itemPadding: MantineNumberSize | number;
+	itemPadding: MantineNumberSize | number
 }
 
 const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
@@ -66,9 +67,21 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		textOverflow: 'ellipsis',
 		whiteSpace: 'nowrap',
 	},
+	state: {
+		width: '100%',
+		height: 360,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 }))
 
-const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TableProps<T>) => {
+const Table = <T extends string>({
+	columns,
+	items,
+	itemPadding = 'xs',
+	loading,
+}: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding })
 	const navigate = useNavigate()
 
@@ -88,33 +101,42 @@ const Table = <T extends string>({ columns, items, itemPadding = 'xs' }: TablePr
 			</thead>
 
 			<tbody className={classes.body}>
-				{items.map((item, i) => (
-					<tr
-						key={i}
-						className={`${classes.row} ${classes.item}`}
-						data-href={item.href}
-						onClick={() => item.href && navigate(item.href)}
-						style={{ cursor: item.href ? 'pointer' : undefined }}
-					>
-						{columns.map(({ key, defaultElement }, i) => {
-							const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
-								key: key,
-								className: classes.cell,
-								style: { width: columnWidths[i], maxWidth: columnWidths[i] },
-								children: item.data[key] ?? defaultElement,
-							}
-
-							return typeof props.children === 'string' ? (
-								<Text component='td' {...props} />
-							) : (
-								<td {...props} />
-							)
-						})}
+				{(loading || !items.length) && (
+					<tr className={classes.state}>
+						<td>
+							{loading ? <Loader /> : <Text color='dimmed'>No items matched your search</Text>}
+						</td>
 					</tr>
-				))}
+				)}
+
+				{!loading &&
+					items.map((item, i) => (
+						<tr
+							key={i}
+							className={`${classes.row} ${classes.item}`}
+							data-href={item.href}
+							onClick={() => item.href && navigate(item.href)}
+							style={{ cursor: item.href ? 'pointer' : undefined }}
+						>
+							{columns.map(({ key, defaultElement }, i) => {
+								const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
+									key: key,
+									className: classes.cell,
+									style: { width: columnWidths[i], maxWidth: columnWidths[i] },
+									children: item.data[key] ?? defaultElement,
+								}
+
+								return typeof props.children === 'string' ? (
+									<Text component='td' {...props} />
+								) : (
+									<td {...props} />
+								)
+							})}
+						</tr>
+					))}
 			</tbody>
 		</table>
 	)
 }
 
-export default Table;
+export default Table

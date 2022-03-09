@@ -49,7 +49,7 @@ const ClassesPage: React.FC = () => {
 				]}
 			/>
 
-			<DataCard loading={loading}>
+			<DataCard>
 				<Table<keyof (ClassSummary & { menu: never })>
 					columns={[
 						{ key: 'name', name: 'Name', width: 2 },
@@ -79,6 +79,7 @@ const ClassesPage: React.FC = () => {
 						},
 					}))}
 					itemPadding={4}
+					loading={loading}
 				/>
 			</DataCard>
 
