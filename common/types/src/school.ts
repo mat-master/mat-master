@@ -27,6 +27,13 @@ export interface Student {
     stripeCustomerId: string
 }
 
+export interface Class {
+    id: bigint,
+    school: School,
+    name: string,
+    schedule: ClassTime[],
+}
+
 /** An object describing one recurring class schedule */
 export interface ClassTime {
     /** A 5 segment crontab describing the class schedule

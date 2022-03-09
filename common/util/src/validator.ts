@@ -1,5 +1,5 @@
 import type { Address } from "@common/types";
-import { object, ObjectSchema, SchemaOf, string } from "yup"
+import { array, number, object, ObjectSchema, SchemaOf, string } from "yup"
 
 export const signupSchema = object({
     firstName: string().required(),
@@ -28,4 +28,14 @@ export const schoolCreateSchema = object({
 
 export const schoolInviteSchema = object({
     email: string().email().required()
+});
+
+export const classTimeSchema = object({
+	schedule: string().required('Required'),
+	duration: number().integer().positive().required(),
+});
+
+export const classCreateSchema = object({
+    name: string().required(),
+    schedule: array().of(classTimeSchema).min(1).required(),
 });
