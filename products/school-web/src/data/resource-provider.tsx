@@ -1,4 +1,5 @@
 import { randomId, useListState } from '@mantine/hooks';
+import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import * as yup from 'yup'
 
@@ -60,6 +61,9 @@ const ResourceProvider = <T extends RemoteResource, S extends RemoteResource>({
 	const [summariesLoaded, setSummariesLoaded] = useState(!!defaultSummaries)
 
 	const getSummaries = useCallback(async () => {
+		const res = await axios.get('/schools/22572923900395662/students')
+		console.log(res)
+
 		if (summariesLoaded) return summaries
 
 		// TODO: connect remote data source

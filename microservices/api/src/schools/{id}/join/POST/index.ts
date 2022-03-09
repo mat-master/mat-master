@@ -6,12 +6,25 @@ import { authUser, getUser, getUserId } from '../../../../util/user';
 import { generateSnowflake } from '../../../../util/snowflake';
 import stripe from '../../../../util/stripe';
 
+/** The string is the client side setup intents */
+export type SchoolJoinPostResponse = void | string;
+
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const user = await authUser(event);
     if(isResponse(user)) return user;
 
     const school = await getSchool(event);
     if(isResponse(school)) return school;
+
+    const paymentMethods = await stripe.customers.listPaymentMethods(user.stripeCustomerId, {
+        type: 'card'
+    });
+    if(paymentMethods.data.length === 0) {
+        const intent = await stripe.setupIntents.create();
+        if(!intent.client_secret)
+            return res500();
+        return res200<SchoolJoinPostResponse>(intent.client_secret)
+    }
 
     const invites = await query("DELETE FROM invites WHERE school = $1 AND email = $2 RETURNING *", [school.id, user.email]);
     if(!invites) return res500();
@@ -37,5 +50,5 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     const student = await query("INSERT INTO students (id, school, \"user\", stripe_customer_id) VALUES ($1, $2, $3, $4) RETURNING *", [generateSnowflake(), school.id, user.id, customer.id]);
     if(!student) return res500();
 
-    return res200();
+    return res200<SchoolJoinPostResponse>();
 }
