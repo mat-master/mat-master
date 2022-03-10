@@ -1,3 +1,5 @@
+import type { SignupPostBody } from '@common/types'
+import { validator } from '@common/util'
 import {
 	Anchor,
 	Button,
@@ -13,18 +15,11 @@ import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { signup, SignUpData } from '../../data/auth'
+import { signup } from '../../data/auth'
 import getErrorMessage from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
 
-type SignUpErrors = { [_ in keyof SignUpData]?: string | undefined }
-
-const signUpSchema: yup.SchemaOf<SignUpData> = yup.object({
-	firstName: yup.string().required('Required'),
-	lastName: yup.string().required('Required'),
-	email: yup.string().email('Invalid email').required('Required'),
-	password: yup.string().min(6, 'Minimum of 6 characters').required('Required'),
-})
+type SignUpErrors = { [_ in keyof SignupPostBody]?: string | undefined }
 
 const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
 	firstName: yup.string(),
@@ -33,11 +28,11 @@ const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
 	password: yup.string(),
 })
 
-const SignUpPage: React.FC = ({}) => {
+const SignUpPage: React.FC = () => {
 	const navigate = useNavigate()
 
 	const [globalError, setGlobalError] = useState<string>()
-	const form = useFormik<SignUpData>({
+	const form = useFormik<SignupPostBody>({
 		initialValues: {
 			firstName: '',
 			lastName: '',
@@ -46,9 +41,10 @@ const SignUpPage: React.FC = ({}) => {
 		},
 		validateOnBlur: false,
 		validateOnChange: false,
-		validationSchema: signUpSchema,
+		validationSchema: validator.signupSchema,
 		onSubmit: async (values) => {
 			try {
+				setGlobalError(undefined)
 				await signup(values)
 				navigate('/')
 			} catch (error) {
