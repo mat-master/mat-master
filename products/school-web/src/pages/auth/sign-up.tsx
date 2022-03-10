@@ -14,19 +14,9 @@ import {
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import * as yup from 'yup'
 import { signup } from '../../data/auth'
 import getErrorMessage from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
-
-type SignUpErrors = { [_ in keyof SignupPostBody]?: string | undefined }
-
-const signUpErrorSchema: yup.SchemaOf<SignUpErrors> = yup.object({
-	firstName: yup.string(),
-	lastName: yup.string(),
-	email: yup.string(),
-	password: yup.string(),
-})
 
 const SignUpPage: React.FC = () => {
 	const navigate = useNavigate()
@@ -41,19 +31,15 @@ const SignUpPage: React.FC = () => {
 		},
 		validateOnBlur: false,
 		validateOnChange: false,
-		validationSchema: validator.signupSchema,
+		validationSchema: validator.api.signupPostSchema,
 		onSubmit: async (values) => {
 			try {
 				setGlobalError(undefined)
 				await signup(values)
 				navigate('/')
 			} catch (error) {
-				const message = await getErrorMessage<SignUpErrors>(error, signUpErrorSchema)
-				if (typeof message === 'string') {
-					setGlobalError(message)
-				} else {
-					form.setErrors(message)
-				}
+				const message = getErrorMessage(error, validator.api.signupPostSchema)
+				typeof message === 'string' ? setGlobalError(message) : form.setErrors(message)
 			}
 		},
 	})

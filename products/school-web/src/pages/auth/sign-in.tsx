@@ -14,37 +14,29 @@ import {
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import * as yup from 'yup'
 import { signin } from '../../data/auth'
-import getErrorMessage, { MappedErrors } from '../../utils/get-error-message'
+import getErrorMessage from '../../utils/get-error-message'
 import getInputProps from '../../utils/get-input-props'
-
-const signInErrorSchema: yup.SchemaOf<MappedErrors<LoginPostBody>> = yup.object({
-	email: yup.string().notRequired(),
-	password: yup.string().notRequired(),
-})
 
 const SignInPage: React.FC = ({}) => {
 	const navigate = useNavigate()
+
+	console.log(validator.api.loginPostSchema)
 
 	const [globalError, setGlobalError] = useState<string>()
 	const form = useFormik<LoginPostBody>({
 		initialValues: { email: '', password: '' },
 		validateOnBlur: false,
 		validateOnChange: false,
-		validationSchema: validator.loginSchema,
+		validationSchema: validator.api.loginPostSchema,
 		onSubmit: async (values) => {
 			try {
 				setGlobalError(undefined)
 				await signin(values)
 				navigate('/')
 			} catch (error) {
-				const message = await getErrorMessage<LoginPostBody>(error, signInErrorSchema)
-				if (typeof message === 'string') {
-					setGlobalError(message)
-				} else {
-					form.setErrors(message)
-				}
+				const message = getErrorMessage(error, validator.api.loginPostSchema)
+				typeof message === 'string' ? setGlobalError(message) : form.setErrors(message)
 			}
 		},
 	})
