@@ -8,12 +8,11 @@
     "dist"
   ],
   "compilerOptions": {
-    "target": "ESNext",
     "composite": true,
     "rootDir": "./src",
     "outDir": "./dist",
     "noEmit": false,
-    "module": "ESNext",
+    "module": "commonjs",
     "moduleResolution": "node",
   }
 }
