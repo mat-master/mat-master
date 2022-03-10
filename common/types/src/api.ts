@@ -45,6 +45,11 @@ export interface SchoolClassesPostBody {
 	schedule: ClassTime[]
 }
 
+export interface SchoolMembershipsPostBody {
+	name: string,
+	classes: Snowflake[]
+}
+
 export type SchoolInvitesGetResponse = string[];
 export interface SchoolInvitesPostBody {
 	email: string
