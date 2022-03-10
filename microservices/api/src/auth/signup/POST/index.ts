@@ -1,33 +1,19 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as bcrypt from 'bcryptjs';
-import validator from 'validator';
 import * as db from '../../../util/db';
 import { generateSnowflake, getLambdaIp } from '../../../util/snowflake';
-import { res200, res400, resError } from '../../../util/res';
+import { isResponse, res200, res400, resError } from '../../../util/res';
 import { Privilege } from '@common/types';
-
-export interface SignupPostBody {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-}
+import type { SignupPostBody } from '@common/types';
+import { validator } from '@common/util';
+import { validateBody } from '../../../util/validation';
 
 // Signs up a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    if(!event.body) 
-        return res400("No body submitted");
-    const { firstName, lastName, email, password}: SignupPostBody = JSON.parse(event.body);
+    const body = await validateBody(validator.api.signupPostSchema, event.body);
+    if(isResponse(body)) return body;
 
-    // Validate body fields
-    if(!validator.isLength(firstName, {min:1, max:50}))
-        return res400("First name must be between 1-50 characters");
-    if(!validator.isLength(lastName, {min:1, max:50}))
-        return res400("Last name must be between 1-50 characters");
-    if(!validator.isEmail(email))
-        return res400("Email is invalid");
-    if(!validator.isLength(password, {min:6, max:undefined}))
-        return res400("Password must be atleast 6 characters");
+    const { firstName, lastName, email, password}: SignupPostBody = body;
 
     // Check if email is already in use
     const query = await db.query("SELECT * FROM users WHERE email=$1", [email]);

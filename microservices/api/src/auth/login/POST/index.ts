@@ -1,23 +1,17 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as bcrypt from 'bcryptjs';
-import v from 'validator';
 import * as jwt from 'jsonwebtoken';
 import * as db from '../../../util/db';
 import { res400, res200, isResponse, Response } from '../../../util/res';
 import type { Payload } from '../../../util/payload';
 import { validator } from '@common/util';
-import type { InferType } from 'yup';
 import { validateBody } from '../../../util/validation';
-
-export type LoginPostBody = InferType<typeof validator.loginSchema>;
-
-export interface LoginPostResponse {
-    jwt: string;
-}
+import type { LoginPostBody } from '@common/types';
+import type { LoginPostResponse } from '@common/types';
 
 // Logs in a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
-    const body: LoginPostBody | Response = await validateBody(validator.loginSchema, event.body);
+    const body: LoginPostBody | Response = await validateBody(validator.api.loginPostSchema, event.body);
     if(isResponse(body))
         return body;
     

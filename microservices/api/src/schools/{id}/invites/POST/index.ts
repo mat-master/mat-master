@@ -7,10 +7,8 @@ import type { InferType } from 'yup';
 import { validateBody } from '../../../../util/validation';
 import { validator } from '@common/util';
 
-export type SchoolInvitePostBody = InferType<typeof validator.schoolInviteSchema>;
-
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const body = await validateBody(validator.schoolInviteSchema, event.body);
+    const body = await validateBody(validator.api.schoolInvitesPostSchema, event.body);
     if(isResponse(body))
         return body;
     

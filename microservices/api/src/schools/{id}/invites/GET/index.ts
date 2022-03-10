@@ -4,8 +4,7 @@ import { res400, res200, isResponse, res403, Response, res500 } from '../../../.
 import { authUser, getUser } from '../../../../util/user';
 import { query } from '../../../../util/db';
 import { getSchoolAuth } from '../../../../util/school';
-
-export type SchoolInvitesGetResponse = string[];
+import type { SchoolInvitesGetResponse } from '@common/types';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const user = await authUser(event);

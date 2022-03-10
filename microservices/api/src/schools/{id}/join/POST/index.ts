@@ -5,9 +5,7 @@ import { getSchool, getSchoolAuth } from '../../../../util/school';
 import { authUser, getUser, getUserId } from '../../../../util/user';
 import { generateSnowflake } from '../../../../util/snowflake';
 import stripe from '../../../../util/stripe';
-
-/** The string is the client side setup intents */
-export type SchoolJoinPostResponse = void | string;
+import type { SchoolJoinPostResponse } from '@common/types';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const user = await authUser(event);

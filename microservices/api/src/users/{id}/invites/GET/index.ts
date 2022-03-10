@@ -3,8 +3,7 @@ import type { Privilege, User } from '@common/types';
 import { res400, res200, isResponse, res403, Response, res500 } from '../../../../util/res';
 import { authUser, getUser } from '../../../../util/user';
 import { query } from '../../../../util/db';
-
-export type UserInvitesGetResponse = bigint[];
+import type { UserInvitesGetResponse } from '@common/types';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
   // Auth the requesting user with Bearer token

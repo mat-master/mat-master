@@ -9,17 +9,10 @@ import ms from 'ms';
 import type { InferType } from 'yup';
 import { validator } from '@common/util';
 import { validateBody } from '../../util/validation';
-
-export type SchoolPostBody = InferType<typeof validator.schoolCreateSchema>;
-export interface SchoolPostResponse {
-    id: string,
-    name: string,
-    address: Address,
-    tier: Tier
-};
+import type { SchoolPostResponse } from '@common/types';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const body = await validateBody(validator.schoolCreateSchema, event.body);
+    const body = await validateBody(validator.api.schoolPostSchema, event.body);
     if(isResponse(body))
         return body;
     const {name, address} = body;

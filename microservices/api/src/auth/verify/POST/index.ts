@@ -5,18 +5,12 @@ import { query } from '../../../util/db';
 import { Privilege } from '@common/types';
 import stripe from '../../../util/stripe';
 import { getUserId } from '../../../util/user';
-import { object, string, InferType } from 'yup';
+import { validator } from '@common/util';
 import { validateBody } from '../../../util/validation';
-
-const bodySchema = object({
-    token: string().required()
-})
-
-export type VerifyPostBody = InferType<typeof bodySchema>;
 
 // Verifies an email
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const body = await validateBody(bodySchema,  event.body);
+    const body = await validateBody(validator.api.verifyPostSchema,  event.body);
     if(isResponse(body))
         return body;
 

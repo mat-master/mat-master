@@ -4,15 +4,11 @@ import { isResponse, res200, res404, res500, Response } from '../../../../util/r
 import { getSchool, getSchoolAuth } from '../../../../util/school';
 import { authUser, getUser, getUserId } from '../../../../util/user';
 import { generateSnowflake } from '../../../../util/snowflake';
-import stripe from '../../../../util/stripe';
-import type { InferType } from 'yup';
 import { validator } from '@common/util';
 import { validateBody } from '../../../../util/validation';
 
-export type SchoolClassPostBody = InferType<typeof validator.classCreateSchema>;
-
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
-    const body = await validateBody(validator.classCreateSchema, event.body);
+    const body = await validateBody(validator.api.schoolClassesPostSchema, event.body);
     if(isResponse(body))
         return body;
 
