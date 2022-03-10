@@ -118,6 +118,19 @@ Resources:
             Path: /users/{id}/invites
             Method: GET
             RestApiId: !Ref Api
+  UserIdSchoolsGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/schools/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}/schools
+            Method: GET
+            RestApiId: !Ref Api
   SchoolsPOST:
     Type: AWS::Serverless::Function
     Metadata:

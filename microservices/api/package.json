@@ -7,7 +7,7 @@
     "build": "tsc --build",
     "watch": "tsc --build -w --preserveWatchOutput",
     "dev-old": "yarn config set nmHoistingLimits 'workspaces' && yarn install && yarn config set nmHoistingLimits 'none' && rm -rf .aws-sam && overmind start",
-    "dev": "yarn install && rm -rf .aws-sam && rm -rf ./node_modules/@common/ && cp -r ../../common/ ./node_modules/@common && overmind start",
+    "dev": "yarn install && rm -rf .aws-sam && rm -rf ./node_modules/@common/ && (cd ../../common/types && yarn build) && (cd ../../common/util && yarn build) && cp -r ../../common/ ./node_modules/@common && overmind start",
     "aws-build": "sam build",
     "fix": "rm -rf node_modules && yarn config set nmHoistingLimits 'none' && yarn install"
   },

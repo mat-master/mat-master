@@ -13,8 +13,10 @@ build-UsersIdGET:
 	$(MAKE) HANDLER=src/users/{id}/GET/index.ts build-lambda-common
 build-UsersIdVerifyPOST:
 	$(MAKE) HANDLER=src/users/{id}/verify/POST/index.ts build-lambda-common
-build-UsersIdInvitesGet:
+build-UsersIdInvitesGET:
 	$(MAKE) HANDLER=src/users/{id}/verify/POST/index.ts build-lambda-common
+build-UserIdSchoolsGET:
+	$(MAKE) HANDLER=src/users/{id}/schools/GET/index.ts build-lambda-common
 
 build-SchoolsPOST:
 	$(MAKE) HANDLER=src/schools/POST/index.ts build-lambda-common

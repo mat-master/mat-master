@@ -59,3 +59,8 @@ export type SchoolStudentsGetResponse = Student[];
 export type UserGetResponse = User;
 
 export type UserInvitesGetResponse = bigint[];
+
+export interface UserSchoolsGetResponse {
+	adminSchools: School[],
+	studentSchools: School[]
+}
