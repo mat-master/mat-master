@@ -6,6 +6,7 @@ const UNKNOWN_ERROR = Error('An unknown error has occurred')
 
 export const signup = async (data: SignupPostBody) => {
 	const res = await axios.post('/auth/signup', data)
+	console.log(res)
 	if (res.status !== 200) throw Error(res.data.error)
 }
 
