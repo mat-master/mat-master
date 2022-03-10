@@ -1,17 +1,3 @@
-export interface Address {
-	state: string;
-	city: string;
-	postalCode: string;
-	line1: string;
-	line2?: string;
-}
-
-export interface School {
-	id: string;
-	name: string;
-	address: Address;
-}
-
 export type StudentStatus = 'active' | 'inactive' | 'deleted';
 
 export interface SutudentSummary {

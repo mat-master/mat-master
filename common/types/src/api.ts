@@ -1,6 +1,9 @@
 import type { Address } from './address';
 import type { Class, ClassTime, School, Student, Tier } from './school';
 import type { User } from './user';
+
+export type Snowflake = bigint;
+
 export interface SignupPostBody {
 	firstName: string
 	lastName: string
@@ -27,7 +30,7 @@ export interface SchoolPostBody {
 	address: Address
 }
 export interface SchoolPostResponse {
-	id: string,
+	id: Snowflake,
 	name: string,
 	address: Address,
 	tier: Tier

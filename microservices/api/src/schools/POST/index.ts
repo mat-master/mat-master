@@ -75,7 +75,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     
 
     return res200<SchoolPostResponse>({
-            id: schoolId.toString(),
+            id: schoolId,
             name: name,
             address: address,
             tier: Tier.TRIAL

@@ -1,7 +1,7 @@
 import { get } from 'http';
 import { networkInterfaces } from "os";
 import * as crypto from 'crypto';
-export type Snowflake = bigint;
+import type { Snowflake } from '@common/types';
 
 /** Number of bits allocated towards the timestamp portion */
 const TIMESTAMP_BITS = 41;

@@ -1,12 +1,13 @@
 import type { Address } from "./address";
+import type { Snowflake } from "./api";
 import type { User } from "./user";
 
 /** School trial period is set to an ms string */
 export const SCHOOL_TRIAL_PERIOD = "3m";
 
 export interface School {
-    id: bigint,
-    owner: bigint,
+    id: Snowflake,
+    owner: Snowflake,
     name: string,
     address: Address,
     tier: Tier,
@@ -21,14 +22,14 @@ export enum Tier {
 }
 
 export interface Student {
-    id: bigint,
+    id: Snowflake,
     school: School,
     user: User,
     stripeCustomerId: string
 }
 
 export interface Class {
-    id: bigint,
+    id: Snowflake,
     school: School,
     name: string,
     schedule: ClassTime[],
