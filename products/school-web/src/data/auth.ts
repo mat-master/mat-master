@@ -22,6 +22,8 @@ export const signin = async (data: LoginPostBody) => {
 }
 
 export const getUser = async () => {
+	if (!localStorage.getItem('jwt')) return null
+
 	const res = await axios.get('/users/me')
 	if (res.status !== 200) throw Error(res.data.error)
 
