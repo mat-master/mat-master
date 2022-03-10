@@ -1,18 +1,15 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
   "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "composite": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": "src",
+    "outDir": "dist",
     "noEmit": false,
-    "module": "commonjs",
-    "moduleResolution": "node",
-  }
+  },
+  "include": [
+    "src"
+  ],
 }

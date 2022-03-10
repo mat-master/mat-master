@@ -1,14 +1,8 @@
 {
-  "references": [
-    {
-      "path": "../../common/types"
-    },
-    {
-      "path": "../../common/util"
-    }
-  ],
   "extends": "../../tsconfig.json",
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src"
+  ],
   "compilerOptions": {
     "composite": true,
     "sourceMap": true,
@@ -19,5 +13,13 @@
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
-  }
+  },
+  "references": [
+    {
+      "path": "../../common/types"
+    },
+    {
+      "path": "../../common/util"
+    }
+  ],
 }

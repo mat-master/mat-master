@@ -1,15 +1,15 @@
 {
-  "name": "@common/types",
-  "version": "1.0.0",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "devDependencies": {
-    "typescript": "^4.6.2"
-  },
-  "installConfig": {
-    "hoistingLimits": "none"
-  },
-  "scripts": {
-    "build": "tsc"
-  }
+	"name": "@common/types",
+	"version": "1.0.0",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup src/**/* --format esm,cjs --dts --sourcemap"
+	},
+	"devDependencies": {
+		"tsup": "^5.12.0",
+		"typescript": "^4.6.2"
+	}
 }

@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "lib": [
+      "ESNext"
+    ],
+    "types": [
+      "node"
+    ],
+    "target": "es5",
+    "esModuleInterop": true,
     "noEmit": true,
     "strict": true,
     "skipLibCheck": true,
@@ -14,12 +21,4 @@
   "exclude": [
     "**/node_modules"
   ],
-  "references": [
-    {
-      "path": "./common/types"
-    },
-    {
-      "path": "./common/util"
-    }
-  ]
 }
