@@ -170,6 +170,19 @@ Resources:
             Path: /schools/{id}/memberships
             Method: POST
             RestApiId: !Ref Api
+  SchoolsIdMembershipsGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/memberships/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/memberships
+            Method: GET
+            RestApiId: !Ref Api
   SchoolsIdClassesPOST:
     Type: AWS::Serverless::Function
     Metadata:

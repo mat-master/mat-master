@@ -1,5 +1,5 @@
 import type { Address } from './address';
-import type { Class, ClassTime, MembershipInterval, School, Student, Tier } from './school';
+import type { Class, ClassTime, Membership, MembershipInterval, School, Student, Tier } from './school';
 import type { User } from './user';
 
 export type Snowflake = bigint | string;
@@ -52,6 +52,8 @@ export interface SchoolMembershipsPostBody {
 	interval: MembershipInterval,
 	intervalCount: number
 }
+
+export type SchoolMembershipsGetResponse = Membership[];
 
 export type SchoolInvitesGetResponse = string[];
 export interface SchoolInvitesPostBody {

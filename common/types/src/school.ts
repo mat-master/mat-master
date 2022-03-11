@@ -47,4 +47,14 @@ export interface ClassTime {
 	duration: number
 }
 
+export interface Membership {
+    id: Snowflake,
+    school: School,
+    name: string,
+    classes: Class[],
+    price: number,
+    interval: MembershipInterval,
+    intervalCount: number,
+}
+
 export type MembershipInterval = 'day' | 'week' | 'month' | 'year';

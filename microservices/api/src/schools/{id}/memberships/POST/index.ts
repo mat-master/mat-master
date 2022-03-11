@@ -20,7 +20,9 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     if(isResponse(school)) return school;
 
     const product = await stripe.products.create({
-        name: `${school.name} Membership`,
+        name: `${body.name} Membership`,
+    }, {
+        stripeAccount: school.stripeAccountId
     });
 
     const price = await stripe.prices.create({
@@ -31,6 +33,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
             interval: body.interval,
             interval_count: body.intervalCount
         }
+    }, {
+        stripeAccount: school.stripeAccountId
     });
 
     const membershipId = generateSnowflake();

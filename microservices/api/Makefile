@@ -24,6 +24,8 @@ build-SchoolsIdGET:
 	$(MAKE) HANDLER=src/schools/{id}/GET/index.ts build-lambda-common
 build-SchoolsIdMembershipsPOST:
 	$(MAKE) HANDLER=src/schools/{id}/memberships/POST/index.ts build-lambda-common
+build-SchoolsIdMembershipsGET:
+	$(MAKE) HANDLER=src/schools/{id}/memberships/GET/index.ts build-lambda-common
 build-SchoolsIdClassesPOST:
 	$(MAKE) HANDLER=src/schools/{id}/classes/POST/index.ts build-lambda-common
 build-SchoolsIdClassesGET:
