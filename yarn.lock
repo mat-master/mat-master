@@ -1248,6 +1248,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^2.8.8":
+  version: 2.8.8
+  resolution: "@hookform/resolvers@npm:2.8.8"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: 3de8b00ba3d085cd29b8d9d41bb17f5e31a483e46dafef98a37d898fbf5f3d19a74729e1cda8d15d7513486b5886ea12fbef0c1aa4ed009e3cf3c804cbe325a2
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.9.2":
   version: 0.9.5
   resolution: "@humanwhocodes/config-array@npm:0.9.5"
@@ -1901,6 +1910,7 @@ __metadata:
   dependencies:
     "@common/types": "workspace:^"
     "@common/util": "workspace:^"
+    "@hookform/resolvers": ^2.8.8
     "@mantine/core": ^3.6.9
     "@mantine/dates": ^3.6.9
     "@mantine/hooks": ^3.6.9
@@ -1915,6 +1925,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     react-feather: ^2.0.9
+    react-hook-form: ^7.27.1
     react-query: ^3.34.16
     react-router: ^6.2.1
     react-router-dom: ^6.2.1
@@ -5113,6 +5124,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.6 || ^17
   checksum: 8535541c1041ba9ce02e1b6fe4425dc6857030ae2223d89fa2aa1faf82b04e542c863b267ee7ba5961d22fe3216f43241200a5807d8a8df48a96485ac8b68bf7
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.27.1":
+  version: 7.27.1
+  resolution: "react-hook-form@npm:7.27.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17
+  checksum: 99af1d47d34e74bff723e5e987f7e663ed93f11f32fa91f90802ad783105015b3df17d3024fc48dfb7f227a0a4a43473a56dfe950e7c0904c0532f4e29cb5a9e
   languageName: node
   linkType: hard
 

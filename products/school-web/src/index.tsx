@@ -8,6 +8,7 @@ import App from './app'
 import ResourcesProvider from './data/resources-provider'
 import SchoolProvider from './data/school-provider'
 
+axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
 	axios.defaults.baseURL = `http://${window.location.hostname}:3030`
 } else {

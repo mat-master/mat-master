@@ -39,7 +39,7 @@ const SideNav: React.FC = () => {
 					paddingTop: theme.spacing.sm,
 				}}
 			>
-				<UserButton onClick={() => {}} />
+				<UserButton />
 			</Box>
 		</Box>
 	)
