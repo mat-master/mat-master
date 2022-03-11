@@ -18,7 +18,7 @@ const AuthorizedRoute: React.FC = () => {
 			axios.defaults.headers.common.Authorization = `Bearer ${jwt}`
 		}
 
-		queryClient.invalidateQueries('me')
+		// queryClient.invalidateQueries('me')
 	}, [jwt])
 
 	return <Outlet />
