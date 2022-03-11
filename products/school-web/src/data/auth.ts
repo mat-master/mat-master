@@ -18,7 +18,7 @@ export const signin = async (data: LoginPostBody) => {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
 }
 
-const getUser = async () => {
+export const getUser = async () => {
 	const jwt = window.localStorage.getItem('jwt')
 	if (!jwt) throw 'Unauthenticated'
 

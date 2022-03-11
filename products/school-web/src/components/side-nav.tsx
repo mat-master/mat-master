@@ -1,12 +1,4 @@
-import {
-	Avatar,
-	Box,
-	createStyles,
-	Group,
-	Text,
-	UnstyledButton,
-	useMantineTheme,
-} from '@mantine/core'
+import { Box, Group, useMantineTheme } from '@mantine/core'
 import type React from 'react'
 import {
 	CreditCard as MembershipsIcon,
@@ -14,29 +6,12 @@ import {
 	List as ClassesIcon,
 	Users as StudentsIcon,
 } from 'react-feather'
-import { getHighlightColor } from '../utils/get-colors'
 import NavButton from './nav-button'
+import UserButton from './user-button'
 
 const ICON_SIZE = 18
 
-const useStyles = createStyles((theme) => ({
-	user: {
-		display: 'block',
-		width: '100%',
-		padding: theme.spacing.xs,
-		borderRadius: theme.radius.sm,
-		'&:hover': {
-			background: getHighlightColor(theme),
-		},
-	},
-	userWrapper: {
-		borderTop: `1px solid ${theme.colors.gray[2]}`,
-		paddingTop: theme.spacing.sm,
-	},
-}))
-
 const SideNav: React.FC = () => {
-	const { classes } = useStyles()
 	const theme = useMantineTheme()
 
 	return (
@@ -58,23 +33,14 @@ const SideNav: React.FC = () => {
 				<NavButton label='Memberships' icon={<MembershipsIcon size={ICON_SIZE} />} />
 			</Group>
 
-			<div className={classes.userWrapper}>
-				<UnstyledButton className={classes.user}>
-					<Group direction='row'>
-						<Avatar radius='xl' color={theme.primaryColor}>
-							JD
-						</Avatar>
-						<div>
-							<Text size='sm' weight='bold'>
-								John Doe
-							</Text>
-							<Text size='xs' color='gray'>
-								john.doe@example.com
-							</Text>
-						</div>
-					</Group>
-				</UnstyledButton>
-			</div>
+			<Box
+				sx={{
+					borderTop: `1px solid ${theme.colors.gray[2]}`,
+					paddingTop: theme.spacing.sm,
+				}}
+			>
+				<UserButton onClick={() => {}} />
+			</Box>
 		</Box>
 	)
 }
