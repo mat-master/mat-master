@@ -15,7 +15,7 @@ import { useLocalStorageValue } from '@mantine/hooks'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { signup } from '../data/auth'
+import { signin, signup } from '../data/auth'
 import getErrorMessage from '../utils/get-error-message'
 import getInputProps from '../utils/get-input-props'
 
@@ -43,6 +43,7 @@ const SignUpPage: React.FC = () => {
 			try {
 				setGlobalError(undefined)
 				await signup(values)
+				await signin({ email: values.email, password: values.password })
 				navigate(redirect)
 			} catch (error) {
 				const message = getErrorMessage(error, validator.api.signupPostSchema)
