@@ -15,7 +15,12 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 	axios.defaults.baseURL = 'https://api.matmaster.app'
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: { refetchOnWindowFocus: false, retry: false },
+		mutations: { retry: false },
+	},
+})
 
 ReactDOM.render(
 	<React.StrictMode>
