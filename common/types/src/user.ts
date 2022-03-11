@@ -1,3 +1,7 @@
+import type { Snowflake } from "./api";
+
+export const AVATAR_URL = 'https://matmaster.s3.us-west-1.amazonaws.com';
+
 export interface User {
 	/** Universally unique user ID */
 	id: bigint,
@@ -16,6 +20,8 @@ export interface User {
 
 	/** The users phone number */
 	phone?: string,
+
+	avatar?: Snowflake
 };
 
 /** Privilege levels */

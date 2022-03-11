@@ -1,3 +1,4 @@
+import { AVATAR_URL } from '@common/types'
 import { Avatar, Box, Skeleton, Text, UnstyledButton, useMantineTheme } from '@mantine/core'
 import type React from 'react'
 import { useQuery } from 'react-query'
@@ -34,7 +35,7 @@ const UserButton: React.FC<UserButtonProps> = ({ onClick }) => {
 				height='min-content'
 				radius='xl'
 			>
-				<Avatar radius='xl' color={theme.primaryColor}>
+				<Avatar radius='xl' color={theme.primaryColor} src={user && user.avatar ? `${AVATAR_URL}/${user.avatar.toString()}.webp` : ""}>
 					{user && getInitials(user)}
 				</Avatar>
 			</Skeleton>

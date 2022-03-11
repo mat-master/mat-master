@@ -10,6 +10,7 @@ export const userSchema: SchemaOf<User> = object({
 	email: string().email().required(),
 	privilege: number().integer().required(),
 	phone: string().notRequired(),
+	avatar: snowflakeSchema.optional()
 });
 
 export const addressSchema: SchemaOf<Address> = object({

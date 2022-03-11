@@ -39,7 +39,8 @@ export const getUserId = async (id: bigint): Promise<User | APIGatewayProxyResul
     firstName: user.rows[0].first_name,
     lastName: user.rows[0].last_name,
     email: user.rows[0].email,
-    privilege: user.rows[0].privilege
+    privilege: user.rows[0].privilege,
+    avatar: user.rows[0].avatar,
   };
 }
 
