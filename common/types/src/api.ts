@@ -1,5 +1,5 @@
 import type { Address } from './address';
-import type { Class, ClassTime, School, Student, Tier } from './school';
+import type { Class, ClassTime, MembershipInterval, School, Student, Tier } from './school';
 import type { User } from './user';
 
 export type Snowflake = bigint | string;
@@ -47,7 +47,10 @@ export interface SchoolClassesPostBody {
 
 export interface SchoolMembershipsPostBody {
 	name: string,
-	classes: Snowflake[]
+	classes: Snowflake[],
+	price: number,
+	interval: MembershipInterval,
+	intervalCount: number
 }
 
 export type SchoolInvitesGetResponse = string[];

@@ -46,3 +46,5 @@ export interface ClassTime {
     /** The duration of the class in minutes */
 	duration: number
 }
+
+export type MembershipInterval = 'day' | 'week' | 'month' | 'year';

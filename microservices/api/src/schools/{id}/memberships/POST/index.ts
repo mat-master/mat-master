@@ -6,6 +6,7 @@ import { authUser, getUser, getUserId } from '../../../../util/user';
 import { generateSnowflake } from '../../../../util/snowflake';
 import { validator } from '@common/util';
 import { validateBody } from '../../../../util/validation';
+import stripe from '../../../../util/stripe';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const body = await validateBody(validator.api.schoolMembershipsPostSchema, event.body);
@@ -18,8 +19,22 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     const school = await getSchool(event);
     if(isResponse(school)) return school;
 
+    const product = await stripe.products.create({
+        name: `${school.name} Membership`,
+    });
+
+    const price = await stripe.prices.create({
+        product: product.id,
+        currency: 'USD',
+        unit_amount: body.price,
+        recurring: {
+            interval: body.interval,
+            interval_count: body.intervalCount
+        }
+    });
+
     const membershipId = generateSnowflake();
-    const membership = await query("INSERT INTO memberships (id, school, name) VALUES ($1, $2, $3) RETURNING *", [membershipId, school.id, body.name]);
+    const membership = await query("INSERT INTO memberships (id, school, name, stripe_price_id) VALUES ($1, $2, $3, $4) RETURNING *", [membershipId, school.id, body.name, price.id]);
     if(!membership) return res500();
     const classesValues = [];
     const classesStatement = [];

@@ -1,4 +1,4 @@
-import type { Address, LoginPostBody, SignupPostBody, VerifyPostBody, User, SchoolPostBody, SchoolClassesPostBody, SchoolInvitesPostBody, SchoolInvitesDeleteBody, SchoolMembershipsPostBody, Snowflake } from '@common/types'
+import type { Address, LoginPostBody, SignupPostBody, VerifyPostBody, User, SchoolPostBody, SchoolClassesPostBody, SchoolInvitesPostBody, SchoolInvitesDeleteBody, SchoolMembershipsPostBody, Snowflake, MembershipInterval } from '@common/types'
 import { array, number, object, SchemaOf, string, AnySchema, mixed } from 'yup'
 
 export const snowflakeSchema: SchemaOf<Snowflake> = mixed().required();
@@ -24,7 +24,9 @@ export const addressSchema: SchemaOf<Address> = object({
 export const classTimeSchema = object({
 	schedule: string().required('Required'),
 	duration: number().integer().positive().required(),
-})
+});
+
+export const membershipIntervalSchema: SchemaOf<MembershipInterval> = mixed().oneOf(['day', 'week', 'month', 'year']).required();
 
 export namespace api {
 	export const signupPostSchema: SchemaOf<SignupPostBody> = object({
@@ -56,6 +58,9 @@ export namespace api {
 	export const schoolMembershipsPostSchema: SchemaOf<SchoolMembershipsPostBody> = object({
 		name: string().required(),
 		classes: array().of(snowflakeSchema).min(1).required(),
+		price: number().positive().required(),
+		interval: membershipIntervalSchema.required(),
+		intervalCount: number().integer().required()
 	});
 
 	export const schoolInvitesPostSchema: SchemaOf<SchoolInvitesPostBody> = object({
