@@ -2,11 +2,8 @@ import type { LoginPostBody, SignupPostBody, User } from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
 
-const UNKNOWN_ERROR = Error('An unknown error has occurred')
-
 export const signup = async (data: SignupPostBody) => {
 	const res = await axios.post('/auth/signup', data)
-	console.log(res)
 	if (res.status !== 200) throw Error(res.data.error)
 }
 
@@ -15,20 +12,21 @@ export const signin = async (data: LoginPostBody) => {
 	if (res.status !== 200) throw Error(res.data.error)
 
 	const { jwt } = res.data
-	if (typeof jwt !== 'string') throw UNKNOWN_ERROR
+	if (typeof jwt !== 'string') throw undefined
 
 	localStorage.setItem('jwt', jwt)
 	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
 }
 
-export const getUser = async () => {
-	if (!localStorage.getItem('jwt')) return null
+const getUser = async () => {
+	const jwt = window.localStorage.getItem('jwt')
+	if (!jwt) throw 'Unauthenticated'
 
 	const res = await axios.get('/users/me')
-	if (res.status !== 200) throw Error(res.data.error)
+	if (res.status !== 200) throw res.data.error
 
 	const user = validator.userSchema.cast(res.data)
-	if (!validator.userSchema.validate(user)) throw UNKNOWN_ERROR
+	if (!validator.userSchema.validate(user)) throw undefined
 
 	return user as User
 }

@@ -11,17 +11,22 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core'
+import { useLocalStorageValue } from '@mantine/hooks'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { signin } from '../../data/auth'
-import getErrorMessage from '../../utils/get-error-message'
-import getInputProps from '../../utils/get-input-props'
+import { signin } from '../data/auth'
+import getErrorMessage from '../utils/get-error-message'
+import getInputProps from '../utils/get-input-props'
 
-const SignInPage: React.FC = ({}) => {
+const SignInPage: React.FC = () => {
+	const [jwt] = useLocalStorageValue({ key: 'jwt' })
 	const navigate = useNavigate()
+	const redirect = '/'
 
-	console.log(validator.api.loginPostSchema)
+	useEffect(() => {
+		if (jwt) navigate(redirect)
+	}, [])
 
 	const [globalError, setGlobalError] = useState<string>()
 	const form = useFormik<LoginPostBody>({
@@ -33,7 +38,7 @@ const SignInPage: React.FC = ({}) => {
 			try {
 				setGlobalError(undefined)
 				await signin(values)
-				navigate('/')
+				navigate(redirect)
 			} catch (error) {
 				const message = getErrorMessage(error, validator.api.loginPostSchema)
 				typeof message === 'string' ? setGlobalError(message) : form.setErrors(message)

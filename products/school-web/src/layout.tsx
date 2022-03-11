@@ -1,8 +1,9 @@
 import { Box, createStyles } from '@mantine/core';
-import type React from 'react';
-import { Outlet } from 'react-router';
-import AppHeader from './components/app-header';
-import SideNav from './components/side-nav';
+import { useLocalStorageValue } from '@mantine/hooks'
+import type React from 'react'
+import { Outlet } from 'react-router'
+import AppHeader from './components/app-header'
+import SideNav from './components/side-nav'
 
 const useStyles = createStyles((theme) => ({
 	layout: {
@@ -23,7 +24,8 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const Layout: React.FC = () => {
-	const { classes } = useStyles();
+	const { classes } = useStyles()
+	const [jwt] = useLocalStorageValue({ key: 'jwt' })
 
 	return (
 		<Box className={classes.layout}>
@@ -33,7 +35,7 @@ const Layout: React.FC = () => {
 				<Outlet />
 			</Box>
 		</Box>
-	);
-};
+	)
+}
 
 export default Layout;
