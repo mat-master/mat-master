@@ -20,7 +20,7 @@ export const getSchool = async (id: string) => {
 	const res = await axios.get(`/schools/${id}`)
 	if (res.status !== 200) throw res.data.error
 
-	if (!(await validator.schoolSchema.validate(res.data))) throw undefined
+	// if (!(await validator.schoolSchema.validate(res.data))) throw undefined
 	return res.data as School
 }
 
