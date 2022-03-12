@@ -3,7 +3,7 @@ import { useLocalStorageValue } from '@mantine/hooks'
 import type React from 'react'
 import { Outlet } from 'react-router'
 import AppHeader from './components/app-header'
-import SideNav from './components/side-nav'
+import SideNav from './components/side-bar'
 
 const useStyles = createStyles((theme) => ({
 	layout: {

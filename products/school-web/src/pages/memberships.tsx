@@ -28,7 +28,6 @@ const MembershipsPage: React.FC = () => {
 	const notifications = useNotifications()
 
 	const filteredMemberships = useMemo(() => {
-		console.log('re-filtering')
 		if (!summaries) return []
 		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
 	}, [debouncedSearchTerm, summaries])

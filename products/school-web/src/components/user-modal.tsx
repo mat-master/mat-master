@@ -1,22 +1,22 @@
 import type { User } from '@common/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-	ActionIcon,
 	Avatar,
 	Center,
 	Group,
 	LoadingOverlay,
 	Modal,
 	TextInput,
+	Title,
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
-import { X as CloseIcon } from 'react-feather'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import * as yup from 'yup'
 import { getUser } from '../data/auth'
+import getInitials from '../utils/get-initials'
 import ModalActions from './modal-actions'
 
 export interface AccountModalProps {
@@ -47,26 +47,20 @@ const UserModal: React.FC<AccountModalProps> = ({ open, onClose }) => {
 		form.setValue('phone', user.phone)
 	}, [user])
 
+	const handleSubmit = (values: UserData) => {
+		mutation.mutate(values)
+		onClose()
+	}
+
 	return (
-		<Modal opened={open} onClose={onClose} hideCloseButton>
+		<Modal opened={open} onClose={onClose} title={<Title order={3}>Account</Title>}>
 			<LoadingOverlay visible={isLoading} />
 
-			<ActionIcon
-				onClick={onClose}
-				sx={{
-					position: 'absolute',
-					top: theme.spacing.md,
-					right: theme.spacing.md,
-				}}
-			>
-				<CloseIcon size={18} />
-			</ActionIcon>
-
-			<form onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' grow>
 					<Center>
 						<Avatar size='xl' radius={128} color={theme.primaryColor}>
-							BB
+							{user && getInitials(user)}
 						</Avatar>
 					</Center>
 
@@ -75,7 +69,11 @@ const UserModal: React.FC<AccountModalProps> = ({ open, onClose }) => {
 					<TextInput label='Email' {...form.register('email')} />
 				</Group>
 
-				<ModalActions primaryLabel='Save' />
+				<ModalActions
+					primaryLabel='Save'
+					secondaryAction={() => {}}
+					secondaryLabel='Sign Out'
+				/>
 			</form>
 		</Modal>
 	)
