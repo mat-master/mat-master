@@ -23,14 +23,14 @@ export enum Tier {
 
 export interface Student {
     id: Snowflake,
-    school: School,
+    school: Snowflake,
     user: User,
     stripeCustomerId: string
 }
 
 export interface Class {
     id: Snowflake,
-    school: School,
+    school: Snowflake,
     name: string,
     schedule: ClassTime[],
 }
@@ -49,7 +49,7 @@ export interface ClassTime {
 
 export interface Membership {
     id: Snowflake,
-    school: School,
+    school: Snowflake,
     name: string,
     classes: Class[],
     price: number,

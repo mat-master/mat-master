@@ -22,7 +22,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     //Return the students
     return res200<SchoolClassesGetResponse>(classes.rows.map(clazz => ({
             id: clazz.id,
-            school: school,
+            school: school.id,
             name: clazz.name,
             schedule: clazz.schedule
     })));

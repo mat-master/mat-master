@@ -24,7 +24,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
         const price = await stripe.prices.retrieve(membership.stripe_price_id, {}, {stripeAccount: school.stripeAccountId});
         return {
             id: membership.id,
-            school: school,
+            school: school.id,
             name: membership.name,
             classes: membership.classes,
             price: price.unit_amount!,
