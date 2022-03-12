@@ -3,12 +3,13 @@ import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import AuthorizedRoute from './authorized-route'
 import Layout from './layout'
-import ClassesPage from './pages/classes'
-import DashboardPage from './pages/dashboard'
-import MembershipsPage from './pages/memberships'
+import ClassesPage from './pages/school/classes'
+import DashboardPage from './pages/school/dashboard'
+import MembershipsPage from './pages/school/memberships'
+import StudentsPage from './pages/school/students'
+import SchoolsPage from './pages/schools'
 import SignInPage from './pages/sign-in'
 import SignUpPage from './pages/sign-up'
-import StudentsPage from './pages/students'
 
 const App: React.FC = () => (
 	<BrowserRouter>
@@ -17,11 +18,14 @@ const App: React.FC = () => (
 			<Route path='sign-up' element={<SignUpPage />} />
 
 			<Route element={<AuthorizedRoute />}>
-				<Route path='schools/:school' element={<Layout />}>
-					<Route index element={<DashboardPage />} />
-					<Route path='students' element={<StudentsPage />} />
-					<Route path='classes' element={<ClassesPage />} />
-					<Route path='memberships' element={<MembershipsPage />} />
+				<Route path='schools'>
+					<Route index element={<SchoolsPage />} />
+					<Route path=':school' element={<Layout />}>
+						<Route index element={<DashboardPage />} />
+						<Route path='students' element={<StudentsPage />} />
+						<Route path='classes' element={<ClassesPage />} />
+						<Route path='memberships' element={<MembershipsPage />} />
+					</Route>
 				</Route>
 			</Route>
 
