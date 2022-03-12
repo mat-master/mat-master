@@ -1,4 +1,4 @@
-import type { UserSchoolsGetResponse } from '@common/types'
+import type { School, SchoolPostBody, UserSchoolsGetResponse } from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
 import * as yup from 'yup'
@@ -12,7 +12,7 @@ export const getSchools = async () => {
 	const res = await axios.get('/users/me/schools')
 	if (res.status !== 200) throw res.data.error
 
-	if (!(await userSchoolsGetResponseSchema.validate(res.data))) throw undefined
+	// if (!(await userSchoolsGetResponseSchema.validate(res.data))) throw undefined
 	return res.data as UserSchoolsGetResponse
 }
 
@@ -21,5 +21,10 @@ export const getSchool = async (id: string) => {
 	if (res.status !== 200) throw res.data.error
 
 	if (!(await validator.schoolSchema.validate(res.data))) throw undefined
-	return res.data
+	return res.data as School
+}
+
+export const createSchool = async (data: SchoolPostBody) => {
+	const res = await axios.post('/schools', data)
+	if (res.status !== 200) throw res.data.error
 }

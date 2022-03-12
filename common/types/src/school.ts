@@ -6,13 +6,13 @@ import type { User } from "./user";
 export const SCHOOL_TRIAL_PERIOD = "3m";
 
 export interface School {
-    id: Snowflake,
-    owner: Snowflake,
-    name: string,
-    address: Address,
-    tier: Tier,
-    stripeAccountId: string,
-    stripeSubscriptionId: string
+	id: Snowflake
+	owner: Snowflake
+	name: string
+	address: Address
+	tier: Tier
+	stripeAccountId: string
+	stripeSubscriptionId: string
 }
 
 export enum Tier {
