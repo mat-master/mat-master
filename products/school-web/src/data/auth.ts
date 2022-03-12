@@ -4,12 +4,12 @@ import axios from 'axios'
 
 export const signup = async (data: SignupPostBody) => {
 	const res = await axios.post('/auth/signup', data)
-	if (res.status !== 200) throw Error(res.data.error)
+	if (res.status !== 200) throw res.data.error
 }
 
 export const signin = async (data: LoginPostBody) => {
 	const res = await axios.post('/auth/login', data)
-	if (res.status !== 200) throw Error(res.data.error)
+	if (res.status !== 200) throw res.data.error
 
 	const { jwt } = res.data
 	if (typeof jwt !== 'string') throw undefined

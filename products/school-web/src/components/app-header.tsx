@@ -1,10 +1,14 @@
-import { Box, Title } from '@mantine/core';
-import type React from 'react';
-import { useContext } from 'react'
-import { schoolContext } from '../data/school-provider'
+import { Box, Skeleton, Title } from '@mantine/core'
+import type React from 'react'
+import { useQuery } from 'react-query'
+import { useParams } from 'react-router'
+import { getSchool } from '../data/schools'
 
 const AppHeader: React.FC = () => {
-	const school = useContext(schoolContext)
+	const { school } = useParams()
+	if (!school) throw Error('App Header is designed to be rendered under a school route')
+	const { data, error } = useQuery(`school:${school}`, () => getSchool(school))
+	console.log(data, error)
 
 	return (
 		<Box
@@ -16,9 +20,11 @@ const AppHeader: React.FC = () => {
 				borderBottom: `1px solid ${theme.colors.gray[2]}`,
 			})}
 		>
-			<Title order={3}>{school.name ?? 'Mat Master'}</Title>
+			<Skeleton width={256} visible={false}>
+				<Title order={3}>{'Mat Master'}</Title>
+			</Skeleton>
 		</Box>
 	)
 }
 
-export default AppHeader;
+export default AppHeader

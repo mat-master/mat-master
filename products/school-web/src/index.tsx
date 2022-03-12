@@ -8,7 +8,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import App from './app'
 import UserModal from './components/user-modal'
 import ResourcesProvider from './data/resources-provider'
-import SchoolProvider from './data/school-provider'
 
 axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -36,15 +35,13 @@ ReactDOM.render(
 					})}
 				/>
 
-				<SchoolProvider>
-					<ResourcesProvider>
-						<NotificationsProvider>
-							<ModalsProvider modals={{ account: UserModal }}>
-								<App />
-							</ModalsProvider>
-						</NotificationsProvider>
-					</ResourcesProvider>
-				</SchoolProvider>
+				<ResourcesProvider>
+					<NotificationsProvider>
+						<ModalsProvider modals={{ account: UserModal }}>
+							<App />
+						</ModalsProvider>
+					</NotificationsProvider>
+				</ResourcesProvider>
 			</MantineProvider>
 		</QueryClientProvider>
 	</React.StrictMode>,
