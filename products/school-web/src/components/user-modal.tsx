@@ -5,11 +5,10 @@ import {
 	Center,
 	Group,
 	LoadingOverlay,
-	Modal,
 	TextInput,
-	Title,
 	useMantineTheme,
 } from '@mantine/core'
+import type { ContextModalProps } from '@mantine/modals'
 import type React from 'react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -18,11 +17,6 @@ import * as yup from 'yup'
 import { getUser } from '../data/auth'
 import getInitials from '../utils/get-initials'
 import ModalActions from './modal-actions'
-
-export interface AccountModalProps {
-	open: boolean
-	onClose: VoidFunction
-}
 
 type UserData = Omit<User, 'id' | 'privilege' | 'avatar'>
 
@@ -33,7 +27,7 @@ const userDataSchema: yup.SchemaOf<Partial<UserData>> = yup.object({
 	phone: yup.string(),
 })
 
-const UserModal: React.FC<AccountModalProps> = ({ open, onClose }) => {
+const UserModal: React.FC<ContextModalProps> = ({ context, id }) => {
 	const { data: user, isLoading } = useQuery('me', getUser)
 	const mutation = useMutation(async (data: UserData) => console.log(data))
 	const form = useForm<UserData>({ resolver: yupResolver(userDataSchema) })
@@ -49,11 +43,11 @@ const UserModal: React.FC<AccountModalProps> = ({ open, onClose }) => {
 
 	const handleSubmit = (values: UserData) => {
 		mutation.mutate(values)
-		onClose()
+		context.closeModal(id)
 	}
 
 	return (
-		<Modal opened={open} onClose={onClose} title={<Title order={3}>Account</Title>}>
+		<>
 			<LoadingOverlay visible={isLoading} />
 
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -69,13 +63,9 @@ const UserModal: React.FC<AccountModalProps> = ({ open, onClose }) => {
 					<TextInput label='Email' {...form.register('email')} />
 				</Group>
 
-				<ModalActions
-					primaryLabel='Save'
-					secondaryAction={() => {}}
-					secondaryLabel='Sign Out'
-				/>
+				<ModalActions primaryLabel='Save' />
 			</form>
-		</Modal>
+		</>
 	)
 }
 

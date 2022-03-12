@@ -1,10 +1,12 @@
 import { Global, MantineProvider } from '@mantine/core';
-import { NotificationsProvider } from '@mantine/notifications';
-import axios from 'axios';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { ModalsProvider } from '@mantine/modals'
+import { NotificationsProvider } from '@mantine/notifications'
+import axios from 'axios'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import App from './app'
+import UserModal from './components/user-modal'
 import ResourcesProvider from './data/resources-provider'
 import SchoolProvider from './data/school-provider'
 
@@ -37,7 +39,9 @@ ReactDOM.render(
 				<SchoolProvider>
 					<ResourcesProvider>
 						<NotificationsProvider>
-							<App />
+							<ModalsProvider modals={{ account: UserModal }}>
+								<App />
+							</ModalsProvider>
 						</NotificationsProvider>
 					</ResourcesProvider>
 				</SchoolProvider>

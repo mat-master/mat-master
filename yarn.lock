@@ -1342,6 +1342,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/modals@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@mantine/modals@npm:4.0.1"
+  peerDependencies:
+    "@mantine/core": 4.0.1
+    "@mantine/hooks": 4.0.1
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 2e940512fc5fe6690bea38d76de9b04c8bd4ee9a498247dd936bdd3ca85c89225d6ce0e59badc985560717b354eb06e72873ec5195db1449792aa8869855cac5
+  languageName: node
+  linkType: hard
+
 "@mantine/notifications@npm:^3.6.9":
   version: 3.6.14
   resolution: "@mantine/notifications@npm:3.6.14"
@@ -1914,6 +1926,7 @@ __metadata:
     "@mantine/core": ^3.6.9
     "@mantine/dates": ^3.6.9
     "@mantine/hooks": ^3.6.9
+    "@mantine/modals": ^4.0.1
     "@mantine/notifications": ^3.6.9
     "@types/react": ^17.0.33
     "@types/react-dom": ^17.0.10
