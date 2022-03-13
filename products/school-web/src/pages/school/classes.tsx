@@ -84,7 +84,7 @@ const ClassesPage: React.FC = () => {
 			</DataCard>
 
 			<ClassEditModal
-				open={!!modals.edit?.open}
+				opened={!!modals.edit?.open}
 				classId={modals.edit?.classId}
 				onClose={() => setModals({ edit: undefined })}
 			/>

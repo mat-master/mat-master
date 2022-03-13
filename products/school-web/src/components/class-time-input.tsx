@@ -1,94 +1,96 @@
-import { createStyles, InputWrapper, Select } from '@mantine/core';
-import { TimeRangeInput } from '@mantine/dates';
-import { parseExpression } from 'cron-parser';
-import dayjs from 'dayjs';
-import weekdayPlugin from 'dayjs/plugin/weekday';
-import type React from 'react';
-import { useState } from 'react';
-import * as yup from 'yup'
+import type { ClassTime } from '@common/types'
+import { createStyles, InputWrapper, Select, Text } from '@mantine/core'
+import { TimeInput } from '@mantine/dates'
+import { parseExpression } from 'cron-parser'
+import dayjs from 'dayjs'
+import weekdayPlugin from 'dayjs/plugin/weekday'
+import type React from 'react'
+import { useState } from 'react'
 
 dayjs.extend(weekdayPlugin)
 
-export interface ClassTime {
-	schedule: string
-	duration: number
-}
-
-export const classTimeSchema: yup.SchemaOf<ClassTime> = yup.object({
-	schedule: yup.string().required('Required'),
-	duration: yup.number().integer().positive().required(),
-})
-
 export interface ClassTimeInputProps {
-	value?: ClassTime;
-	onChange: (value: ClassTime) => void;
+	value?: ClassTime
+	onChange: (value: ClassTime) => void
 }
 
-interface ClassTimeInputState {
-	day?: string | null;
-	start?: Date;
-	end?: Date;
-}
+export const WEEKDAYS = [
+	'Sunday',
+	'Monday',
+	'Tuesday',
+	'Wednesday',
+	'Thursday',
+	'Friday',
+	'Saturday',
+]
 
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const defaultClassTime: ClassTime = { schedule: '* * * * *', duration: 60 }
 
 const useStyles = createStyles((theme) => ({
 	root: {
 		display: 'grid',
-		gridTemplateColumns: '1fr min-content',
+		gridTemplateColumns: '1fr repeat(3, min-content)',
 		columnGap: theme.spacing.sm,
 		alignItems: 'center',
 	},
 }))
 
-const getState = (value: ClassTime): ClassTimeInputState => {
-	const start = parseExpression(value.schedule).next().toDate();
-	const end = dayjs(start).add(value.duration, 'minutes').toDate();
-
-	return { day: WEEKDAYS[start.getDay()], start, end };
-};
-
-const getValue = (state: ClassTimeInputState): ClassTime | null => {
-	if (!state.start || !state.end || !state.day) return null;
-
-	const dayIndex = WEEKDAYS.findIndex((item) => item === state.day);
-	if (dayIndex < 0) return null;
-
-	const start = dayjs(state.start).weekday(dayIndex);
-	const end = dayjs(state.end).year(start.year()).month(start.month()).date(start.date());
-
-	const schedule = `${start.minute()} ${start.hour()} * * ${start.day()}`;
-	const duration = Math.round(end.diff(start, 'milliseconds') / 1000 / 60);
-
-	return { schedule, duration };
-};
-
 const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 	value: controlledValue,
 	onChange,
 }) => {
-	const { classes } = useStyles();
-	const [uncontrolledState, setUncontrolledState] = useState<ClassTimeInputState>({});
-	const state = controlledValue ? getState(controlledValue) : uncontrolledState;
+	const { classes } = useStyles()
+	const [uncontrolledState, setUncontrolledState] = useState<ClassTime>(
+		controlledValue ?? defaultClassTime
+	)
 
-	const handleChange = (data: Partial<ClassTimeInputState>) => {
-		const newState = { ...state, ...data };
-		if (!controlledValue) setUncontrolledState(newState);
+	const value = controlledValue ?? uncontrolledState
+	const schedule = parseExpression(value.schedule)
+	const day =
+		schedule.fields.dayOfWeek.length === 1 ? WEEKDAYS[schedule.fields.dayOfWeek[0]] : null
+	const start = schedule.fields.minute.length === 1 ? schedule.next().toDate() : null
+	const end = start ? dayjs(start).add(value.duration, 'minute').toDate() : null
 
-		const value = getValue(newState);
-		if (value) onChange(value);
-	};
+	const handleChange = (value: ClassTime) => {
+		setUncontrolledState(value)
+		onChange(value)
+	}
+
+	const handleDayChange = (day: string) => {
+		const dayIndex = WEEKDAYS.findIndex((item) => item === day)
+		if (dayIndex < 0) return
+
+		const segments = value.schedule.split(' ')
+		segments[4] = dayIndex.toString()
+		const schedule = segments.join(' ')
+		handleChange({ ...value, schedule })
+	}
+
+	const handleStartChange = (start: Date) => {
+		const segments = value.schedule.split(' ')
+		segments[0] = start.getMinutes().toString()
+		segments[1] = start.getHours().toString()
+		const schedule = segments.join(' ')
+		handleChange({ ...value, schedule })
+	}
+
+	const handleEndChange = (end: Date) => {
+		if (!start) return handleChange(value)
+		const duration = Math.max(
+			(end.getHours() - start.getHours()) * 60 + end.getMinutes() - start.getMinutes(),
+			0
+		)
+		handleChange({ ...value, duration })
+	}
 
 	return (
 		<InputWrapper className={classes.root}>
-			<Select data={WEEKDAYS} value={state.day} onChange={(day) => handleChange({ day })} />
-			<TimeRangeInput
-				format='12'
-				value={[state.start ?? null, state.end ?? null]}
-				onChange={([start, end]) => handleChange({ start, end })}
-			/>
+			<Select data={WEEKDAYS} value={day} onChange={handleDayChange} />
+			<TimeInput format='12' value={start} onChange={handleStartChange} />
+			<Text>-</Text>
+			<TimeInput format='12' value={end} onChange={handleEndChange} />
 		</InputWrapper>
-	);
-};
+	)
+}
 
-export default ClassTimeInput;
+export default ClassTimeInput

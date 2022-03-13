@@ -1,18 +1,19 @@
+import type { ClassTime } from '@common/types'
+import { classTimeSchema } from '@common/util/src/validator'
 import * as yup from 'yup'
-import { ClassTime, classTimeSchema } from '../components/class-time-input'
 import { createResourceContext, RemoteResource } from './resource-provider'
 
 export interface Class extends RemoteResource {
 	name: string
 	memberships: string[]
-	schedule: (ClassTime | null)[]
+	schedule: ClassTime[]
 }
 
 export const classSchema: yup.SchemaOf<Class> = yup.object({
 	id: yup.string().required(),
 	name: yup.string().required('Required'),
 	memberships: yup.array(yup.string().required()).required('Required'),
-	schedule: yup.array().of(classTimeSchema.nullable()),
+	schedule: yup.array().of(classTimeSchema),
 })
 
 export interface ClassSummary extends RemoteResource {

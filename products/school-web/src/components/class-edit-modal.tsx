@@ -1,8 +1,18 @@
-import { Group, LoadingOverlay, Modal, MultiSelect, TextInput, Title } from '@mantine/core'
+import { validator } from '@common/util'
+import { yupResolver } from '@hookform/resolvers/yup'
+import {
+	Group,
+	LoadingOverlay,
+	Modal,
+	ModalProps,
+	MultiSelect,
+	TextInput,
+	Title,
+} from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
-import { useFormik } from 'formik'
 import type React from 'react'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import classesContext, { type Class } from '../data/classes-context'
 import membershipsContext from '../data/memberships-context'
@@ -10,7 +20,7 @@ import type { ResourceData } from '../data/resource-provider'
 import usePromise from '../hooks/use-promise'
 import setRemoteResource from '../utils/set-remote-resource'
 import ClassScheduleInput from './class-schedule-input'
-import { classTimeSchema } from './class-time-input'
+import { defaultClassTime } from './class-time-input'
 import ModalActions from './modal-actions'
 
 export interface ClassEditModalProps {
@@ -24,30 +34,28 @@ type ClassData = ResourceData<Class>
 const classDataSchema: yup.SchemaOf<ClassData> = yup.object({
 	name: yup.string().required('Required'),
 	memberships: yup.array(yup.string().required()).required(),
-	schedule: yup.array().of(classTimeSchema.nullable()).min(1, 'At least one time is required'),
+	schedule: yup.array().of(validator.classTimeSchema).min(1, 'At least one time is required'),
 })
 
-const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose, classId }) => {
+const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
 	const classesSrc = useContext(classesContext)
 	const membershipsSrc = useContext(membershipsContext)
 	const notifications = useNotifications()
 
-	const form = useFormik<ClassData>({
-		initialValues: { name: '', memberships: [], schedule: [null] },
-		validateOnBlur: false,
-		validateOnChange: false,
-		validationSchema: classDataSchema,
-		onSubmit: (values) => {
-			onClose()
-			form.resetForm()
-			setRemoteResource(classesSrc, {
-				id: classId,
-				data: values,
-				resourceLabel: values.name,
-				notifications,
-			})
-		},
-	})
+	const form = useForm<ClassData>({ defaultValues: {}, resolver: yupResolver(classDataSchema) })
+	const handleSubmit = (values: ClassData) => {
+		props.onClose()
+		setRemoteResource(classesSrc, {
+			id: classId,
+			data: values,
+			resourceLabel: values.name,
+			notifications,
+		})
+	}
+
+	useEffect(() => {
+		!props.opened && form.reset({ name: '', memberships: [], schedule: [defaultClassTime] })
+	}, [props.opened])
 
 	const { loading: membershipsLoading, value: membershipOptions } = usePromise(async () => {
 		const summaries = await membershipsSrc.getSummaries()
@@ -55,48 +63,59 @@ const ClassEditModal: React.FC<ClassEditModalProps> = ({ open, onClose, classId 
 	}, [membershipsSrc.summaries])
 
 	const { loading: classLoading, value: _class } = usePromise(async () => {
-		if (!classId) return form.resetForm()
+		if (!classId) return
 		const _class = await classesSrc.get(classId)
-		form.setValues(_class)
+
+		form.setValue('name', _class.name)
+		form.setValue('memberships', _class.memberships)
+		form.setValue('schedule', _class.schedule)
+
 		return _class
 	}, [classId])
 
 	return (
-		<Modal
-			opened={open}
-			onClose={onClose}
-			title={<Title order={3}>{_class?.name ?? 'New Class'}</Title>}
-		>
+		<Modal title={<Title order={3}>{_class?.name ?? 'New Class'}</Title>} {...props}>
 			<LoadingOverlay visible={membershipsLoading || classLoading} radius='sm' />
 
-			<form onSubmit={form.handleSubmit}>
+			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' spacing='sm' grow>
 					<TextInput
-						id='name'
 						label='Name'
-						value={form.values.name}
-						onChange={form.handleChange}
-						onBlur={form.handleBlur}
-						error={form.errors.name}
+						{...form.register('name')}
+						error={form.formState.errors.name?.message}
 					/>
-					<MultiSelect
-						id='memberships'
-						label='Memberships'
-						value={form.values.memberships}
-						data={membershipOptions ?? []}
-						onChange={(value) => form.setFieldValue('classes', value)}
-						onBlur={form.handleBlur}
-						error={form.errors.memberships}
+					<Controller
+						name='memberships'
+						control={form.control}
+						defaultValue={[]}
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								label='Memberships'
+								data={membershipOptions ?? []}
+								error={fieldState.error?.message}
+								{...field}
+							/>
+						)}
 					/>
-					<ClassScheduleInput
-						label='Schedule'
-						value={form.values.schedule}
-						onChange={(value) => form.setFieldValue('schedule', value)}
-						error={form.errors.schedule}
+					<Controller
+						name='schedule'
+						control={form.control}
+						defaultValue={[defaultClassTime]}
+						render={({ field, fieldState }) => (
+							<ClassScheduleInput
+								label='Schedule'
+								error={fieldState.error?.message}
+								{...field}
+							/>
+						)}
 					/>
 				</Group>
 
-				<ModalActions primaryLabel='Save' secondaryAction={onClose} secondaryLabel='Cancel' />
+				<ModalActions
+					primaryLabel='Save'
+					secondaryAction={props.onClose}
+					secondaryLabel='Cancel'
+				/>
 			</form>
 		</Modal>
 	)

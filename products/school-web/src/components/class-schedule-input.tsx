@@ -1,22 +1,22 @@
+import type { ClassTime } from '@common/types'
 import {
 	ActionIcon,
-	Box,
 	createStyles,
 	Group,
 	InputWrapper,
 	InputWrapperBaseProps,
 } from '@mantine/core'
 import { randomId } from '@mantine/hooks'
-import type React from 'react'
-import { useState } from 'react'
-import { MinusCircle, PlusCircle } from 'react-feather'
-import ClassTimeInput, { ClassTime } from './class-time-input'
+import React, { useState } from 'react'
+import { MinusCircle as MinusIcon, PlusCircle as PlusIcon } from 'react-feather'
+import ClassTimeInput, { defaultClassTime } from './class-time-input'
 
 export interface ClassScheduleInputProps extends InputWrapperBaseProps {
-	value?: Array<ClassTime | null>
-	onChange?: (value: Array<ClassTime | null>) => void
-	onBlur?: (e: React.FocusEvent) => void
+	value?: Array<ClassTime>
+	onChange?: (value: Array<ClassTime>) => void
 }
+
+type ClassScheduleInputState = Array<{ key: string; time: ClassTime }>
 
 const useStyles = createStyles((theme) => ({
 	timeInput: {
@@ -27,58 +27,53 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-const ClassScheduleInput: React.FC<ClassScheduleInputProps> = (props) => {
-	const { classes } = useStyles()
-	const { value: controlledValue, onChange } = props
-	const [uncontrolledValue, setUncontrolledValue] = useState<
-		Array<{ key: string; time: ClassTime | null }>
-	>([{ key: randomId(), time: null }])
+const ClassScheduleInput = React.forwardRef<HTMLDivElement, ClassScheduleInputProps>(
+	({ value: controlledValue, onChange, ...props }, ref) => {
+		const { classes } = useStyles()
+		const controlledState = controlledValue?.map((time) => ({ key: randomId(), time }))
+		const [uncontrolledState, setUncontrolledState] = useState<ClassScheduleInputState>(
+			controlledState ?? [{ key: randomId(), time: defaultClassTime }]
+		)
+		const state = controlledState ?? uncontrolledState
 
-	const value = controlledValue
-		? controlledValue.map((time) => ({ key: randomId(), time }))
-		: uncontrolledValue
+		const handleChange = (newValue: ClassScheduleInputState) => {
+			setUncontrolledState(newValue)
+			onChange && onChange(newValue.map(({ time }) => time))
+		}
 
-	const handleChange = (newValue: Array<{ key: string; time: ClassTime | null }>) => {
-		if (!controlledValue) setUncontrolledValue(newValue)
-		onChange && onChange(newValue.map(({ time }) => time))
+		const addTime = () => handleChange([...state, { key: randomId(), time: defaultClassTime }])
+
+		const updateTime = (i: number, time: ClassTime) => {
+			const newValue = [...state]
+			if (newValue[i]) newValue[i].time = time
+			handleChange(newValue)
+		}
+
+		const removeTime = (i: number) => {
+			const newValue = [...state]
+			newValue.splice(i, 1)
+			handleChange(newValue)
+		}
+
+		return (
+			<InputWrapper {...props} onChange={undefined} ref={ref}>
+				<Group direction='column' spacing='sm'>
+					{state.map(({ key, time }, i) => (
+						<div key={key} className={classes.timeInput}>
+							<ActionIcon disabled={state.length <= 1} onClick={() => removeTime(i)}>
+								<MinusIcon size={16} />
+							</ActionIcon>
+							<ClassTimeInput value={time} onChange={(value) => updateTime(i, value)} />
+						</div>
+					))}
+
+					<ActionIcon onClick={addTime}>
+						<PlusIcon size={16} />
+					</ActionIcon>
+				</Group>
+			</InputWrapper>
+		)
 	}
-
-	const addTime = () => handleChange([...value, { key: randomId(), time: null }])
-
-	const updateTime = (i: number, time: ClassTime | null) => {
-		const newValue = [...value]
-		if (newValue[i]) newValue[i].time = time
-		handleChange(newValue)
-	}
-
-	const removeTime = (i: number) => {
-		const newValue = [...value]
-		newValue.splice(i, 1)
-		handleChange(newValue)
-	}
-
-	return (
-		<InputWrapper {...props} onChange={undefined}>
-			<Group direction='column' spacing='sm'>
-				{value.map(({ key, time }, i) => (
-					<Box key={key} className={classes.timeInput}>
-						<ActionIcon disabled={value.length <= 1} onClick={() => removeTime(i)}>
-							<MinusCircle size={16} />
-						</ActionIcon>
-
-						<ClassTimeInput
-							value={time ?? undefined}
-							onChange={(value) => updateTime(i, value)}
-						/>
-					</Box>
-				))}
-
-				<ActionIcon onClick={addTime} disabled={!value[value.length - 1]?.time}>
-					<PlusCircle size={16} />
-				</ActionIcon>
-			</Group>
-		</InputWrapper>
-	)
-}
+)
 
 export default ClassScheduleInput
