@@ -18,6 +18,7 @@ const useStyles = createStyles((theme) => ({
 		maxHeight: '100%',
 		display: 'grid',
 		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		alignItems: 'flex-start',
 		rowGap: theme.spacing.md,
 		padding: theme.spacing.xl,
 	},
