@@ -79,7 +79,10 @@ const StudentsPage: React.FC = () => {
 				/>
 			</DataCard>
 
-			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
+			<StudentInviteModal
+				opened={!!modals.invite}
+				onClose={() => setModals({ invite: false })}
+			/>
 			<StudentEditModal
 				opened={!!modals.edit}
 				studentId={modals.edit}
