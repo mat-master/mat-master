@@ -81,7 +81,7 @@ const StudentsPage: React.FC = () => {
 
 			<StudentInviteModal open={!!modals.invite} onClose={() => setModals({ invite: false })} />
 			<StudentEditModal
-				open={!!modals.edit}
+				opened={!!modals.edit}
 				studentId={modals.edit}
 				onClose={() => setModals({ edit: undefined })}
 			/>

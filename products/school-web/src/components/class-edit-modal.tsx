@@ -37,12 +37,18 @@ const classDataSchema: yup.SchemaOf<ClassData> = yup.object({
 	schedule: yup.array().of(validator.classTimeSchema).min(1, 'At least one time is required'),
 })
 
+const defaultClassData: ClassData = { name: '', memberships: [], schedule: [defaultClassTime] }
+
 const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
 	const classesSrc = useContext(classesContext)
 	const membershipsSrc = useContext(membershipsContext)
 	const notifications = useNotifications()
 
-	const form = useForm<ClassData>({ defaultValues: {}, resolver: yupResolver(classDataSchema) })
+	const form = useForm<ClassData>({
+		defaultValues: defaultClassData,
+		resolver: yupResolver(classDataSchema),
+	})
+
 	const handleSubmit = (values: ClassData) => {
 		props.onClose()
 		setRemoteResource(classesSrc, {
@@ -54,7 +60,7 @@ const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, 
 	}
 
 	useEffect(() => {
-		!props.opened && form.reset({ name: '', memberships: [], schedule: [defaultClassTime] })
+		!props.opened && form.reset(defaultClassData)
 	}, [props.opened])
 
 	const { loading: membershipsLoading, value: membershipOptions } = usePromise(async () => {
@@ -65,11 +71,7 @@ const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, 
 	const { loading: classLoading, value: _class } = usePromise(async () => {
 		if (!classId) return
 		const _class = await classesSrc.get(classId)
-
-		form.setValue('name', _class.name)
-		form.setValue('memberships', _class.memberships)
-		form.setValue('schedule', _class.schedule)
-
+		form.reset(_class)
 		return _class
 	}, [classId])
 

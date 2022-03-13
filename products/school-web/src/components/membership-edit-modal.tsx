@@ -1,18 +1,19 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Group,
 	LoadingOverlay,
 	Modal,
+	ModalProps,
 	MultiSelect,
 	NumberInput,
-	Select,
 	TextInput,
 	Title,
 } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
-import { useFormik } from 'formik'
 import type React from 'react'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { DollarSign } from 'react-feather'
+import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import classesContext from '../data/classes-context'
 import type { Membership } from '../data/memberships-context'
@@ -22,49 +23,46 @@ import usePromise from '../hooks/use-promise'
 import setRemoteResource from '../utils/set-remote-resource'
 import ModalActions from './modal-actions'
 
-export interface MembershipEditModalProps {
-	open: boolean
-	onClose: VoidFunction
-	membershipId?: string
-}
-
 type MembershipData = ResourceData<Membership>
 
-const membershipSchema: yup.SchemaOf<MembershipData> = yup.object({
-	name: yup.string().required('Required'),
-	classes: yup
-		.array()
-		.of(yup.string().required('Required'))
-		.min(1, 'You must select at least one class')
-		.required('Required'),
-	price: yup.number().min(0).required('Required'),
+const membershipDataSchema: yup.SchemaOf<MembershipData> = yup.object({
+	name: yup.string().required(),
+	classes: yup.array().of(yup.string().required()).required(),
+	price: yup.number().min(0).required(),
 })
 
-const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
-	open,
-	onClose,
+const defaultMembershipData: MembershipData = {
+	name: '',
+	classes: [],
+	price: 0,
+}
+
+const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
+	...props
 }) => {
 	const membershipsSrc = useContext(membershipsContext)
 	const classesSrc = useContext(classesContext)
 	const notifications = useNotifications()
 
-	const form = useFormik<MembershipData>({
-		initialValues: { name: '', classes: [], price: 0 },
-		validateOnBlur: false,
-		validateOnChange: false,
-		validationSchema: membershipSchema,
-		onSubmit: async (values) => {
-			onClose()
-			form.resetForm()
-			setRemoteResource(membershipsSrc, {
-				id: membershipId,
-				data: values,
-				resourceLabel: values.name,
-				notifications,
-			})
-		},
+	const form = useForm<MembershipData>({
+		defaultValues: defaultMembershipData,
+		resolver: yupResolver(membershipDataSchema),
 	})
+
+	const handleSubmit = (values: MembershipData) => {
+		props.onClose()
+		setRemoteResource(membershipsSrc, {
+			id: membershipId,
+			data: values,
+			resourceLabel: values.name,
+			notifications,
+		})
+	}
+
+	useEffect(() => {
+		!props.opened && form.reset(defaultMembershipData)
+	}, [props.opened])
 
 	const { loading: classesLoading, value: classOptions } = usePromise(async () => {
 		const summaries = await classesSrc.getSummaries()
@@ -72,57 +70,55 @@ const MembershipEditModal: React.FC<MembershipEditModalProps> = ({
 	}, [classesSrc.summaries])
 
 	const { loading: membershipLoading, value: membership } = usePromise(async () => {
-		if (!membershipId) return form.resetForm()
+		if (!membershipId) return
 		const membership = await membershipsSrc.get(membershipId)
-		form.setValues(membership)
+		form.reset(membership)
 		return membership
 	}, [membershipId])
 
 	return (
-		<Modal
-			opened={open}
-			onClose={onClose}
-			title={<Title order={3}>{membership?.name ?? 'New Membership'}</Title>}
-		>
+		<Modal title={<Title order={3}>{membership?.name ?? 'New Membership'}</Title>} {...props}>
 			<LoadingOverlay visible={classesLoading || membershipLoading} radius='sm' />
 
-			<form onSubmit={form.handleSubmit}>
+			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' spacing='sm' grow>
 					<TextInput
-						id='name'
 						label='Name'
-						value={form.values.name}
-						onChange={form.handleChange}
-						onBlur={form.handleBlur}
-						error={form.errors.name}
+						error={form.formState.errors.name?.message}
+						{...form.register('name')}
 					/>
-					<MultiSelect
-						id='classes'
-						label='Classes'
-						value={form.values.classes}
-						data={classOptions ?? []}
-						onChange={(value) => form.setFieldValue('classes', value)}
-						onBlur={form.handleBlur}
-						error={form.errors.classes}
+					<Controller
+						name='classes'
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								label='Classes'
+								data={classOptions ?? []}
+								error={fieldState.error?.message}
+								{...field}
+							/>
+						)}
 					/>
-					<NumberInput
-						id='price'
-						label='Price'
-						value={form.values.price}
-						onChange={(value) => form.setFieldValue('price', value)}
-						onBlur={form.handleBlur}
-						error={form.errors.price}
-						icon={<DollarSign size={16} />}
-						hideControls
-					/>
-					<Select
-						id='billingPeriod'
-						label='Billing Period'
-						data={['Every Two Weeks', 'Monthly']}
+					<Controller
+						name='price'
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<NumberInput
+								label='Price'
+								icon={<DollarSign size={16} />}
+								error={fieldState.error?.message}
+								hideControls
+								{...field}
+							/>
+						)}
 					/>
 				</Group>
 
-				<ModalActions primaryLabel='Save' secondaryAction={onClose} secondaryLabel='Cancel' />
+				<ModalActions
+					primaryLabel='Save'
+					secondaryAction={props.onClose}
+					secondaryLabel='Cancel'
+				/>
 			</form>
 		</Modal>
 	)

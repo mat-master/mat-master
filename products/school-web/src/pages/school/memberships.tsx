@@ -82,7 +82,7 @@ const MembershipsPage: React.FC = () => {
 			</DataCard>
 
 			<MembershipEditModal
-				open={!!modals.edit?.open}
+				opened={!!modals.edit?.open}
 				membershipId={modals.edit?.id}
 				onClose={() => setModals({ edit: { open: false } })}
 			/>
