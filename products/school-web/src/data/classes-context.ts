@@ -20,7 +20,7 @@ export interface ClassSummary extends RemoteResource {
 	name: string
 	studentAvatars: Array<string | undefined>
 	memberships: Array<string>
-	schedule: string
+	schedule: ClassTime[]
 }
 
 export const testClasses = Array<Class>(6).fill({
@@ -37,7 +37,13 @@ export const testClassSummaries = Array<ClassSummary>(6).fill({
 	id: '483hfewi',
 	name: 'TaeKwonDo',
 	memberships: Array(3).fill('Basic'),
-	schedule: '2 classes per week',
+	schedule: [
+		{ schedule: '0 18 * * 1', duration: 60 },
+		{ schedule: '0 18 * * 2', duration: 60 },
+		{ schedule: '0 18 * * 3', duration: 60 },
+		{ schedule: '0 18 * * 4', duration: 60 },
+		{ schedule: '0 18 * * 5', duration: 60 },
+	],
 	studentAvatars: Array(6).fill(undefined),
 })
 

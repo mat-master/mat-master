@@ -13,6 +13,7 @@ import Table from '../../components/table'
 import classesContext, { type ClassSummary } from '../../data/classes-context'
 import useResourceSummaries from '../../hooks/use-resource-summaries'
 import useSearchTerm from '../../hooks/use-search-term'
+import getReadableSchedule from '../../utils/get-readable-shedule'
 import setRemoteResource from '../../utils/set-remote-resource'
 
 interface ClassesPageModals {
@@ -55,7 +56,7 @@ const ClassesPage: React.FC = () => {
 						{ key: 'name', name: 'Name', width: 2 },
 						{ key: 'studentAvatars', name: 'Students', width: 2 },
 						{ key: 'memberships', name: 'Memberships', width: 3 },
-						{ key: 'schedule', name: 'Schedule', width: 2 },
+						{ key: 'schedule', name: 'Schedule', width: 3 },
 						{ key: 'menu', name: '', width: 0.5 },
 					]}
 					items={filteredClasses.map(({ id, name, studentAvatars, memberships, schedule }) => ({
@@ -69,7 +70,7 @@ const ClassesPage: React.FC = () => {
 								</AvatarsGroup>
 							),
 							memberships: memberships.join(', '),
-							schedule,
+							schedule: getReadableSchedule(schedule),
 							menu: (
 								<ItemMenu
 									onEdit={() => setModals({ edit: { open: true, classId: id } })}
