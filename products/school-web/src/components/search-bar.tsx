@@ -1,6 +1,6 @@
 import { TextInput, TextInputProps, useMantineTheme } from '@mantine/core';
 import React, { useState } from 'react';
-import { Search as SearchIcon } from 'react-feather';
+import { Search as SearchIcon } from 'tabler-icons-react'
 import { getPrimaryColor } from '../utils/get-colors';
 
 const SearchBar: React.FC<TextInputProps> = (props) => {

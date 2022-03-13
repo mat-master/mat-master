@@ -9,7 +9,7 @@ import { useParams } from 'react-router'
 import { inviteStudent } from '../data/students'
 import ModalActions from './modal-actions'
 
-const StudentInviteForm: React.FC<ModalProps> = (props) => {
+const StudentInviteModal: React.FC<ModalProps> = (props) => {
 	const { school } = useParams()
 	if (!school) throw Error('Student invite form is designed to be used under a school route')
 
@@ -72,4 +72,4 @@ const StudentInviteForm: React.FC<ModalProps> = (props) => {
 	)
 }
 
-export default StudentInviteForm
+export default StudentInviteModal

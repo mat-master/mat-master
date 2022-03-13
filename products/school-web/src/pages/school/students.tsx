@@ -3,7 +3,7 @@ import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
-import { UserPlus } from 'react-feather'
+import { UserPlus as AddUserIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
 import DataCard from '../../components/data-card'
 import ItemMenu from '../../components/item-menu'
@@ -44,7 +44,7 @@ const StudentsPage: React.FC = () => {
 				title='Students'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[{ icon: <UserPlus size={18} />, action: () => setModals({ invite: true }) }]}
+				actions={[{ icon: AddUserIcon, action: () => setModals({ invite: true }) }]}
 			/>
 
 			<DataCard>

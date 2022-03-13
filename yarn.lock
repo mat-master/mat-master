@@ -1936,11 +1936,11 @@ __metadata:
     dayjs: ^1.10.7
     react: ^17.0.2
     react-dom: ^17.0.2
-    react-feather: ^2.0.9
     react-hook-form: ^7.27.1
     react-query: ^3.34.16
     react-router: ^6.2.1
     react-router-dom: ^6.2.1
+    tabler-icons-react: ^1.37.0
     typescript: ^4.5.4
     vite: ^2.8.0
     yup: ^0.32.11
@@ -5712,6 +5712,15 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"tabler-icons-react@npm:^1.37.0":
+  version: 1.37.0
+  resolution: "tabler-icons-react@npm:1.37.0"
+  peerDependencies:
+    react: ">= 16.8.0"
+  checksum: aa66f2df5a54d499d763e684a645321d970d1c69ebdfe8f826195ce7857ccdc21f8dff2cda856152b66968cf94773f38a3de3b9d0dbdd2ebc2dfd93543dbb00b
   languageName: node
   linkType: hard
 

@@ -3,7 +3,7 @@ import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
-import { Plus as PlusIcon } from 'react-feather'
+import { CalendarPlus as PlusIcon } from 'tabler-icons-react'
 import ClassEditModal from '../../components/class-edit-modal'
 import ConfirmationModal from '../../components/confirmation-modal'
 import DataCard from '../../components/data-card'
@@ -43,7 +43,7 @@ const ClassesPage: React.FC = () => {
 				searchTerm={searchTerm}
 				actions={[
 					{
-						icon: <PlusIcon size={18} />,
+						icon: PlusIcon,
 						action: () => setModals({ edit: { open: true, classId: undefined } }),
 					},
 				]}

@@ -3,7 +3,7 @@ import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
-import { Plus as PlusIcon } from 'react-feather'
+import { Plus as PlusIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
 import DataCard from '../../components/data-card'
 import ItemMenu from '../../components/item-menu'
@@ -42,9 +42,7 @@ const MembershipsPage: React.FC = () => {
 				title='Memberships'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[
-					{ icon: <PlusIcon size={18} />, action: () => setModals({ edit: { open: true } }) },
-				]}
+				actions={[{ icon: PlusIcon, action: () => setModals({ edit: { open: true } }) }]}
 			/>
 
 			<DataCard>

@@ -8,7 +8,7 @@ import {
 } from '@mantine/core'
 import { randomId } from '@mantine/hooks'
 import React, { useState } from 'react'
-import { MinusCircle as MinusIcon, PlusCircle as PlusIcon } from 'react-feather'
+import { CircleMinus as RemoveIcon, CirclePlus as AddIcon } from 'tabler-icons-react'
 import ClassTimeInput, { defaultClassTime } from './class-time-input'
 
 export interface ClassScheduleInputProps extends InputWrapperBaseProps {
@@ -61,14 +61,14 @@ const ClassScheduleInput = React.forwardRef<HTMLDivElement, ClassScheduleInputPr
 					{state.map(({ key, time }, i) => (
 						<div key={key} className={classes.timeInput}>
 							<ActionIcon disabled={state.length <= 1} onClick={() => removeTime(i)}>
-								<MinusIcon size={16} />
+								<RemoveIcon size={16} />
 							</ActionIcon>
 							<ClassTimeInput value={time} onChange={(value) => updateTime(i, value)} />
 						</div>
 					))}
 
 					<ActionIcon onClick={addTime}>
-						<PlusIcon size={16} />
+						<AddIcon size={16} />
 					</ActionIcon>
 				</Group>
 			</InputWrapper>

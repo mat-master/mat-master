@@ -1,10 +1,6 @@
 import { ActionIcon, Menu } from '@mantine/core';
 import type React from 'react';
-import {
-	Edit2 as EditIcon,
-	MoreHorizontal as MenuIcon,
-	Trash as DeleteIcon,
-} from 'react-feather'
+import { Dots as MenuIcon, Pencil as EditIcon, Trash as DeleteIcon } from 'tabler-icons-react'
 
 export interface ItemMenuProps {
 	onEdit?: VoidFunction

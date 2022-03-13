@@ -1,9 +1,9 @@
 import { Button, Center, Group, Paper, Title } from '@mantine/core'
 import type React from 'react'
 import { useState } from 'react'
-import { Plus as PlusIcon } from 'react-feather'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router'
+import { LayoutGridAdd as AddIcon } from 'tabler-icons-react'
 import SchoolModal from '../components/school-modal'
 import { getSchools } from '../data/schools'
 
@@ -28,7 +28,7 @@ const SchoolsPage: React.FC = () => {
 								<Title order={3}>{school.name}</Title>
 							</Paper>
 						))}
-					<Button leftIcon={<PlusIcon size={18} />} onClick={() => setModalOpen(true)}>
+					<Button leftIcon={<AddIcon size={18} />} onClick={() => setModalOpen(true)}>
 						New School
 					</Button>
 				</Group>

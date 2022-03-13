@@ -1,20 +1,20 @@
 import { Box, Group, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
-import {
-	CreditCard as MembershipsIcon,
-	Grid as DashboardIcon,
-	List as ClassesIcon,
-	LogOut as LogoutIcon,
-	Settings as SettingsIcon,
-	User as AccountIcon,
-	Users as StudentsIcon,
-} from 'react-feather'
 import { useNavigate } from 'react-router'
+import {
+	CalendarTime as ClassesIcon,
+	Layout2 as DashboardIcon,
+	Logout as LogoutIcon,
+	Receipt2 as MembershipsIcon,
+	Settings as SettingsIcon,
+	UserCircle as AccountIcon,
+	Users as StudentsIcon,
+} from 'tabler-icons-react'
 import SideBarButton from './side-bar-button'
 import SideBarLink from './side-bar-link'
 
-const ICON_SIZE = 18
+const ICON_SIZE = 24
 
 const SideNav: React.FC = () => {
 	const modals = useModals()

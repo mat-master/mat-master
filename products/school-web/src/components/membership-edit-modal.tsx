@@ -12,8 +12,8 @@ import {
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useEffect } from 'react'
-import { DollarSign } from 'react-feather'
 import { Controller, useForm } from 'react-hook-form'
+import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import * as yup from 'yup'
 import classesContext from '../data/classes-context'
 import type { Membership } from '../data/memberships-context'
@@ -105,7 +105,7 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 						render={({ field, fieldState }) => (
 							<NumberInput
 								label='Price'
-								icon={<DollarSign size={16} />}
+								icon={<PriceIcon size={16} />}
 								error={fieldState.error?.message}
 								hideControls
 								{...field}
