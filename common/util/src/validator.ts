@@ -10,6 +10,7 @@ import type {
 	SchoolPostBody,
 	SignupPostBody,
 	Snowflake,
+	Student,
 	User,
 	VerifyPostBody,
 } from '@common/types'
@@ -43,6 +44,13 @@ export const schoolSchema: SchemaOf<School> = object({
 	stripeAccountId: string().required(),
 	stripeSubscriptionId: string().required(),
 	tier: number().integer().required(),
+})
+
+export const studentSchema: SchemaOf<Student> = object({
+	id: snowflakeSchema,
+	school: snowflakeSchema,
+	user: userSchema,
+	stripeCustomerId: string().required(),
 })
 
 export const classTimeSchema = object({

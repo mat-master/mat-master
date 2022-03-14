@@ -5,14 +5,10 @@ import { Modal, ModalProps, Text, TextInput, Title } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router'
 import { inviteStudent } from '../data/students'
 import ModalActions from './modal-actions'
 
 const StudentInviteModal: React.FC<ModalProps> = (props) => {
-	const { school } = useParams()
-	if (!school) throw Error('Student invite form is designed to be used under a school route')
-
 	const notifications = useNotifications()
 	const [globalError, setGlobalError] = useState<string>()
 	const form = useForm<SchoolInvitesPostBody>({
@@ -36,7 +32,7 @@ const StudentInviteModal: React.FC<ModalProps> = (props) => {
 			disallowClose: true,
 		})
 
-		await inviteStudent(values, school)
+		await inviteStudent(values)
 
 		notifications.updateNotification(notificationId, {
 			id: notificationId,

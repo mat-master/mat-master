@@ -1,8 +1,8 @@
 import { Avatar, Badge, Title } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
-import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
+import { useQuery } from 'react-query'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
 import DataCard from '../../components/data-card'
@@ -11,32 +11,31 @@ import PageHeader from '../../components/page-header'
 import StudentEditModal from '../../components/student-edit-modal'
 import StudentInviteModal from '../../components/student-invite-modal'
 import Table from '../../components/table'
-import studentsContext from '../../data/students-context'
-import useResourceSummaries from '../../hooks/use-resource-summaries'
+import { getStudents } from '../../data/students'
 import useSearchTerm from '../../hooks/use-search-term'
-import { getStatusColor } from '../../utils/get-colors'
-import setRemoteResource from '../../utils/set-remote-resource'
 
 interface StudentsPageModals {
-	invite?: boolean | undefined
-	edit?: string | undefined
-	deleteConfirmation?: string | undefined
+	invite: boolean | undefined
+	edit: string | undefined
+	deleteConfirmation: string | undefined
 }
 
 const StudentsPage: React.FC = () => {
-	const studentsSrc = useContext(studentsContext)
-	const [modals, setModals] = useSetState<StudentsPageModals>({})
+	const [modals, setModals] = useSetState<Partial<StudentsPageModals>>({})
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(studentsSrc)
-	const notifications = useNotifications()
 
+	const { data: students, isLoading } = useQuery('students', getStudents)
 	const filteredStudents = useMemo(() => {
-		if (!summaries) return []
-		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [debouncedSearchTerm, summaries])
+		if (!students) return []
+		return students.filter(({ user: { firstName, lastName } }) =>
+			`${firstName} ${lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+		)
+	}, [debouncedSearchTerm, students])
 
-	const deleteName =
-		summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'student'
+	const deleteUser = students?.find(
+		({ id }) => id.toString() === modals.deleteConfirmation
+	)?.user
+	const deleteName = deleteUser && `${deleteUser.lastName} ${deleteUser.lastName}`
 
 	return (
 		<>
@@ -59,23 +58,25 @@ const StudentsPage: React.FC = () => {
 					items={filteredStudents.map((student) => ({
 						data: {
 							avatarUrl: <Avatar radius='xl' />,
-							name: <Title order={6}>{student.name}</Title>,
+							name: (
+								<Title order={6}>{`${student.user.firstName} ${student.user.lastName}`}</Title>
+							),
 							status: (
-								<Badge variant='outline' color={getStatusColor(student.activityStatus)}>
-									{student.activityStatus}
+								<Badge variant='outline' color={'dark'}>
+									TODO
 								</Badge>
 							),
-							memberships: student.memberships.join(', '),
+							memberships: 'TODO',
 							menu: (
 								<ItemMenu
-									onEdit={() => setModals({ edit: student.id })}
-									onDelete={() => setModals({ deleteConfirmation: student.id })}
+									onEdit={() => setModals({ edit: student.id.toString() })}
+									onDelete={() => setModals({ deleteConfirmation: student.id.toString() })}
 								/>
 							),
 						},
 					}))}
 					itemPadding={4}
-					loading={loading}
+					loading={isLoading}
 				/>
 			</DataCard>
 
@@ -91,15 +92,9 @@ const StudentsPage: React.FC = () => {
 			<ConfirmationModal
 				open={!!modals.deleteConfirmation}
 				actionType='Delete'
-				resourceLabel={deleteName}
-				action={() =>
-					setRemoteResource(studentsSrc, {
-						id: modals.deleteConfirmation,
-						resourceLabel: deleteName,
-						notifications,
-					})
-				}
+				resourceLabel={deleteName ?? 'student'}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
+				action={() => {}}
 			/>
 		</>
 	)
