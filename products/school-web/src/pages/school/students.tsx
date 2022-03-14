@@ -5,7 +5,6 @@ import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
-import DataCard from '../../components/data-card'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import StudentEditModal from '../../components/student-edit-modal'
@@ -46,39 +45,37 @@ const StudentsPage: React.FC = () => {
 				actions={[{ icon: AddUserIcon, action: () => setModals({ invite: true }) }]}
 			/>
 
-			<DataCard>
-				<Table
-					columns={[
-						{ key: 'avatarUrl', name: '', width: 0.8 },
-						{ key: 'name', name: 'Name', width: 4 },
-						{ key: 'status', name: 'Status', width: 2 },
-						{ key: 'memberships', name: 'Memberships', width: 5 },
-						{ key: 'menu', name: '', width: 0.8 },
-					]}
-					items={filteredStudents.map((student) => ({
-						data: {
-							avatarUrl: <Avatar radius='xl' />,
-							name: (
-								<Title order={6}>{`${student.user.firstName} ${student.user.lastName}`}</Title>
-							),
-							status: (
-								<Badge variant='outline' color={'dark'}>
-									TODO
-								</Badge>
-							),
-							memberships: 'TODO',
-							menu: (
-								<ItemMenu
-									onEdit={() => setModals({ edit: student.id.toString() })}
-									onDelete={() => setModals({ deleteConfirmation: student.id.toString() })}
-								/>
-							),
-						},
-					}))}
-					itemPadding={4}
-					loading={isLoading}
-				/>
-			</DataCard>
+			<Table
+				columns={[
+					{ key: 'avatarUrl', name: '', width: 0.8 },
+					{ key: 'name', name: 'Name', width: 4 },
+					{ key: 'status', name: 'Status', width: 2 },
+					{ key: 'memberships', name: 'Memberships', width: 5 },
+					{ key: 'menu', name: '', width: 0.8 },
+				]}
+				items={filteredStudents.map((student) => ({
+					data: {
+						avatarUrl: <Avatar radius='xl' />,
+						name: (
+							<Title order={6}>{`${student.user.firstName} ${student.user.lastName}`}</Title>
+						),
+						status: (
+							<Badge variant='outline' color={'dark'}>
+								TODO
+							</Badge>
+						),
+						memberships: 'TODO',
+						menu: (
+							<ItemMenu
+								onEdit={() => setModals({ edit: student.id.toString() })}
+								onDelete={() => setModals({ deleteConfirmation: student.id.toString() })}
+							/>
+						),
+					},
+				}))}
+				itemPadding={4}
+				loading={isLoading}
+			/>
 
 			<StudentInviteModal
 				opened={!!modals.invite}

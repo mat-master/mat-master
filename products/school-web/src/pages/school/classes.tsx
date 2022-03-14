@@ -6,7 +6,6 @@ import { useContext, useMemo } from 'react'
 import { CalendarPlus as PlusIcon } from 'tabler-icons-react'
 import ClassEditModal from '../../components/class-edit-modal'
 import ConfirmationModal from '../../components/confirmation-modal'
-import DataCard from '../../components/data-card'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import Table from '../../components/table'
@@ -50,39 +49,37 @@ const ClassesPage: React.FC = () => {
 				]}
 			/>
 
-			<DataCard>
-				<Table<keyof (ClassSummary & { menu: never })>
-					columns={[
-						{ key: 'name', name: 'Name', width: 2 },
-						{ key: 'studentAvatars', name: 'Students', width: 2 },
-						{ key: 'memberships', name: 'Memberships', width: 3 },
-						{ key: 'schedule', name: 'Schedule', width: 3 },
-						{ key: 'menu', name: '', width: 0.5 },
-					]}
-					items={filteredClasses.map(({ id, name, studentAvatars, memberships, schedule }) => ({
-						data: {
-							name: <Title order={6}>{name}</Title>,
-							studentAvatars: (
-								<AvatarsGroup limit={4} spacing='xl'>
-									{studentAvatars.map((src, i) => (
-										<Avatar key={i} src={src} />
-									))}
-								</AvatarsGroup>
-							),
-							memberships: memberships.join(', '),
-							schedule: getReadableSchedule(schedule),
-							menu: (
-								<ItemMenu
-									onEdit={() => setModals({ edit: { open: true, classId: id } })}
-									onDelete={() => setModals({ deleteConfirmation: id })}
-								/>
-							),
-						},
-					}))}
-					itemPadding={4}
-					loading={loading}
-				/>
-			</DataCard>
+			<Table<keyof (ClassSummary & { menu: never })>
+				columns={[
+					{ key: 'name', name: 'Name', width: 2 },
+					{ key: 'studentAvatars', name: 'Students', width: 2 },
+					{ key: 'memberships', name: 'Memberships', width: 3 },
+					{ key: 'schedule', name: 'Schedule', width: 3 },
+					{ key: 'menu', name: '', width: 0.5 },
+				]}
+				items={filteredClasses.map(({ id, name, studentAvatars, memberships, schedule }) => ({
+					data: {
+						name: <Title order={6}>{name}</Title>,
+						studentAvatars: (
+							<AvatarsGroup limit={4} spacing='xl'>
+								{studentAvatars.map((src, i) => (
+									<Avatar key={i} src={src} />
+								))}
+							</AvatarsGroup>
+						),
+						memberships: memberships.join(', '),
+						schedule: getReadableSchedule(schedule),
+						menu: (
+							<ItemMenu
+								onEdit={() => setModals({ edit: { open: true, classId: id } })}
+								onDelete={() => setModals({ deleteConfirmation: id })}
+							/>
+						),
+					},
+				}))}
+				itemPadding={4}
+				loading={loading}
+			/>
 
 			<ClassEditModal
 				opened={!!modals.edit?.open}

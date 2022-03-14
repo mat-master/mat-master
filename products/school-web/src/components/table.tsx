@@ -1,4 +1,12 @@
-import { createStyles, Loader, MantineNumberSize, Text, TextProps, Title } from '@mantine/core'
+import {
+	createStyles,
+	Loader,
+	MantineNumberSize,
+	Paper,
+	Text,
+	TextProps,
+	Title,
+} from '@mantine/core'
 import type React from 'react'
 import { useNavigate } from 'react-router'
 
@@ -53,9 +61,9 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		paddingTop: theme.fn.size({ size: itemPadding, sizes: theme.spacing }),
 		paddingBottom: theme.fn.size({ size: itemPadding, sizes: theme.spacing }),
 		borderBottom: `1px solid ${theme.colors.gray[2]}`,
-		'&:hover': {
-			backgroundColor: theme.colors.gray[0],
-		},
+		// '&:hover': {
+		// 	backgroundColor: theme.colors.gray[0],
+		// },
 		'&:last-child': {
 			border: 'none',
 		},
@@ -89,7 +97,7 @@ const Table = <T extends string>({
 	const columnWidths = columns.map(({ width = 1 }) => `${(width / totalColumnWidth) * 100}%`)
 
 	return (
-		<table className={classes.root}>
+		<Paper component='table' shadow='sm' className={classes.root}>
 			<thead className={classes.head}>
 				<tr className={classes.row}>
 					{columns.map((column, i) => (
@@ -135,7 +143,7 @@ const Table = <T extends string>({
 						</tr>
 					))}
 			</tbody>
-		</table>
+		</Paper>
 	)
 }
 

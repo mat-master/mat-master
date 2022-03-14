@@ -23,7 +23,7 @@ export interface ClassSummary extends RemoteResource {
 	schedule: ClassTime[]
 }
 
-export const testClasses = Array<Class>(6).fill({
+export const testClasses = Array<Class>(16).fill({
 	id: '483hfewi',
 	name: 'TaeKwonDo',
 	memberships: ['4893hfueowa'],
@@ -33,7 +33,7 @@ export const testClasses = Array<Class>(6).fill({
 	],
 })
 
-export const testClassSummaries = Array<ClassSummary>(6).fill({
+export const testClassSummaries = Array<ClassSummary>(16).fill({
 	id: '483hfewi',
 	name: 'TaeKwonDo',
 	memberships: Array(3).fill('Basic'),
