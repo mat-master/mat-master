@@ -12,6 +12,7 @@ import type {
 	Snowflake,
 	Student,
 	User,
+	UserPatchBody,
 	VerifyPostBody,
 } from '@common/types'
 import { array, mixed, number, object, SchemaOf, string } from 'yup'
@@ -103,4 +104,10 @@ export namespace api {
 	export const schoolInvitesDeleteSchema: SchemaOf<SchoolInvitesDeleteBody> = object({
 		email: string().email().required(),
 	})
+
+	export const userPatchSchema: SchemaOf<UserPatchBody> = object({
+		firstName: string().optional(),
+		lastName: string().optional(),
+		avatar: string().optional()
+	}).test("Has-Field", "At least one field must be present", value => Object.keys(value).length > 0)
 }

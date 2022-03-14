@@ -92,6 +92,19 @@ Resources:
             Path: /users/{id}
             Method: GET
             RestApiId: !Ref Api
+  UsersIdPATCH:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/PATCH/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: PATCH
+            RestApiId: !Ref Api
   UsersIdVerifyPOST:
     Type: AWS::Serverless::Function
     Metadata:

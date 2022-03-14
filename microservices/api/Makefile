@@ -11,6 +11,8 @@ build-AuthVerifyPOST:
 	
 build-UsersIdGET:
 	$(MAKE) HANDLER=src/users/{id}/GET/index.ts build-lambda-common
+build-UsersIdPATCH:
+	$(MAKE) HANDLER=src/users/{id}/PATCH/index.ts build-lambda-common
 build-UsersIdVerifyPOST:
 	$(MAKE) HANDLER=src/users/{id}/verify/POST/index.ts build-lambda-common
 build-UsersIdInvitesGET:

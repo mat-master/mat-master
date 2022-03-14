@@ -71,6 +71,12 @@ export type SchoolStudentsGetResponse = Student[];
 
 export type UserGetResponse = User;
 
+export type UserPatchBody = {
+	firstName?: string,
+	lastName?: string,
+	avatar?: string
+}
+
 export type UserInvitesGetResponse = bigint[];
 
 export interface UserSchoolsGetResponse {
