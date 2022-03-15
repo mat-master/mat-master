@@ -26,10 +26,16 @@ const queryClient = new QueryClient({
 ReactDOM.render(
 	<React.StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<MantineProvider theme={{ primaryColor: 'red' }}>
+			<MantineProvider
+				theme={{
+					primaryColor: 'red',
+					fontFamily: "'Lato', sans-serif",
+					headings: { fontFamily: "'Lato', sans-serif", fontWeight: 900 },
+				}}
+			>
 				<Global
 					styles={(theme) => ({
-						'*': { boxSizing: 'border-box' },
+						'*, *::before, *::after': { boxSizing: 'border-box' },
 						'body, #root': { margin: 0, width: '100vw', height: '100vh' },
 						body: { backgroundColor: theme.colors.gray[1] },
 					})}

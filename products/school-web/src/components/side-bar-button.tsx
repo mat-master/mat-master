@@ -9,6 +9,7 @@ const SideBarButton = <C extends React.ElementType = 'button'>(props: ButtonProp
 		styles={(theme) => ({
 			root: { paddingRight: 72, color: theme.colors.gray[7] },
 			inner: { justifyContent: 'start' },
+			label: { fontWeight: 700 },
 		})}
 		{...(props as any)}
 	/>

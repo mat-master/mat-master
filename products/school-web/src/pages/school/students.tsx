@@ -1,4 +1,4 @@
-import { Avatar, Badge, Title } from '@mantine/core'
+import { Avatar, Badge, Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import type React from 'react'
 import { useMemo } from 'react'
@@ -57,7 +57,7 @@ const StudentsPage: React.FC = () => {
 					data: {
 						avatarUrl: <Avatar radius='xl' />,
 						name: (
-							<Title order={6}>{`${student.user.firstName} ${student.user.lastName}`}</Title>
+							<Text weight={700}>{`${student.user.firstName} ${student.user.lastName}`}</Text>
 						),
 						status: (
 							<Badge variant='outline' color={'dark'}>

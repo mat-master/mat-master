@@ -1,4 +1,4 @@
-import { Avatar, AvatarsGroup, Title } from '@mantine/core'
+import { Avatar, AvatarsGroup, Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
@@ -59,7 +59,7 @@ const ClassesPage: React.FC = () => {
 				]}
 				items={filteredClasses.map(({ id, name, studentAvatars, memberships, schedule }) => ({
 					data: {
-						name: <Title order={6}>{name}</Title>,
+						name: <Text weight={700}>{name}</Text>,
 						studentAvatars: (
 							<AvatarsGroup limit={4} spacing='xl'>
 								{studentAvatars.map((src, i) => (
