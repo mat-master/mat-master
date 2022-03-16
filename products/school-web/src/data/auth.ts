@@ -1,6 +1,7 @@
 import type { LoginPostBody, SignupPostBody, User } from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
+import type { NavigateFunction } from 'react-router'
 
 export const signup = async (data: SignupPostBody) => {
 	const res = await axios.post('/auth/signup', data)
@@ -16,6 +17,11 @@ export const signin = async (data: LoginPostBody) => {
 
 	localStorage.setItem('jwt', jwt)
 	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
+}
+
+export const signout = async (navigate?: NavigateFunction) => {
+	window.localStorage.removeItem('jwt')
+	navigate && navigate('/sign-in')
 }
 
 export const getUser = async () => {
