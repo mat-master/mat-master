@@ -1,12 +1,4 @@
-import {
-	createStyles,
-	Loader,
-	MantineNumberSize,
-	Paper,
-	Text,
-	TextProps,
-	Title,
-} from '@mantine/core'
+import { createStyles, Loader, MantineNumberSize, Paper, Text, Title } from '@mantine/core'
 import type React from 'react'
 import { useNavigate } from 'react-router'
 
@@ -126,20 +118,15 @@ const Table = <T extends string>({
 							onClick={() => item.href && navigate(item.href)}
 							style={{ cursor: item.href ? 'pointer' : undefined }}
 						>
-							{columns.map(({ key, defaultElement }, i) => {
-								const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
-									key: key,
-									className: classes.cell,
-									style: { width: columnWidths[i], maxWidth: columnWidths[i] },
-									children: item.data[key] ?? defaultElement,
-								}
-
-								return typeof props.children === 'string' ? (
-									<Text component='td' {...props} />
-								) : (
-									<td {...props} />
-								)
-							})}
+							{columns.map(({ key, defaultElement }, i) => (
+								<td
+									key={key}
+									className={classes.cell}
+									style={{ width: columnWidths[i], maxWidth: columnWidths[i] }}
+								>
+									{item.data[key] ?? defaultElement}
+								</td>
+							))}
 						</tr>
 					))}
 			</tbody>

@@ -37,7 +37,7 @@ ReactDOM.render(
 					styles={(theme) => ({
 						'*, *::before, *::after': { boxSizing: 'border-box' },
 						'body, #root': { margin: 0, width: '100vw', height: '100vh' },
-						body: { backgroundColor: theme.colors.gray[1] },
+						body: { backgroundColor: theme.colors.gray[1], ...theme.fn.fontStyles() },
 					})}
 				/>
 
