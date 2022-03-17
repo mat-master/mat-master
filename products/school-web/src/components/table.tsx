@@ -1,4 +1,4 @@
-import { createStyles, Loader, MantineNumberSize, Paper, Text, Title } from '@mantine/core'
+import { createStyles, MantineNumberSize, Paper, Title } from '@mantine/core'
 import type React from 'react'
 import { useNavigate } from 'react-router'
 
@@ -18,7 +18,10 @@ export interface TableProps<T extends string> {
 	columns: Column<T>[]
 	items: ItemData<T>[]
 	itemPadding?: MantineNumberSize | number | undefined
-	loading?: boolean
+	state?: 'loading' | 'error'
+	loadingMessage?: React.ReactNode
+	errorMessage?: React.ReactNode
+	emptyMessage?: React.ReactNode
 }
 
 interface StylesProps {
@@ -73,6 +76,7 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
+		margin: `0 ${theme.spacing.xl}`,
 	},
 }))
 
@@ -80,7 +84,10 @@ const Table = <T extends string>({
 	columns,
 	items,
 	itemPadding = 'xs',
-	loading,
+	state,
+	loadingMessage,
+	errorMessage,
+	emptyMessage,
 }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding })
 	const navigate = useNavigate()
@@ -101,15 +108,15 @@ const Table = <T extends string>({
 			</thead>
 
 			<tbody className={classes.body}>
-				{(loading || !items.length) && (
+				{state ?? items.length === 0 ? (
 					<tr className={classes.state}>
-						<td>
-							{loading ? <Loader /> : <Text color='dimmed'>No items matched your search</Text>}
-						</td>
+						{state === 'loading'
+							? loadingMessage
+							: state === 'error'
+							? errorMessage
+							: emptyMessage}
 					</tr>
-				)}
-
-				{!loading &&
+				) : (
 					items.map((item, i) => (
 						<tr
 							key={i}
@@ -128,7 +135,8 @@ const Table = <T extends string>({
 								</td>
 							))}
 						</tr>
-					))}
+					))
+				)}
 			</tbody>
 		</Paper>
 	)
