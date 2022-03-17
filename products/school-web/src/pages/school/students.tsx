@@ -78,7 +78,7 @@ const StudentsPage: React.FC = () => {
 				loadingMessage={<Loader />}
 				errorMessage={
 					<Group direction='column' align='center'>
-						<Text color='red'>Something went wrong while loading your students data</Text>
+						<Text color='red'>Something went wrong while loading your students</Text>
 						<Button leftIcon={<RefreshIcon size={16} />} onClick={() => refetch()}>
 							Retry
 						</Button>

@@ -1,16 +1,17 @@
-import { Avatar, AvatarsGroup, Text } from '@mantine/core'
+import { Button, Group, Loader, Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
-import { Plus as PlusIcon } from 'tabler-icons-react'
+import { useQuery } from 'react-query'
+import { Plus as NewMembershipIcon, Refresh as RefreshIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import MembershipEditModal from '../../components/membership-edit-modal'
 import PageHeader from '../../components/page-header'
 import Table from '../../components/table'
+import { getMemberships } from '../../data/memberships'
 import membershipsContext from '../../data/memberships-context'
-import useResourceSummaries from '../../hooks/use-resource-summaries'
 import useSearchTerm from '../../hooks/use-search-term'
 import setRemoteResource from '../../utils/set-remote-resource'
 
@@ -22,14 +23,21 @@ interface MembershipModals {
 const MembershipsPage: React.FC = () => {
 	const membershipsSrc = useContext(membershipsContext)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(membershipsSrc)
 	const [modals, setModals] = useSetState<MembershipModals>({})
 	const notifications = useNotifications()
 
+	const {
+		data: memberships,
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery('memberships', getMemberships)
 	const filteredMemberships = useMemo(() => {
-		if (!summaries) return []
-		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [debouncedSearchTerm, summaries])
+		if (!memberships) return []
+		return memberships.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		)
+	}, [debouncedSearchTerm, memberships])
 
 	const deleteName =
 		membershipsSrc.summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ??
@@ -41,7 +49,9 @@ const MembershipsPage: React.FC = () => {
 				title='Memberships'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[{ icon: PlusIcon, action: () => setModals({ edit: { open: true } }) }]}
+				actions={[
+					{ icon: NewMembershipIcon, action: () => setModals({ edit: { open: true } }) },
+				]}
 			/>
 
 			<Table
@@ -52,28 +62,48 @@ const MembershipsPage: React.FC = () => {
 					{ key: 'price', name: 'Price', width: 1 },
 					{ key: 'menu', name: '', width: 0.5 },
 				]}
-				items={filteredMemberships.map(({ id, name, classes, studentAvatars, price }) => ({
+				items={filteredMemberships.map(({ id, name, classes, price }) => ({
 					data: {
 						name: <Text weight={700}>{name}</Text>,
 						classes: classes.join(', '),
-						students: (
-							<AvatarsGroup limit={4}>
-								{studentAvatars.map((src, i) => (
-									<Avatar key={i} src={src} />
-								))}
-							</AvatarsGroup>
-						),
+						students: 'TODO',
 						price: `$${price} / mo.`,
 						menu: (
 							<ItemMenu
-								onEdit={() => setModals({ edit: { open: true, id } })}
-								onDelete={() => setModals({ deleteConfirmation: id })}
+								onEdit={() => setModals({ edit: { open: true, id: id.toString() } })}
+								onDelete={() => setModals({ deleteConfirmation: id.toString() })}
 							/>
 						),
 					},
 				}))}
 				itemPadding={4}
-				loading={loading}
+				state={isLoading ? 'loading' : isError ? 'error' : undefined}
+				loadingMessage={<Loader />}
+				errorMessage={
+					<Group direction='column' align='center'>
+						<Text color='red'>Something went wrong while loading your memberships</Text>
+						<Button leftIcon={<RefreshIcon size={16} />} onClick={() => refetch()}>
+							Retry
+						</Button>
+					</Group>
+				}
+				emptyMessage={
+					memberships?.length ? (
+						<Text color='dimmed'>No memberships matched your search</Text>
+					) : (
+						<Group direction='column' align='center'>
+							<Text color='dimmed' weight={700}>
+								You don't have any memberships yet
+							</Text>
+							<Button
+								leftIcon={<NewMembershipIcon size={16} />}
+								onClick={() => setModals({ edit: { open: true } })}
+							>
+								Create A Membership
+							</Button>
+						</Group>
+					)
+				}
 			/>
 
 			<MembershipEditModal
