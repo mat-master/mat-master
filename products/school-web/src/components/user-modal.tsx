@@ -1,7 +1,6 @@
 import type { User } from '@common/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-	Avatar,
 	Center,
 	Group,
 	LoadingOverlay,
@@ -9,7 +8,6 @@ import {
 	ModalProps,
 	TextInput,
 	Title,
-	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
@@ -19,6 +17,7 @@ import { useNavigate } from 'react-router'
 import * as yup from 'yup'
 import { getUser, signout } from '../data/auth'
 import getInitials from '../utils/get-initials'
+import AvatarInput from './avatar-input'
 import ModalActions from './modal-actions'
 
 type UserData = Omit<User, 'id' | 'privilege'>
@@ -36,7 +35,6 @@ const UserModal: React.FC<ModalProps> = (props) => {
 	const mutation = useMutation(async (data: UserData) => console.log(data))
 	const form = useForm<UserData>({ resolver: yupResolver(userDataSchema) })
 	const navigate = useNavigate()
-	const theme = useMantineTheme()
 
 	useEffect(() => {
 		user && form.reset(user)
@@ -54,9 +52,7 @@ const UserModal: React.FC<ModalProps> = (props) => {
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' grow>
 					<Center>
-						<Avatar size='xl' radius={128} color={theme.primaryColor}>
-							{user && getInitials(user)}
-						</Avatar>
+						<AvatarInput>{user && getInitials(user)}</AvatarInput>
 					</Center>
 
 					<TextInput label='First Name' {...form.register('firstName')} />
