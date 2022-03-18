@@ -91,6 +91,7 @@ const StudentsPage: React.FC = () => {
 					resourceLabel='students'
 					refetchItems={refetch}
 					createItem={() => setModals({ invite: true })}
+					createMessage='Invite a student'
 					createIcon={AddUserIcon}
 				/>
 			</Table>

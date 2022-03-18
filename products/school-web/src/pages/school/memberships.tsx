@@ -94,6 +94,7 @@ const MembershipsPage: React.FC = () => {
 					resourceLabel='memberships'
 					refetchItems={refetch}
 					createItem={() => setModals({ edit: { open: true } })}
+					createMessage='Create A Membership'
 				/>
 			</Table>
 

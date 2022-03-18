@@ -18,6 +18,7 @@ export interface TableEmptyStateProps {
 	resourceLabel: string
 	refetchItems: VoidFunction
 	createItem: VoidFunction
+	createMessage: string
 	createIcon?: Icon
 }
 
@@ -26,6 +27,7 @@ const TableState: React.FC<TableEmptyStateProps> = ({
 	resourceLabel,
 	refetchItems,
 	createItem,
+	createMessage,
 	createIcon: CreateIcon = DefaultCreateIcon,
 }) => {
 	const { classes } = useStyles()
@@ -56,7 +58,7 @@ const TableState: React.FC<TableEmptyStateProps> = ({
 
 					{state === 'empty' && (
 						<Button leftIcon={<CreateIcon size={18} />} onClick={createItem}>
-							Create One
+							{createMessage}
 						</Button>
 					)}
 				</Group>

@@ -90,6 +90,7 @@ const ClassesPage: React.FC = () => {
 					resourceLabel='classes'
 					refetchItems={refetch}
 					createItem={() => setModals({ edit: { open: true } })}
+					createMessage='Create A Class'
 					createIcon={NewClassIcon}
 				/>
 			</Table>
