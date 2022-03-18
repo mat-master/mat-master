@@ -1,4 +1,4 @@
-import type { User } from '@common/types'
+import type { Snowflake } from '@common/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Center,
@@ -20,21 +20,29 @@ import getInitials from '../utils/get-initials'
 import AvatarInput from './avatar-input'
 import ModalActions from './modal-actions'
 
-type UserData = Omit<User, 'id' | 'privilege'>
+interface UserData {
+	firstName: string
+	lastName: string
+	email: string
+	avatar: File | Snowflake
+}
 
-const userDataSchema: yup.SchemaOf<Partial<UserData>> = yup.object({
-	firstName: yup.string(),
-	lastName: yup.string(),
-	email: yup.string().email(),
-	phone: yup.string(),
-	avatar: yup.string(),
+const userDataSchema: yup.SchemaOf<UserData> = yup.object({
+	firstName: yup.string().required(),
+	lastName: yup.string().required(),
+	email: yup.string().email().required(),
+	avatar: yup.mixed<File | Snowflake>().required(),
 })
 
 const UserModal: React.FC<ModalProps> = (props) => {
 	const { data: user, isLoading } = useQuery('me', getUser)
 	const mutation = useMutation(async (data: UserData) => console.log(data))
-	const form = useForm<UserData>({ resolver: yupResolver(userDataSchema) })
 	const navigate = useNavigate()
+
+	const form = useForm<UserData>({
+		defaultValues: { avatar: undefined },
+		resolver: yupResolver(userDataSchema),
+	})
 
 	useEffect(() => {
 		user && form.reset(user)
@@ -52,7 +60,9 @@ const UserModal: React.FC<ModalProps> = (props) => {
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' grow>
 					<Center>
-						<AvatarInput>{user && getInitials(user)}</AvatarInput>
+						<AvatarInput onChange={(img) => form.setValue('avatar', img)}>
+							{user && getInitials(user)}
+						</AvatarInput>
 					</Center>
 
 					<TextInput label='First Name' {...form.register('firstName')} />

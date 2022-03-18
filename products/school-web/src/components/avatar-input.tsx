@@ -1,10 +1,13 @@
 import { Avatar, createStyles, useMantineTheme } from '@mantine/core'
-import type React from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pencil as EditIcon } from 'tabler-icons-react'
 import { getPrimaryColor } from '../utils/get-colors'
 
-export interface AvatarInputProps {}
+export interface AvatarInputProps {
+	initialValue?: string
+	onChange: (img: File) => void
+	children?: React.ReactNode
+}
 
 const useStyles = createStyles((theme) => ({
 	wrapper: { position: 'relative', overflow: 'hidden' },
@@ -24,10 +27,14 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-const AvatarInput: React.FC<AvatarInputProps> = ({ children }) => {
+const AvatarInput: React.FC<AvatarInputProps> = ({ children, initialValue, onChange }) => {
 	const theme = useMantineTheme()
 	const { classes } = useStyles()
-	const [src, setSrc] = useState<string>()
+	const [src, setSrc] = useState(initialValue)
+
+	useEffect(() => {
+		if (!src) setSrc(initialValue)
+	}, [initialValue])
 
 	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
 		const file = e.target.files?.item(0)
@@ -35,6 +42,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ children }) => {
 
 		if (src) URL.revokeObjectURL(src)
 		setSrc(URL.createObjectURL(file))
+		onChange(file)
 	}
 
 	return (
