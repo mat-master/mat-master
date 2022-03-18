@@ -1,9 +1,10 @@
 import { Box, Skeleton, Title } from '@mantine/core'
 import type React from 'react'
-import useSchool from '../hooks/use-school'
+import { useQuery } from 'react-query'
+import { getCurrentSchool } from '../data/schools'
 
 const AppHeader: React.FC = () => {
-	const { data: school, isLoading } = useSchool()
+	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
 
 	return (
 		<Box
