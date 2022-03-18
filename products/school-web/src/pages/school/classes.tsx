@@ -1,15 +1,16 @@
-import { Button, Group, Loader, Text } from '@mantine/core'
+import { Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { useQuery } from 'react-query'
-import { CalendarPlus as NewClassIcon, Refresh as RefreshIcon } from 'tabler-icons-react'
+import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
 import ClassEditModal from '../../components/class-edit-modal'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import Table from '../../components/table'
+import TableState from '../../components/table-state'
 import { getClasses } from '../../data/classes'
 import classesContext, { type ClassSummary } from '../../data/classes-context'
 import useSearchTerm from '../../hooks/use-search-term'
@@ -73,34 +74,25 @@ const ClassesPage: React.FC = () => {
 					},
 				}))}
 				itemPadding={4}
-				state={isLoading ? 'loading' : isError ? 'error' : undefined}
-				loadingMessage={<Loader />}
-				errorMessage={
-					<Group direction='column' align='center'>
-						<Text color='red'>Something went wrong while loading your classes</Text>
-						<Button leftIcon={<RefreshIcon size={16} />} onClick={() => refetch()}>
-							Retry
-						</Button>
-					</Group>
-				}
-				emptyMessage={
-					classes?.length ? (
-						<Text color='dimmed'>No classes matched your search</Text>
-					) : (
-						<Group direction='column' align='center'>
-							<Text color='dimmed' weight={700}>
-								You don't have any classes yet
-							</Text>
-							<Button
-								leftIcon={<NewClassIcon size={16} />}
-								onClick={() => setModals({ edit: { open: true } })}
-							>
-								Create A Class
-							</Button>
-						</Group>
-					)
-				}
-			/>
+			>
+				<TableState
+					state={
+						isLoading
+							? 'loading'
+							: isError
+							? 'error'
+							: !classes?.length
+							? 'empty'
+							: !filteredClasses.length
+							? 'filtered'
+							: undefined
+					}
+					resourceLabel='classes'
+					refetchItems={refetch}
+					createItem={() => setModals({ edit: { open: true } })}
+					createIcon={NewClassIcon}
+				/>
+			</Table>
 
 			<ClassEditModal
 				opened={!!modals.edit?.open}

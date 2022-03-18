@@ -1,15 +1,16 @@
-import { Avatar, Badge, Button, Group, Loader, Text } from '@mantine/core'
+import { Avatar, Badge, Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import type React from 'react'
 import { useMemo } from 'react'
 import { useQuery } from 'react-query'
-import { Refresh as RefreshIcon, UserPlus as AddUserIcon } from 'tabler-icons-react'
+import { UserPlus as AddUserIcon } from 'tabler-icons-react'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import StudentEditModal from '../../components/student-edit-modal'
 import StudentInviteModal from '../../components/student-invite-modal'
 import Table from '../../components/table'
+import TableState from '../../components/table-state'
 import { getStudents } from '../../data/students'
 import useSearchTerm from '../../hooks/use-search-term'
 
@@ -74,34 +75,25 @@ const StudentsPage: React.FC = () => {
 					},
 				}))}
 				itemPadding={4}
-				state={isLoading ? 'loading' : isError ? 'error' : undefined}
-				loadingMessage={<Loader />}
-				errorMessage={
-					<Group direction='column' align='center'>
-						<Text color='red'>Something went wrong while loading your students</Text>
-						<Button leftIcon={<RefreshIcon size={16} />} onClick={() => refetch()}>
-							Retry
-						</Button>
-					</Group>
-				}
-				emptyMessage={
-					students?.length ? (
-						<Text color='dimmed'>No students matched your search</Text>
-					) : (
-						<Group direction='column' align='center'>
-							<Text color='dimmed' weight={700}>
-								You don't have any students yet
-							</Text>
-							<Button
-								leftIcon={<AddUserIcon size={16} />}
-								onClick={() => setModals({ invite: true })}
-							>
-								Invite A Student
-							</Button>
-						</Group>
-					)
-				}
-			/>
+			>
+				<TableState
+					state={
+						isLoading
+							? 'loading'
+							: isError
+							? 'error'
+							: !students?.length
+							? 'empty'
+							: !filteredStudents.length
+							? 'filtered'
+							: undefined
+					}
+					resourceLabel='students'
+					refetchItems={refetch}
+					createItem={() => setModals({ invite: true })}
+					createIcon={AddUserIcon}
+				/>
+			</Table>
 
 			<StudentInviteModal
 				opened={!!modals.invite}

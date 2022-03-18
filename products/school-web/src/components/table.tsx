@@ -18,10 +18,7 @@ export interface TableProps<T extends string> {
 	columns: Column<T>[]
 	items: ItemData<T>[]
 	itemPadding?: MantineNumberSize | number | undefined
-	state?: 'loading' | 'error'
-	loadingMessage?: React.ReactNode
-	errorMessage?: React.ReactNode
-	emptyMessage?: React.ReactNode
+	children?: React.ReactNode
 }
 
 interface StylesProps {
@@ -70,24 +67,13 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		textOverflow: 'ellipsis',
 		whiteSpace: 'nowrap',
 	},
-	state: {
-		width: '100%',
-		height: 360,
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		margin: `0 ${theme.spacing.xl}`,
-	},
 }))
 
 const Table = <T extends string>({
 	columns,
 	items,
 	itemPadding = 'xs',
-	state,
-	loadingMessage,
-	errorMessage,
-	emptyMessage,
+	children,
 }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding })
 	const navigate = useNavigate()
@@ -108,35 +94,26 @@ const Table = <T extends string>({
 			</thead>
 
 			<tbody className={classes.body}>
-				{state ?? items.length === 0 ? (
-					<tr className={classes.state}>
-						{state === 'loading'
-							? loadingMessage
-							: state === 'error'
-							? errorMessage
-							: emptyMessage}
+				{children}
+				{items.map((item, i) => (
+					<tr
+						key={i}
+						className={`${classes.row} ${classes.item}`}
+						data-href={item.href}
+						onClick={() => item.href && navigate(item.href)}
+						style={{ cursor: item.href ? 'pointer' : undefined }}
+					>
+						{columns.map(({ key, defaultElement }, i) => (
+							<td
+								key={key}
+								className={classes.cell}
+								style={{ width: columnWidths[i], maxWidth: columnWidths[i] }}
+							>
+								{item.data[key] ?? defaultElement}
+							</td>
+						))}
 					</tr>
-				) : (
-					items.map((item, i) => (
-						<tr
-							key={i}
-							className={`${classes.row} ${classes.item}`}
-							data-href={item.href}
-							onClick={() => item.href && navigate(item.href)}
-							style={{ cursor: item.href ? 'pointer' : undefined }}
-						>
-							{columns.map(({ key, defaultElement }, i) => (
-								<td
-									key={key}
-									className={classes.cell}
-									style={{ width: columnWidths[i], maxWidth: columnWidths[i] }}
-								>
-									{item.data[key] ?? defaultElement}
-								</td>
-							))}
-						</tr>
-					))
-				)}
+				))}
 			</tbody>
 		</Paper>
 	)
