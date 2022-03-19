@@ -1,10 +1,12 @@
 import { Avatar, createStyles, useMantineTheme } from '@mantine/core'
-import React, { useEffect, useState } from 'react'
+import { useUncontrolled } from '@mantine/hooks'
+import React, { useMemo } from 'react'
 import { Pencil as EditIcon } from 'tabler-icons-react'
 import { getPrimaryColor } from '../utils/get-colors'
 
 export interface AvatarInputProps {
-	initialValue?: string
+	value?: string | File | null
+	defaultValue?: string | File
 	onChange: (img: File) => void
 	children?: React.ReactNode
 }
@@ -27,35 +29,41 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-const AvatarInput: React.FC<AvatarInputProps> = ({ children, initialValue, onChange }) => {
-	const theme = useMantineTheme()
-	const { classes } = useStyles()
-	const [src, setSrc] = useState(initialValue)
+const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
+	({ children, value: controlledValue, defaultValue, onChange }) => {
+		const theme = useMantineTheme()
+		const { classes } = useStyles()
+		const [value, setValue] = useUncontrolled({
+			value: controlledValue,
+			finalValue: null,
+			defaultValue,
+			onChange,
+			rule: (value) => typeof value === 'string' || value instanceof File || value === null,
+		})
 
-	useEffect(() => {
-		if (!src) setSrc(initialValue)
-	}, [initialValue])
+		let src: string | undefined
+		src = useMemo(() => {
+			if (src) URL.revokeObjectURL(src)
+			if (value instanceof File) return URL.createObjectURL(value)
+		}, [value])
 
-	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-		const file = e.target.files?.item(0)
-		if (!file) return
-
-		if (src) URL.revokeObjectURL(src)
-		setSrc(URL.createObjectURL(file))
-		onChange(file)
+		return (
+			<label className={classes.wrapper}>
+				<input
+					type='file'
+					accept='image/*'
+					style={{ display: 'none' }}
+					onChange={(e) => setValue(e.target.files?.item(0) ?? null)}
+				/>
+				<Avatar src={src} size='xl' radius={128} color={theme.primaryColor}>
+					{children}
+				</Avatar>
+				<div className={classes.editOverlay}>
+					<EditIcon size={32} color={theme.white} />
+				</div>
+			</label>
+		)
 	}
-
-	return (
-		<label className={classes.wrapper}>
-			<input type='file' accept='image/*' style={{ display: 'none' }} onChange={handleChange} />
-			<Avatar src={src} size='xl' radius={128} color={theme.primaryColor}>
-				{children}
-			</Avatar>
-			<div className={classes.editOverlay}>
-				<EditIcon size={32} color={theme.white} />
-			</div>
-		</label>
-	)
-}
+)
 
 export default AvatarInput

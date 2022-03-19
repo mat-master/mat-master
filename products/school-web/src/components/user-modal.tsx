@@ -40,7 +40,7 @@ const UserModal: React.FC<ModalProps> = (props) => {
 	const navigate = useNavigate()
 
 	const form = useForm<UserData>({
-		defaultValues: { avatar: undefined },
+		// defaultValues: { avatar: undefined },
 		resolver: yupResolver(userDataSchema),
 	})
 
@@ -60,7 +60,10 @@ const UserModal: React.FC<ModalProps> = (props) => {
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' grow>
 					<Center>
-						<AvatarInput onChange={(img) => form.setValue('avatar', img)}>
+						<AvatarInput
+							{...form.register('avatar')}
+							onChange={(img) => form.setValue('avatar', img)}
+						>
 							{user && getInitials(user)}
 						</AvatarInput>
 					</Center>
