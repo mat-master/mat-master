@@ -5,15 +5,18 @@ import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
+import AppHeader from '../../components/app-header'
 import ClassEditModal from '../../components/class-edit-modal'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
+import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getClasses } from '../../data/classes'
 import classesContext, { type ClassSummary } from '../../data/classes-context'
 import useSearchTerm from '../../hooks/use-search-term'
+import Page from '../../page'
 import getReadableSchedule from '../../utils/get-readable-shedule'
 import setRemoteResource from '../../utils/set-remote-resource'
 
@@ -38,7 +41,7 @@ const ClassesPage: React.FC = () => {
 		classes?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'class'
 
 	return (
-		<>
+		<Page header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Classes'
 				search={setSearchTerm}
@@ -113,7 +116,7 @@ const ClassesPage: React.FC = () => {
 				}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
 			/>
-		</>
+		</Page>
 	)
 }
 

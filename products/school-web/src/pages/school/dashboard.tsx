@@ -5,12 +5,15 @@ import {
 	ListCheck as AttendanceIcon,
 	UserPlus as NewStudentsIcon,
 } from 'tabler-icons-react'
+import AppHeader from '../../components/app-header'
 import PageHeader from '../../components/page-header'
+import SideBar from '../../components/side-bar'
 import StatCard from '../../components/stat-card'
+import Page from '../../page'
 
 const DashboardPage: React.FC = () => {
 	return (
-		<>
+		<Page header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader title='Dashboard' />
 			<SimpleGrid
 				cols={4}
@@ -36,7 +39,7 @@ const DashboardPage: React.FC = () => {
 				/>
 				<StatCard title='Your Mom' icon={NewStudentsIcon} value={183} previousValue={208} />
 			</SimpleGrid>
-		</>
+		</Page>
 	)
 }
 

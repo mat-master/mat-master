@@ -5,15 +5,18 @@ import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
+import AppHeader from '../../components/app-header'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import MembershipEditModal from '../../components/membership-edit-modal'
 import PageHeader from '../../components/page-header'
+import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getMemberships } from '../../data/memberships'
 import membershipsContext from '../../data/memberships-context'
 import useSearchTerm from '../../hooks/use-search-term'
+import Page from '../../page'
 import setRemoteResource from '../../utils/set-remote-resource'
 
 interface MembershipModals {
@@ -45,7 +48,7 @@ const MembershipsPage: React.FC = () => {
 		'membership'
 
 	return (
-		<>
+		<Page header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Memberships'
 				search={setSearchTerm}
@@ -116,7 +119,7 @@ const MembershipsPage: React.FC = () => {
 				}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
 			/>
-		</>
+		</Page>
 	)
 }
 

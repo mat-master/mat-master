@@ -10,7 +10,6 @@ const AppHeader: React.FC = () => {
 		<Box
 			component='header'
 			sx={(theme) => ({
-				gridColumn: 'span 2',
 				padding: `${theme.spacing.md}px ${theme.spacing.xl}px`,
 				backgroundColor: theme.white,
 				borderBottom: `1px solid ${theme.colors.gray[2]}`,
