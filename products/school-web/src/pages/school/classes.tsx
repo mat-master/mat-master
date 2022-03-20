@@ -41,7 +41,7 @@ const ClassesPage: React.FC = () => {
 		classes?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'class'
 
 	return (
-		<Page header={<AppHeader />} sideBar={<SideBar />}>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Classes'
 				search={setSearchTerm}

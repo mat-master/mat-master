@@ -13,7 +13,7 @@ import Page from '../../page'
 
 const DashboardPage: React.FC = () => {
 	return (
-		<Page header={<AppHeader />} sideBar={<SideBar />}>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader title='Dashboard' />
 			<SimpleGrid
 				cols={4}

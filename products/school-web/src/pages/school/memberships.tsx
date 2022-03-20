@@ -48,7 +48,7 @@ const MembershipsPage: React.FC = () => {
 		'membership'
 
 	return (
-		<Page header={<AppHeader />} sideBar={<SideBar />}>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Memberships'
 				search={setSearchTerm}

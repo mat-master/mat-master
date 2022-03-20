@@ -1,6 +1,5 @@
-import { Badge, Card, createStyles, Group, Image, Text, useMantineTheme } from '@mantine/core'
+import { Card, createStyles, Image, Skeleton, Text, useMantineTheme } from '@mantine/core'
 import type React from 'react'
-import { Users as StudentsIcon } from 'tabler-icons-react'
 
 const useStyles = createStyles((theme) => ({
 	card: {
@@ -29,40 +28,37 @@ const useStyles = createStyles((theme) => ({
 
 interface BadgeCardProps {
 	image: string
-	title: string
-	country: string
-	description: string
-	badges: {
-		emoji: string
-		label: string
-	}[]
+	name: string
+	href: string
+	loading?: boolean
 }
 
-const SchoolCard: React.FC<BadgeCardProps> = ({
-	image,
-	title,
-	description,
-	country,
-	badges,
-}) => {
+const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href, loading }) => {
 	const { classes } = useStyles()
 	const theme = useMantineTheme()
 
 	return (
-		<Card withBorder padding='md' className={classes.card}>
-			<Card.Section>
-				<Image src={image} alt={title} height={180} />
+		<Card
+			withBorder
+			component='a'
+			href={href}
+			padding='md'
+			radius='md'
+			shadow='sm'
+			className={classes.card}
+		>
+			<Card.Section style={{ margin: 0 }}>
+				<Skeleton visible={!!loading}>
+					<Image src={image} alt={name} height={180} />
+				</Skeleton>
 			</Card.Section>
 
 			<Card.Section className={classes.section} mt='md'>
-				<Text size='lg' weight={700}>
-					{title}
-				</Text>
-				<Group>
-					<Badge size='lg' leftSection={<StudentsIcon size={16} />}>
-						38
-					</Badge>
-				</Group>
+				<Skeleton visible={!!loading}>
+					<Text size='lg' weight={700}>
+						{name}
+					</Text>
+				</Skeleton>
 			</Card.Section>
 		</Card>
 	)

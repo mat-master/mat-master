@@ -41,7 +41,7 @@ const StudentsPage: React.FC = () => {
 	const deleteName = deleteUser && `${deleteUser.lastName} ${deleteUser.lastName}`
 
 	return (
-		<Page header={<AppHeader />} sideBar={<SideBar />}>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Students'
 				search={setSearchTerm}
