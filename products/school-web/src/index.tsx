@@ -8,11 +8,11 @@ import App from './app'
 import ResourcesProvider from './data/resources-provider'
 
 axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-	axios.defaults.baseURL = `http://${window.location.hostname}:3030`
-} else {
-	axios.defaults.baseURL = 'https://api.matmaster.app'
-}
+axios.defaults.validateStatus = () => true
+axios.defaults.baseURL =
+	'localhost' || window.location.hostname === '127.0.0.1'
+		? `http://${window.location.hostname}:3030`
+		: 'https://api.matmaster.app'
 
 const queryClient = new QueryClient({
 	defaultOptions: {

@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
+	Button,
 	Group,
 	LoadingOverlay,
 	Modal,
@@ -9,19 +10,18 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
-import { useContext, useEffect } from 'react'
+import { useContext, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import * as yup from 'yup'
-import classesContext from '../data/classes-context'
+import { getClasses } from '../data/classes'
+import { createMembership } from '../data/memberships'
 import type { Membership } from '../data/memberships-context'
 import membershipsContext from '../data/memberships-context'
 import type { ResourceData } from '../data/resource-provider'
 import usePromise from '../hooks/use-promise'
-import setRemoteResource from '../utils/set-remote-resource'
-import ModalActions from './modal-actions'
 
 type MembershipData = ResourceData<Membership>
 
@@ -31,43 +31,36 @@ const membershipDataSchema: yup.SchemaOf<MembershipData> = yup.object({
 	price: yup.number().min(0).required(),
 })
 
-const defaultMembershipData: MembershipData = {
-	name: '',
-	classes: [],
-	price: 0,
-}
-
 const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
 	...props
 }) => {
 	const membershipsSrc = useContext(membershipsContext)
-	const classesSrc = useContext(classesContext)
-	const notifications = useNotifications()
-
-	const form = useForm<MembershipData>({
-		defaultValues: defaultMembershipData,
-		resolver: yupResolver(membershipDataSchema),
+	const queryClient = useQueryClient()
+	const { mutateAsync, isLoading: mutationWorking } = useMutation((data: MembershipData) => {
+		queryClient.invalidateQueries('memberships')
+		if (membershipId) throw 'Unimplemented'
+		return createMembership({ ...data, interval: 'month', intervalCount: 1 })
 	})
 
-	const handleSubmit = (values: MembershipData) => {
+	const form = useForm<MembershipData>({ resolver: yupResolver(membershipDataSchema) })
+
+	const handleClose = () => {
 		props.onClose()
-		setRemoteResource(membershipsSrc, {
-			id: membershipId,
-			data: values,
-			resourceLabel: values.name,
-			notifications,
-		})
+		form.reset()
+		form.clearErrors()
 	}
 
-	useEffect(() => {
-		!props.opened && form.reset(defaultMembershipData)
-	}, [props.opened])
+	const handleSubmit = async (values: MembershipData) => {
+		await mutateAsync(values)
+		handleClose()
+	}
 
-	const { loading: classesLoading, value: classOptions } = usePromise(async () => {
-		const summaries = await classesSrc.getSummaries()
-		return summaries.map(({ id, name }) => ({ value: id, label: name }))
-	}, [classesSrc.summaries])
+	const { data: classes, isLoading: classesLoading } = useQuery('classes', getClasses)
+	const classOptions = useMemo(
+		() => classes?.map(({ id, name }) => ({ value: id.toString(), label: name })) ?? [],
+		[classes]
+	)
 
 	const { loading: membershipLoading, value: membership } = usePromise(async () => {
 		if (!membershipId) return
@@ -77,8 +70,12 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	}, [membershipId])
 
 	return (
-		<Modal title={<Title order={3}>{membership?.name ?? 'New Membership'}</Title>} {...props}>
-			<LoadingOverlay visible={classesLoading || membershipLoading} radius='sm' />
+		<Modal
+			title={<Title order={3}>{membership?.name ?? 'New Membership'}</Title>}
+			{...props}
+			onClose={handleClose}
+		>
+			<LoadingOverlay visible={membershipLoading || classesLoading} radius='sm' />
 
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' spacing='sm' grow>
@@ -112,13 +109,12 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 							/>
 						)}
 					/>
+					<Group position='right'>
+						<Button type='submit' loading={mutationWorking}>
+							{membershipId ? 'Save' : 'Create'}
+						</Button>
+					</Group>
 				</Group>
-
-				<ModalActions
-					primaryLabel='Save'
-					secondaryAction={props.onClose}
-					secondaryLabel='Cancel'
-				/>
 			</form>
 		</Modal>
 	)

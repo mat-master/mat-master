@@ -1,6 +1,7 @@
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
+	Button,
 	Group,
 	LoadingOverlay,
 	Modal,
@@ -9,19 +10,18 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
-import { useContext, useEffect } from 'react'
+import { useContext, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import * as yup from 'yup'
+import { createClass } from '../data/classes'
 import classesContext, { type Class } from '../data/classes-context'
-import membershipsContext from '../data/memberships-context'
+import { getMemberships } from '../data/memberships'
 import type { ResourceData } from '../data/resource-provider'
 import usePromise from '../hooks/use-promise'
-import setRemoteResource from '../utils/set-remote-resource'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
-import ModalActions from './modal-actions'
 
 export interface ClassEditModalProps {
 	open: boolean
@@ -32,7 +32,7 @@ export interface ClassEditModalProps {
 type ClassData = ResourceData<Class>
 
 const classDataSchema: yup.SchemaOf<ClassData> = yup.object({
-	name: yup.string().required('Required'),
+	name: yup.string().required(),
 	memberships: yup.array(yup.string().required()).required(),
 	schedule: yup.array().of(validator.classTimeSchema).min(1, 'At least one time is required'),
 })
@@ -41,32 +41,34 @@ const defaultClassData: ClassData = { name: '', memberships: [], schedule: [defa
 
 const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
 	const classesSrc = useContext(classesContext)
-	const membershipsSrc = useContext(membershipsContext)
-	const notifications = useNotifications()
+	const queryClient = useQueryClient()
+	const { mutateAsync, isLoading: mutationWorking } = useMutation(
+		({ name, schedule }: ClassData) => {
+			queryClient.invalidateQueries('classes')
+			if (classId) throw 'Unimplemented'
+			return createClass({ name, schedule })
+		}
+	)
 
 	const form = useForm<ClassData>({
 		defaultValues: defaultClassData,
 		resolver: yupResolver(classDataSchema),
 	})
 
-	const handleSubmit = (values: ClassData) => {
+	const handleSubmit = async (values: ClassData) => {
+		await mutateAsync(values)
 		props.onClose()
-		setRemoteResource(classesSrc, {
-			id: classId,
-			data: values,
-			resourceLabel: values.name,
-			notifications,
-		})
+		form.reset()
 	}
 
-	useEffect(() => {
-		!props.opened && form.reset(defaultClassData)
-	}, [props.opened])
-
-	const { loading: membershipsLoading, value: membershipOptions } = usePromise(async () => {
-		const summaries = await membershipsSrc.getSummaries()
-		return summaries.map(({ id, name }) => ({ value: id, label: name }))
-	}, [membershipsSrc.summaries])
+	const { data: memberships, isLoading: membershipsLoading } = useQuery(
+		'memberships',
+		getMemberships
+	)
+	const membershipOptions = useMemo(
+		() => memberships?.map(({ id, name }) => ({ value: id.toString(), label: name })) ?? [],
+		[memberships]
+	)
 
 	const { loading: classLoading, value: _class } = usePromise(async () => {
 		if (!classId) return
@@ -76,7 +78,11 @@ const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, 
 	}, [classId])
 
 	return (
-		<Modal title={<Title order={3}>{_class?.name ?? 'New Class'}</Title>} {...props}>
+		<Modal
+			title={<Title order={3}>{_class?.name ?? 'New Class'}</Title>}
+			{...props}
+			onClose={() => !mutationWorking && props.onClose()}
+		>
 			<LoadingOverlay visible={membershipsLoading || classLoading} radius='sm' />
 
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -111,13 +117,12 @@ const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, 
 							/>
 						)}
 					/>
+					<Group position='right'>
+						<Button type='submit' loading={mutationWorking}>
+							{classId ? 'Save' : 'Create'}
+						</Button>
+					</Group>
 				</Group>
-
-				<ModalActions
-					primaryLabel='Save'
-					secondaryAction={props.onClose}
-					secondaryLabel='Cancel'
-				/>
 			</form>
 		</Modal>
 	)
