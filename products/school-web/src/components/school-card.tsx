@@ -1,4 +1,4 @@
-import { Card, createStyles, Image, Skeleton, Text, useMantineTheme } from '@mantine/core'
+import { Card, createStyles, Image, Text } from '@mantine/core'
 import type React from 'react'
 
 const useStyles = createStyles((theme) => ({
@@ -30,12 +30,10 @@ interface BadgeCardProps {
 	image: string
 	name: string
 	href: string
-	loading?: boolean
 }
 
-const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href, loading }) => {
+const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href }) => {
 	const { classes } = useStyles()
-	const theme = useMantineTheme()
 
 	return (
 		<Card
@@ -48,17 +46,13 @@ const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href, loading }) =>
 			className={classes.card}
 		>
 			<Card.Section style={{ margin: 0 }}>
-				<Skeleton visible={!!loading}>
-					<Image src={image} alt={name} height={180} />
-				</Skeleton>
+				<Image src={image} alt={name} height={180} />
 			</Card.Section>
 
 			<Card.Section className={classes.section} mt='md'>
-				<Skeleton visible={!!loading}>
-					<Text size='lg' weight={700}>
-						{name}
-					</Text>
-				</Skeleton>
+				<Text size='lg' weight={700}>
+					{name}
+				</Text>
 			</Card.Section>
 		</Card>
 	)
