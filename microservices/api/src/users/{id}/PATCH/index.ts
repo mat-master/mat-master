@@ -8,6 +8,8 @@ import type { SignupPostBody } from '@common/types';
 import { validator } from '@common/util';
 import { validateBody } from '../../../util/validation';
 import { authUser } from '../../../util/user';
+import imageDataUri from 'image-data-uri';
+import * as webp from 'webp-converter';
 
 // Signs up a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -30,6 +32,15 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         statements.push(`last_name = $${i++}`);
         values.push(body.lastName);
     }
+    if(body.avatar) {
+        const avatar = imageDataUri.decode(body.avatar);
+        const imageType = avatar.imageType.split("/")[1];
+        webp.buffer2webpbuffer(avatar.data, imageType, "-q 80")
+        .then((buffer: Buffer) => {
+
+        });
+    }
+
     //TODO: Add avatar creation in s3 bucket from data_uri and update avatar_url to reflect that
 
     const query = await db.query(`UPDATE users SET ${statements.join(",")} WHERE id = $1`, [payload.id, ...values]);
