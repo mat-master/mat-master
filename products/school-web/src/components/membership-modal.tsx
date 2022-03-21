@@ -11,17 +11,15 @@ import {
 	Title,
 } from '@mantine/core'
 import type React from 'react'
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import * as yup from 'yup'
 import { getClasses } from '../data/classes'
-import { createMembership } from '../data/memberships'
+import { createMembership, getMemberships } from '../data/memberships'
 import type { Membership } from '../data/memberships-context'
-import membershipsContext from '../data/memberships-context'
 import type { ResourceData } from '../data/resource-provider'
-import usePromise from '../hooks/use-promise'
 
 type MembershipData = ResourceData<Membership>
 
@@ -35,9 +33,8 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
 	...props
 }) => {
-	const membershipsSrc = useContext(membershipsContext)
 	const queryClient = useQueryClient()
-	const { mutateAsync, isLoading: mutationWorking } = useMutation((data: MembershipData) => {
+	const { mutateAsync } = useMutation((data: MembershipData) => {
 		queryClient.invalidateQueries('memberships')
 		if (membershipId) throw 'Unimplemented'
 		return createMembership({ ...data, interval: 'month', intervalCount: 1 })
@@ -56,18 +53,23 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 		handleClose()
 	}
 
+	const { data: memberships, isLoading: membershipLoading } = useQuery(
+		'memberships',
+		getMemberships,
+		{ enabled: !!membershipId }
+	)
+	const membership = useMemo(() => {
+		const membership = memberships?.find(({ id }) => id === membershipId)
+		if (membership)
+			form.reset({ ...membership, classes: membership.classes.map(({ id }) => id.toString()) })
+		return membership
+	}, [memberships, membershipId])
+
 	const { data: classes, isLoading: classesLoading } = useQuery('classes', getClasses)
 	const classOptions = useMemo(
 		() => classes?.map(({ id, name }) => ({ value: id.toString(), label: name })) ?? [],
 		[classes]
 	)
-
-	const { loading: membershipLoading, value: membership } = usePromise(async () => {
-		if (!membershipId) return
-		const membership = await membershipsSrc.get(membershipId)
-		form.reset(membership)
-		return membership
-	}, [membershipId])
 
 	return (
 		<Modal
@@ -110,7 +112,7 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 						)}
 					/>
 					<Group position='right'>
-						<Button type='submit' loading={mutationWorking}>
+						<Button type='submit' loading={form.formState.isSubmitting}>
 							{membershipId ? 'Save' : 'Create'}
 						</Button>
 					</Group>

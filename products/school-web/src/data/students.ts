@@ -16,3 +16,12 @@ export const getStudents = async () => {
 	return res.data as Student[]
 	if (!yup.array().of(validator.studentSchema).validate(res.data)) throw undefined
 }
+
+export type StudentData = {
+	memberships: string[]
+}
+
+export const updateStudent = async (id: string, data: StudentData) => {
+	const res = await axios.post(`/schools/${getSchoolId()}/students/${id}`, data)
+	if (res.status !== 200) throw res.data.error
+}
