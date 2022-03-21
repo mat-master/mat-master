@@ -1,3 +1,5 @@
+import type { SchoolMembershipsPostBody } from '@common/types'
+import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Button,
@@ -15,32 +17,23 @@ import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
-import * as yup from 'yup'
 import { getClasses } from '../data/classes'
 import { createMembership, getMemberships } from '../data/memberships'
-import type { Membership } from '../data/memberships-context'
-import type { ResourceData } from '../data/resource-provider'
-
-type MembershipData = ResourceData<Membership>
-
-const membershipDataSchema: yup.SchemaOf<MembershipData> = yup.object({
-	name: yup.string().required(),
-	classes: yup.array().of(yup.string().required()).required(),
-	price: yup.number().min(0).required(),
-})
 
 const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
 	...props
 }) => {
 	const queryClient = useQueryClient()
-	const { mutateAsync } = useMutation((data: MembershipData) => {
+	const { mutateAsync } = useMutation((data: SchoolMembershipsPostBody) => {
 		queryClient.invalidateQueries('memberships')
 		if (membershipId) throw 'Unimplemented'
 		return createMembership({ ...data, interval: 'month', intervalCount: 1 })
 	})
 
-	const form = useForm<MembershipData>({ resolver: yupResolver(membershipDataSchema) })
+	const form = useForm<SchoolMembershipsPostBody>({
+		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
+	})
 
 	const handleClose = () => {
 		props.onClose()
@@ -48,7 +41,7 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 		form.clearErrors()
 	}
 
-	const handleSubmit = async (values: MembershipData) => {
+	const handleSubmit = async (values: SchoolMembershipsPostBody) => {
 		await mutateAsync(values)
 		handleClose()
 	}
@@ -95,6 +88,7 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 								data={classOptions ?? []}
 								error={fieldState.error?.message}
 								{...field}
+								value={field.value.map((snowflake) => snowflake.toString())}
 							/>
 						)}
 					/>

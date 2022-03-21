@@ -5,7 +5,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import App from './app'
-import ResourcesProvider from './data/resources-provider'
 
 axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
 axios.defaults.validateStatus = () => true
@@ -39,11 +38,9 @@ ReactDOM.render(
 					})}
 				/>
 
-				<ResourcesProvider>
-					<NotificationsProvider>
-						<App />
-					</NotificationsProvider>
-				</ResourcesProvider>
+				<NotificationsProvider>
+					<App />
+				</NotificationsProvider>
 			</MantineProvider>
 		</QueryClientProvider>
 	</React.StrictMode>,

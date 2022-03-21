@@ -1,8 +1,7 @@
 import { Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
-import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
@@ -14,10 +13,8 @@ import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getMemberships } from '../../data/memberships'
-import membershipsContext from '../../data/memberships-context'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
-import setRemoteResource from '../../utils/set-remote-resource'
 
 interface MembershipModals {
 	edit?: { open: boolean; id?: string }
@@ -25,10 +22,8 @@ interface MembershipModals {
 }
 
 const MembershipsPage: React.FC = () => {
-	const membershipsSrc = useContext(membershipsContext)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const [modals, setModals] = useSetState<MembershipModals>({})
-	const notifications = useNotifications()
 
 	const {
 		data: memberships,
@@ -44,8 +39,7 @@ const MembershipsPage: React.FC = () => {
 	}, [debouncedSearchTerm, memberships])
 
 	const deleteName =
-		membershipsSrc.summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ??
-		'membership'
+		memberships?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'membership'
 
 	return (
 		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
@@ -110,13 +104,7 @@ const MembershipsPage: React.FC = () => {
 				open={!!modals.deleteConfirmation}
 				actionType='delete'
 				resourceLabel={deleteName}
-				action={() =>
-					setRemoteResource(membershipsSrc, {
-						id: modals.deleteConfirmation,
-						resourceLabel: deleteName,
-						notifications,
-					})
-				}
+				action={() => {}}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
 			/>
 		</Page>
