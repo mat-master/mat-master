@@ -1,17 +1,22 @@
-import { Avatar, AvatarsGroup, Title } from '@mantine/core'
+import { Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import { useNotifications } from '@mantine/notifications'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
-import { Plus as PlusIcon } from 'tabler-icons-react'
+import { useQuery } from 'react-query'
+import { Plus as NewMembershipIcon } from 'tabler-icons-react'
+import AppHeader from '../../components/app-header'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import MembershipEditModal from '../../components/membership-edit-modal'
 import PageHeader from '../../components/page-header'
+import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
+import TableState from '../../components/table-state'
+import { getMemberships } from '../../data/memberships'
 import membershipsContext from '../../data/memberships-context'
-import useResourceSummaries from '../../hooks/use-resource-summaries'
 import useSearchTerm from '../../hooks/use-search-term'
+import Page from '../../page'
 import setRemoteResource from '../../utils/set-remote-resource'
 
 interface MembershipModals {
@@ -22,26 +27,35 @@ interface MembershipModals {
 const MembershipsPage: React.FC = () => {
 	const membershipsSrc = useContext(membershipsContext)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
-	const { summaries, loading } = useResourceSummaries(membershipsSrc)
 	const [modals, setModals] = useSetState<MembershipModals>({})
 	const notifications = useNotifications()
 
+	const {
+		data: memberships,
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery('memberships', getMemberships)
 	const filteredMemberships = useMemo(() => {
-		if (!summaries) return []
-		return summaries.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-	}, [debouncedSearchTerm, summaries])
+		if (!memberships) return []
+		return memberships.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		)
+	}, [debouncedSearchTerm, memberships])
 
 	const deleteName =
 		membershipsSrc.summaries?.find(({ id }) => id === modals.deleteConfirmation)?.name ??
 		'membership'
 
 	return (
-		<>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Memberships'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[{ icon: PlusIcon, action: () => setModals({ edit: { open: true } }) }]}
+				actions={[
+					{ icon: NewMembershipIcon, action: () => setModals({ edit: { open: true } }) },
+				]}
 			/>
 
 			<Table
@@ -52,29 +66,40 @@ const MembershipsPage: React.FC = () => {
 					{ key: 'price', name: 'Price', width: 1 },
 					{ key: 'menu', name: '', width: 0.5 },
 				]}
-				items={filteredMemberships.map(({ id, name, classes, studentAvatars, price }) => ({
+				items={filteredMemberships.map(({ id, name, classes, price }) => ({
 					data: {
-						name: <Title order={6}>{name}</Title>,
+						name: <Text weight={700}>{name}</Text>,
 						classes: classes.join(', '),
-						students: (
-							<AvatarsGroup limit={4}>
-								{studentAvatars.map((src, i) => (
-									<Avatar key={i} src={src} />
-								))}
-							</AvatarsGroup>
-						),
+						students: 'TODO',
 						price: `$${price} / mo.`,
 						menu: (
 							<ItemMenu
-								onEdit={() => setModals({ edit: { open: true, id } })}
-								onDelete={() => setModals({ deleteConfirmation: id })}
+								onEdit={() => setModals({ edit: { open: true, id: id.toString() } })}
+								onDelete={() => setModals({ deleteConfirmation: id.toString() })}
 							/>
 						),
 					},
 				}))}
 				itemPadding={4}
-				loading={loading}
-			/>
+			>
+				<TableState
+					state={
+						isLoading
+							? 'loading'
+							: isError
+							? 'error'
+							: !memberships?.length
+							? 'empty'
+							: !filteredMemberships.length
+							? 'filtered'
+							: undefined
+					}
+					resourceLabel='memberships'
+					refetchItems={refetch}
+					createItem={() => setModals({ edit: { open: true } })}
+					createMessage='Create A Membership'
+				/>
+			</Table>
 
 			<MembershipEditModal
 				opened={!!modals.edit?.open}
@@ -94,7 +119,7 @@ const MembershipsPage: React.FC = () => {
 				}
 				onClose={() => setModals({ deleteConfirmation: undefined })}
 			/>
-		</>
+		</Page>
 	)
 }
 

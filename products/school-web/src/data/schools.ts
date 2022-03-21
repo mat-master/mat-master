@@ -2,6 +2,7 @@ import type { School, SchoolPostBody, UserSchoolsGetResponse } from '@common/typ
 import { validator } from '@common/util'
 import axios from 'axios'
 import * as yup from 'yup'
+import getSchoolId from '../utils/get-school-id'
 
 const userSchoolsGetResponseSchema: yup.SchemaOf<UserSchoolsGetResponse> = yup.object({
 	adminSchools: yup.array().of(validator.schoolSchema).required(),
@@ -16,8 +17,8 @@ export const getSchools = async () => {
 	return res.data as UserSchoolsGetResponse
 }
 
-export const getSchool = async (id: string) => {
-	const res = await axios.get(`/schools/${id}`)
+export const getCurrentSchool = async () => {
+	const res = await axios.get(`/schools/${getSchoolId()}`)
 	if (res.status !== 200) throw res.data.error
 
 	// if (!(await validator.schoolSchema.validate(res.data))) throw undefined

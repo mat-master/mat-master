@@ -1,5 +1,5 @@
-import { ActionIcon, Box, Group, Title, useMantineTheme } from '@mantine/core';
-import type React from 'react';
+import { ActionIcon, Box, Button, Group, Title, useMantineTheme } from '@mantine/core'
+import type React from 'react'
 import type { Icon } from 'tabler-icons-react'
 import SearchBar from './search-bar'
 
@@ -25,17 +25,23 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, search, searchT
 				<Title>{title}</Title>
 
 				<Group spacing='sm' align='center'>
-					{actions?.map(({ icon: Icon, action }, i) => (
-						<ActionIcon
-							key={i}
-							size='lg'
-							color={theme.primaryColor}
-							variant='filled'
-							onClick={action}
-						>
-							{<Icon size={18} />}
-						</ActionIcon>
-					))}
+					{actions?.map(({ icon: Icon, action, label }, i) =>
+						label ? (
+							<Button key={i} onClick={action} leftIcon={<Icon size={18} />}>
+								{label}
+							</Button>
+						) : (
+							<ActionIcon
+								key={i}
+								size='lg'
+								color={theme.primaryColor}
+								variant='filled'
+								onClick={action}
+							>
+								{<Icon size={18} />}
+							</ActionIcon>
+						)
+					)}
 
 					{search && <SearchBar onChange={(e) => search(e.target.value)} value={searchTerm} />}
 				</Group>
@@ -44,4 +50,4 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, search, searchT
 	)
 }
 
-export default PageHeader;
+export default PageHeader

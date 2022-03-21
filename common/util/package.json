@@ -5,8 +5,22 @@
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
 	"types": "dist/index.d.ts",
+	"tsup": {
+		"entry": [
+			"src/**/*.ts"
+		],
+		"splitting": false,
+		"sourcemap": true,
+		"clean": true,
+		"dts": true,
+		"format": [
+			"esm",
+			"cjs"
+		]
+	},
 	"scripts": {
-		"build": "tsup src/**/* --format esm,cjs --dts --sourcemap"
+		"build": "tsup",
+		"build:watch": "tsup --watch"
 	},
 	"dependencies": {
 		"@common/types": "^1.0.0",

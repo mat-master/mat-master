@@ -1,17 +1,21 @@
-import { Avatar, Badge, Title } from '@mantine/core'
+import { Avatar, Badge, Text } from '@mantine/core'
 import { useSetState } from '@mantine/hooks'
 import type React from 'react'
 import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
+import AppHeader from '../../components/app-header'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
+import SideBar from '../../components/side-bar'
 import StudentEditModal from '../../components/student-edit-modal'
 import StudentInviteModal from '../../components/student-invite-modal'
 import Table from '../../components/table'
+import TableState from '../../components/table-state'
 import { getStudents } from '../../data/students'
 import useSearchTerm from '../../hooks/use-search-term'
+import Page from '../../page'
 
 interface StudentsPageModals {
 	invite: boolean | undefined
@@ -23,7 +27,7 @@ const StudentsPage: React.FC = () => {
 	const [modals, setModals] = useSetState<Partial<StudentsPageModals>>({})
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 
-	const { data: students, isLoading } = useQuery('students', getStudents)
+	const { data: students, isLoading, isError, refetch } = useQuery('students', getStudents)
 	const filteredStudents = useMemo(() => {
 		if (!students) return []
 		return students.filter(({ user: { firstName, lastName } }) =>
@@ -37,7 +41,7 @@ const StudentsPage: React.FC = () => {
 	const deleteName = deleteUser && `${deleteUser.lastName} ${deleteUser.lastName}`
 
 	return (
-		<>
+		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
 				title='Students'
 				search={setSearchTerm}
@@ -57,7 +61,7 @@ const StudentsPage: React.FC = () => {
 					data: {
 						avatarUrl: <Avatar radius='xl' />,
 						name: (
-							<Title order={6}>{`${student.user.firstName} ${student.user.lastName}`}</Title>
+							<Text weight={700}>{`${student.user.firstName} ${student.user.lastName}`}</Text>
 						),
 						status: (
 							<Badge variant='outline' color={'dark'}>
@@ -74,8 +78,26 @@ const StudentsPage: React.FC = () => {
 					},
 				}))}
 				itemPadding={4}
-				loading={isLoading}
-			/>
+			>
+				<TableState
+					state={
+						isLoading
+							? 'loading'
+							: isError
+							? 'error'
+							: !students?.length
+							? 'empty'
+							: !filteredStudents.length
+							? 'filtered'
+							: undefined
+					}
+					resourceLabel='students'
+					refetchItems={refetch}
+					createItem={() => setModals({ invite: true })}
+					createMessage='Invite a student'
+					createIcon={AddUserIcon}
+				/>
+			</Table>
 
 			<StudentInviteModal
 				opened={!!modals.invite}
@@ -93,7 +115,7 @@ const StudentsPage: React.FC = () => {
 				onClose={() => setModals({ deleteConfirmation: undefined })}
 				action={() => {}}
 			/>
-		</>
+		</Page>
 	)
 }
 

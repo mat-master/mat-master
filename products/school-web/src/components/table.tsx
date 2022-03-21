@@ -1,12 +1,4 @@
-import {
-	createStyles,
-	Loader,
-	MantineNumberSize,
-	Paper,
-	Text,
-	TextProps,
-	Title,
-} from '@mantine/core'
+import { createStyles, MantineNumberSize, Paper, Title } from '@mantine/core'
 import type React from 'react'
 import { useNavigate } from 'react-router'
 
@@ -26,7 +18,7 @@ export interface TableProps<T extends string> {
 	columns: Column<T>[]
 	items: ItemData<T>[]
 	itemPadding?: MantineNumberSize | number | undefined
-	loading?: boolean
+	children?: React.ReactNode
 }
 
 interface StylesProps {
@@ -75,20 +67,13 @@ const useStyles = createStyles((theme, { itemPadding }: StylesProps) => ({
 		textOverflow: 'ellipsis',
 		whiteSpace: 'nowrap',
 	},
-	state: {
-		width: '100%',
-		height: 360,
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
 }))
 
 const Table = <T extends string>({
 	columns,
 	items,
 	itemPadding = 'xs',
-	loading,
+	children,
 }: TableProps<T>) => {
 	const { classes } = useStyles({ itemPadding })
 	const navigate = useNavigate()
@@ -109,39 +94,26 @@ const Table = <T extends string>({
 			</thead>
 
 			<tbody className={classes.body}>
-				{(loading || !items.length) && (
-					<tr className={classes.state}>
-						<td>
-							{loading ? <Loader /> : <Text color='dimmed'>No items matched your search</Text>}
-						</td>
+				{children}
+				{items.map((item, i) => (
+					<tr
+						key={i}
+						className={`${classes.row} ${classes.item}`}
+						data-href={item.href}
+						onClick={() => item.href && navigate(item.href)}
+						style={{ cursor: item.href ? 'pointer' : undefined }}
+					>
+						{columns.map(({ key, defaultElement }, i) => (
+							<td
+								key={key}
+								className={classes.cell}
+								style={{ width: columnWidths[i], maxWidth: columnWidths[i] }}
+							>
+								{item.data[key] ?? defaultElement}
+							</td>
+						))}
 					</tr>
-				)}
-
-				{!loading &&
-					items.map((item, i) => (
-						<tr
-							key={i}
-							className={`${classes.row} ${classes.item}`}
-							data-href={item.href}
-							onClick={() => item.href && navigate(item.href)}
-							style={{ cursor: item.href ? 'pointer' : undefined }}
-						>
-							{columns.map(({ key, defaultElement }, i) => {
-								const props: React.HTMLAttributes<'td'> & TextProps<'td'> = {
-									key: key,
-									className: classes.cell,
-									style: { width: columnWidths[i], maxWidth: columnWidths[i] },
-									children: item.data[key] ?? defaultElement,
-								}
-
-								return typeof props.children === 'string' ? (
-									<Text component='td' {...props} />
-								) : (
-									<td {...props} />
-								)
-							})}
-						</tr>
-					))}
+				))}
 			</tbody>
 		</Paper>
 	)

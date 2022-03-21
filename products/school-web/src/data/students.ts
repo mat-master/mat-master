@@ -5,16 +5,12 @@ import * as yup from 'yup'
 import getSchoolId from '../utils/get-school-id'
 
 export const inviteStudent = async (data: SchoolInvitesPostBody) => {
-	const schoolId = getSchoolId()
-	if (!schoolId) throw "Error getting the current school's id"
-	const res = await axios.post(`/schools/${schoolId}/invites`, data)
+	const res = await axios.post(`/schools/${getSchoolId()}/invites`, data)
 	if (res.status !== 200) throw res.data.error
 }
 
 export const getStudents = async () => {
-	const schoolId = getSchoolId()
-	if (!schoolId) throw "Error getting the current school's id"
-	const res = await axios.get(`/schools/${schoolId}/students`)
+	const res = await axios.get(`/schools/${getSchoolId()}/students`)
 	if (res.status !== 200) throw res.data.error
 
 	return res.data as Student[]

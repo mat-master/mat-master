@@ -1,17 +1,19 @@
 import type { ClassTime } from '@common/types'
+import { classTimeSchema } from '@common/util/src/validator'
 import { createStyles, InputWrapper, Select, Text } from '@mantine/core'
 import { TimeInput } from '@mantine/dates'
+import { useUncontrolled } from '@mantine/hooks'
 import { parseExpression } from 'cron-parser'
 import dayjs from 'dayjs'
 import weekdayPlugin from 'dayjs/plugin/weekday'
 import type React from 'react'
-import { useState } from 'react'
 
 dayjs.extend(weekdayPlugin)
 
 export interface ClassTimeInputProps {
 	value?: ClassTime
-	onChange: (value: ClassTime) => void
+	defaultValue?: ClassTime
+	onChange?: (value: ClassTime) => void
 }
 
 export const WEEKDAYS = [
@@ -37,24 +39,24 @@ const useStyles = createStyles((theme) => ({
 
 const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 	value: controlledValue,
+	defaultValue = defaultClassTime,
 	onChange,
 }) => {
 	const { classes } = useStyles()
-	const [uncontrolledState, setUncontrolledState] = useState<ClassTime>(
-		controlledValue ?? defaultClassTime
-	)
+	const [_value, setValue] = useUncontrolled<ClassTime>({
+		value: controlledValue,
+		defaultValue: defaultValue,
+		finalValue: null,
+		onChange: onChange ?? (() => {}),
+		rule: (value) => !!classTimeSchema.validate(value),
+	})
 
-	const value = controlledValue ?? uncontrolledState
+	const value = _value ?? defaultClassTime
 	const schedule = parseExpression(value.schedule)
 	const day =
 		schedule.fields.dayOfWeek.length === 1 ? WEEKDAYS[schedule.fields.dayOfWeek[0]] : null
 	const start = schedule.fields.minute.length === 1 ? schedule.next().toDate() : null
 	const end = start ? dayjs(start).add(value.duration, 'minute').toDate() : null
-
-	const handleChange = (value: ClassTime) => {
-		setUncontrolledState(value)
-		onChange(value)
-	}
 
 	const handleDayChange = (day: string) => {
 		const dayIndex = WEEKDAYS.findIndex((item) => item === day)
@@ -63,7 +65,7 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 		const segments = value.schedule.split(' ')
 		segments[4] = dayIndex.toString()
 		const schedule = segments.join(' ')
-		handleChange({ ...value, schedule })
+		setValue({ ...value, schedule })
 	}
 
 	const handleStartChange = (start: Date) => {
@@ -71,16 +73,16 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 		segments[0] = start.getMinutes().toString()
 		segments[1] = start.getHours().toString()
 		const schedule = segments.join(' ')
-		handleChange({ ...value, schedule })
+		setValue({ ...value, schedule })
 	}
 
 	const handleEndChange = (end: Date) => {
-		if (!start) return handleChange(value)
+		if (!start) return setValue(value)
 		const duration = Math.max(
 			(end.getHours() - start.getHours()) * 60 + end.getMinutes() - start.getMinutes(),
 			0
 		)
-		handleChange({ ...value, duration })
+		setValue({ ...value, duration })
 	}
 
 	return (

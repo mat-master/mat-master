@@ -1,12 +1,10 @@
 import { Global, MantineProvider } from '@mantine/core';
-import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
 import axios from 'axios'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import App from './app'
-import UserModal from './components/user-modal'
 import ResourcesProvider from './data/resources-provider'
 
 axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
@@ -26,20 +24,24 @@ const queryClient = new QueryClient({
 ReactDOM.render(
 	<React.StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<MantineProvider theme={{ primaryColor: 'red' }}>
+			<MantineProvider
+				theme={{
+					primaryColor: 'red',
+					fontFamily: "'Lato', sans-serif",
+					headings: { fontFamily: "'Lato', sans-serif", fontWeight: 900 },
+				}}
+			>
 				<Global
 					styles={(theme) => ({
-						'*': { boxSizing: 'border-box' },
+						'*, *::before, *::after': { boxSizing: 'border-box' },
 						'body, #root': { margin: 0, width: '100vw', height: '100vh' },
-						body: { backgroundColor: theme.colors.gray[1] },
+						body: { backgroundColor: theme.colors.gray[1], ...theme.fn.fontStyles() },
 					})}
 				/>
 
 				<ResourcesProvider>
 					<NotificationsProvider>
-						<ModalsProvider modals={{ account: UserModal }}>
-							<App />
-						</ModalsProvider>
+						<App />
 					</NotificationsProvider>
 				</ResourcesProvider>
 			</MantineProvider>
