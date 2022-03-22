@@ -11,19 +11,16 @@ import {
 	Title,
 } from '@mantine/core'
 import type React from 'react'
-import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { createClass, getClasses } from '../data/classes'
+import { useMutation, useQuery } from 'react-query'
+import { createClass, getClass } from '../data/classes'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
 
 const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
-	const queryClient = useQueryClient()
-	const { mutateAsync } = useMutation(({ name, schedule }: SchoolClassesPostBody) => {
-		queryClient.invalidateQueries('classes')
+	const { mutateAsync } = useMutation((data: SchoolClassesPostBody) => {
 		if (classId) throw 'Unimplemented'
-		return createClass({ name, schedule })
+		return createClass(data)
 	})
 
 	const form = useForm<SchoolClassesPostBody>({
@@ -41,14 +38,15 @@ const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...p
 		handleClose()
 	}
 
-	const { data: classes, isLoading: classLoading } = useQuery('classes', getClasses, {
-		enabled: !!classId,
-	})
-	const _class = useMemo(() => {
-		const _class = classes?.find(({ id }) => id === classId)
-		if (_class) form.reset(_class)
-		return _class
-	}, [classes, classId])
+	const { data: _class, isLoading } = useQuery(
+		['classes', { id: classId }],
+		async () => {
+			const _class = await getClass(classId ?? '')
+			form.reset(_class)
+			return _class
+		},
+		{ enabled: !!classId }
+	)
 
 	return (
 		<Modal
@@ -56,7 +54,7 @@ const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...p
 			{...props}
 			onClose={handleClose}
 		>
-			<LoadingOverlay visible={classLoading} radius='sm' />
+			<LoadingOverlay visible={isLoading} radius='sm' />
 
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' spacing='sm' grow>

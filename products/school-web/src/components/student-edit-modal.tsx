@@ -11,10 +11,10 @@ import {
 import type React from 'react'
 import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import * as yup from 'yup'
 import { getMemberships } from '../data/memberships'
-import { getStudents, StudentData, updateStudent } from '../data/students'
+import { getStudent, StudentData, updateStudent } from '../data/students'
 
 const studentSchema: yup.SchemaOf<StudentData> = yup.object({
 	memberships: yup.array().of(yup.string().required()).required(),
@@ -24,10 +24,9 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 	studentId,
 	...props
 }) => {
-	const queryClient = useQueryClient()
-	const { mutateAsync } = useMutation(async (data: StudentData) => {
-		queryClient.invalidateQueries('students')
-		studentId && (await updateStudent(studentId, data))
+	const { mutateAsync } = useMutation((data: StudentData) => {
+		if (studentId) return updateStudent(studentId, data)
+		throw 'Students must be invited'
 	})
 
 	const form = useForm<StudentData>({ resolver: yupResolver(studentSchema) })
@@ -43,10 +42,10 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 		handleClose()
 	}
 
-	const { data: students, isLoading: studentLoading } = useQuery('students', getStudents)
-	const student = useMemo(
-		() => students?.find(({ id }) => id === studentId),
-		[students, studentId]
+	const { data: student, isLoading: studentLoading } = useQuery(
+		['students', { id: studentId }],
+		() => getStudent(studentId ?? ''),
+		{ enabled: !!studentId }
 	)
 
 	const { data: memberships, isLoading: membershipsLoading } = useQuery(

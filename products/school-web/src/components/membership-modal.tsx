@@ -15,23 +15,22 @@ import {
 import type React from 'react'
 import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { getClasses } from '../data/classes'
-import { createMembership, getMemberships } from '../data/memberships'
+import { createMembership, getMembership } from '../data/memberships'
 
 const MembershipModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
 	...props
 }) => {
-	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation((data: SchoolMembershipsPostBody) => {
-		queryClient.invalidateQueries('memberships')
 		if (membershipId) throw 'Unimplemented'
-		return createMembership({ ...data, interval: 'month', intervalCount: 1 })
+		return createMembership(data)
 	})
 
 	const form = useForm<SchoolMembershipsPostBody>({
+		defaultValues: { interval: 'month', intervalCount: 1 },
 		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
 	})
 
@@ -46,17 +45,15 @@ const MembershipModal: React.FC<ModalProps & { membershipId?: string }> = ({
 		handleClose()
 	}
 
-	const { data: memberships, isLoading: membershipLoading } = useQuery(
-		'memberships',
-		getMemberships,
+	const { data: membership, isLoading: membershipLoading } = useQuery(
+		['memberships', { id: membershipId }],
+		async () => {
+			const membership = await getMembership(membershipId ?? '')
+			form.reset({ ...membership, classes: membership.classes.map(({ id }) => id.toString()) })
+			return membership
+		},
 		{ enabled: !!membershipId }
 	)
-	const membership = useMemo(() => {
-		const membership = memberships?.find(({ id }) => id === membershipId)
-		if (membership)
-			form.reset({ ...membership, classes: membership.classes.map(({ id }) => id.toString()) })
-		return membership
-	}, [memberships, membershipId])
 
 	const { data: classes, isLoading: classesLoading } = useQuery('classes', getClasses)
 	const classOptions = useMemo(
