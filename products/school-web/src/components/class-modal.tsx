@@ -18,13 +18,7 @@ import { createClass, getClasses } from '../data/classes'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
 
-export interface ClassEditModalProps {
-	open: boolean
-	onClose: VoidFunction
-	classId?: string
-}
-
-const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
+const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
 	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(({ name, schedule }: SchoolClassesPostBody) => {
 		queryClient.invalidateQueries('classes')
@@ -94,4 +88,4 @@ const ClassEditModal: React.FC<ModalProps & { classId?: string }> = ({ classId, 
 	)
 }
 
-export default ClassEditModal
+export default ClassModal

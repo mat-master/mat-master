@@ -7,7 +7,7 @@ import { Plus as NewMembershipIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
-import MembershipEditModal from '../../components/membership-modal'
+import MembershipModal from '../../components/membership-modal'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
@@ -63,7 +63,7 @@ const MembershipsPage: React.FC = () => {
 				items={filteredMemberships.map(({ id, name, classes, price }) => ({
 					data: {
 						name: <Text weight={700}>{name}</Text>,
-						classes: classes.join(', '),
+						classes: classes.map(({ name }) => name).join(', '),
 						students: 'TODO',
 						price: `$${price} / mo.`,
 						menu: (
@@ -95,7 +95,7 @@ const MembershipsPage: React.FC = () => {
 				/>
 			</Table>
 
-			<MembershipEditModal
+			<MembershipModal
 				opened={!!modals.edit?.open}
 				membershipId={modals.edit?.id}
 				onClose={() => setModals({ edit: { open: false } })}

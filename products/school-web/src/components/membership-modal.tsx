@@ -20,7 +20,7 @@ import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { getClasses } from '../data/classes'
 import { createMembership, getMemberships } from '../data/memberships'
 
-const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
+const MembershipModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	membershipId,
 	...props
 }) => {
@@ -88,7 +88,7 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 								data={classOptions ?? []}
 								error={fieldState.error?.message}
 								{...field}
-								value={field.value.map((snowflake) => snowflake.toString())}
+								value={field.value?.map((snowflake) => snowflake.toString())}
 							/>
 						)}
 					/>
@@ -116,4 +116,4 @@ const MembershipEditModal: React.FC<ModalProps & { membershipId?: string }> = ({
 	)
 }
 
-export default MembershipEditModal
+export default MembershipModal

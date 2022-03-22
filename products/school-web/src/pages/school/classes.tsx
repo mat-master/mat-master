@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
-import ClassEditModal from '../../components/class-modal'
+import ClassModal from '../../components/class-modal'
 import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
@@ -93,7 +93,7 @@ const ClassesPage: React.FC = () => {
 				/>
 			</Table>
 
-			<ClassEditModal
+			<ClassModal
 				opened={!!modals.edit?.open}
 				classId={modals.edit?.classId}
 				onClose={() => setModals({ edit: undefined })}
