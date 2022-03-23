@@ -55,7 +55,9 @@ const MembershipModal: React.FC<ModalProps & { membershipId?: string }> = ({
 		{ enabled: !!membershipId }
 	)
 
-	const { data: classes, isLoading: classesLoading } = useQuery('classes', getClasses)
+	const { data: classes, isLoading: classesLoading } = useQuery('classes', getClasses, {
+		enabled: props.opened,
+	})
 	const classOptions = useMemo(
 		() => classes?.map(({ id, name }) => ({ value: id.toString(), label: name })) ?? [],
 		[classes]

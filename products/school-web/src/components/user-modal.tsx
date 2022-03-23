@@ -14,23 +14,16 @@ import type React from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router'
-import { getUser, signout } from '../data/auth'
+import { signout } from '../data/auth'
+import { getUser, updateUser } from '../data/user'
 import getInitials from '../utils/get-initials'
 import AvatarInput from './avatar-input'
 import ModalActions from './modal-actions'
 
 const UserModal: React.FC<ModalProps> = (props) => {
-	const mutation = useMutation(async (data: UserPatchBody) => console.log(data))
 	const navigate = useNavigate()
-
 	const form = useForm<UserPatchBody>({
 		resolver: yupResolver(validator.api.userPatchSchema),
-	})
-
-	const { data: user, isLoading } = useQuery('me', async () => {
-		const user = await getUser()
-		form.reset({ ...user, avatar: user.avatar?.toString() })
-		return user
 	})
 
 	const handleClose = () => {
@@ -42,6 +35,13 @@ const UserModal: React.FC<ModalProps> = (props) => {
 		mutation.mutate(values)
 		handleClose()
 	}
+
+	const mutation = useMutation(updateUser)
+	const { data: user, isLoading } = useQuery('me', async () => {
+		const user = await getUser()
+		form.reset({ ...user, avatar: user.avatar?.toString() })
+		return user
+	})
 
 	return (
 		<Modal title={<Title order={3}>Account</Title>} {...props} onClose={handleClose}>
