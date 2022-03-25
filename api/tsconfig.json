@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../tsconfig.json",
   "include": [
     "src"
   ],
@@ -16,10 +16,10 @@
   },
   "references": [
     {
-      "path": "../../common/types"
+      "path": "../common/types"
     },
     {
-      "path": "../../common/util"
+      "path": "../common/util"
     }
   ],
 }

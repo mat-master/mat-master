@@ -3735,9 +3735,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"api@workspace:microservices/api":
+"api@workspace:api":
   version: 0.0.0-use.local
-  resolution: "api@workspace:microservices/api"
+  resolution: "api@workspace:api"
   dependencies:
     "@aws-sdk/client-ses": ^3.53.0
     "@common/types": ^1.0.0
