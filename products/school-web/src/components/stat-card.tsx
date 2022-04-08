@@ -46,7 +46,7 @@ const StatCard: React.FC<StatCardProps> = ({
 		percentChange > 0 ? ArrowUpRight : percentChange < 0 ? ArrowDownRight : ArrowRight
 
 	return (
-		<Paper padding='md' radius='sm' withBorder>
+		<Paper padding='md' radius='sm' shadow='xs'>
 			<Group position='apart' mb={24}>
 				<Text size='xs' color='dimmed' className={classes.title}>
 					{title}

@@ -1,4 +1,8 @@
-import type { SchoolMembershipsGetResponse } from '@common/types'
+import type {
+	Membership,
+	SchoolMembershipsGetResponse,
+	SchoolMembershipsPostBody,
+} from '@common/types'
 import axios from 'axios'
 import getSchoolId from '../utils/get-school-id'
 
@@ -7,4 +11,16 @@ export const getMemberships = async () => {
 	if (res.status !== 200) throw res.data.error
 
 	return res.data as SchoolMembershipsGetResponse
+}
+
+export const getMembership = async (id: string) => {
+	const res = await axios.get(`school/${getSchoolId()}/memberships/${id}`)
+	if (res.status !== 200) throw res.data.error
+
+	return res.data as Membership
+}
+
+export const createMembership = async (data: SchoolMembershipsPostBody) => {
+	const res = await axios.post(`/schools/${getSchoolId()}/memberships`, data)
+	if (res.status !== 200) throw res.data.error
 }

@@ -1,14 +1,15 @@
 import { TextInput, TextInputProps, useMantineTheme } from '@mantine/core';
 import React, { useState } from 'react';
 import { Search as SearchIcon } from 'tabler-icons-react'
-import { getPrimaryColor } from '../utils/get-colors';
+import { getPrimaryColor } from '../utils/get-colors'
 
 const SearchBar: React.FC<TextInputProps> = (props) => {
-	const [focused, setFocused] = useState(false);
-	const theme = useMantineTheme();
+	const [focused, setFocused] = useState(false)
+	const theme = useMantineTheme()
 
 	return (
 		<TextInput
+			type='search'
 			style={{ width: '32ch' }}
 			icon={<SearchIcon size={18} color={focused ? getPrimaryColor(theme) : undefined} />}
 			placeholder='Search...'
@@ -16,7 +17,7 @@ const SearchBar: React.FC<TextInputProps> = (props) => {
 			onBlur={() => setFocused(false)}
 			{...props}
 		/>
-	);
-};
+	)
+}
 
 export default SearchBar;

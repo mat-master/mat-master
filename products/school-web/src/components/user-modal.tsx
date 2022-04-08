@@ -1,4 +1,5 @@
-import type { Snowflake } from '@common/types'
+import type { UserPatchBody } from '@common/types'
+import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Center,
@@ -10,51 +11,40 @@ import {
 	Title,
 } from '@mantine/core'
 import type React from 'react'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router'
-import * as yup from 'yup'
-import { getUser, signout } from '../data/auth'
+import { signout } from '../data/auth'
+import { getUser, updateUser } from '../data/user'
 import getInitials from '../utils/get-initials'
 import AvatarInput from './avatar-input'
 import ModalActions from './modal-actions'
 
-interface UserData {
-	firstName: string
-	lastName: string
-	email: string
-	avatar: File | Snowflake
-}
-
-const userDataSchema: yup.SchemaOf<UserData> = yup.object({
-	firstName: yup.string().required(),
-	lastName: yup.string().required(),
-	email: yup.string().email().required(),
-	avatar: yup.mixed<File | Snowflake>().required(),
-})
-
 const UserModal: React.FC<ModalProps> = (props) => {
-	const { data: user, isLoading } = useQuery('me', getUser)
-	const mutation = useMutation(async (data: UserData) => console.log(data))
 	const navigate = useNavigate()
-
-	const form = useForm<UserData>({
-		// defaultValues: { avatar: undefined },
-		resolver: yupResolver(userDataSchema),
+	const form = useForm<UserPatchBody>({
+		resolver: yupResolver(validator.api.userPatchSchema),
 	})
 
-	useEffect(() => {
-		user && form.reset(user)
-	}, [user])
-
-	const handleSubmit = (values: UserData) => {
-		mutation.mutate(values)
+	const handleClose = () => {
 		props.onClose()
+		form.clearErrors()
 	}
 
+	const handleSubmit = (values: UserPatchBody) => {
+		mutation.mutate(values)
+		handleClose()
+	}
+
+	const mutation = useMutation(updateUser)
+	const { data: user, isLoading } = useQuery('me', async () => {
+		const user = await getUser()
+		form.reset({ ...user, avatar: user.avatar?.toString() })
+		return user
+	})
+
 	return (
-		<Modal title={<Title order={3}>Account</Title>} {...props}>
+		<Modal title={<Title order={3}>Account</Title>} {...props} onClose={handleClose}>
 			<LoadingOverlay visible={isLoading} />
 
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -62,7 +52,7 @@ const UserModal: React.FC<ModalProps> = (props) => {
 					<Center>
 						<AvatarInput
 							{...form.register('avatar')}
-							onChange={(img) => form.setValue('avatar', img)}
+							onChange={(img) => form.setValue('avatar', '')}
 						>
 							{user && getInitials(user)}
 						</AvatarInput>
@@ -70,7 +60,6 @@ const UserModal: React.FC<ModalProps> = (props) => {
 
 					<TextInput label='First Name' {...form.register('firstName')} />
 					<TextInput label='Last Name' {...form.register('lastName')} />
-					<TextInput label='Email' {...form.register('email')} />
 				</Group>
 
 				<ModalActions

@@ -25,10 +25,12 @@ const useStyles = createStyles((theme) => ({
 	bodyWrapper: {
 		width: '100%',
 		maxHeight: '100%',
+		overflowY: 'auto',
 		display: 'grid',
-		gridTemplateRows: 'min-content minmax(0, 1fr)',
+		gridTemplateRows: 'min-content',
+		gridAutoRows: 'min-content',
 		alignItems: 'start',
-		rowGap: theme.spacing.md,
+		rowGap: theme.spacing.lg,
 		padding: theme.spacing.xl,
 	},
 }))

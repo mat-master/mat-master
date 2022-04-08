@@ -13,7 +13,7 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-export interface TableEmptyStateProps {
+export interface TableStateProps {
 	state?: 'loading' | 'error' | 'empty' | 'filtered'
 	resourceLabel: string
 	refetchItems: VoidFunction
@@ -22,7 +22,7 @@ export interface TableEmptyStateProps {
 	createIcon?: Icon
 }
 
-const TableState: React.FC<TableEmptyStateProps> = ({
+const TableState: React.FC<TableStateProps> = ({
 	state,
 	resourceLabel,
 	refetchItems,

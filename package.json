@@ -1,11 +1,11 @@
 {
-  "name": "mat-master",
-  "private": true,
-  "repository": "https://github.com/mat-master/mat-master.git",
-  "packageManager": "yarn@3.2.0",
-  "workspaces": [
-    "products/*",
-    "common/*",
-    "microservices/*"
-  ]
+	"name": "mat-master",
+	"private": true,
+	"repository": "https://github.com/mat-master/mat-master.git",
+	"packageManager": "yarn@3.2.0",
+	"workspaces": [
+		"products/*",
+		"common/*",
+		"api"
+	]
 }
