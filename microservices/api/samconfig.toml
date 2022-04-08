@@ -1,0 +1,24 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "matmaster-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-18zbjrxxr8sg9"
+s3_prefix = "matmaster-api"
+region = "us-west-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
+
+["env.json"]
+["env.json".deploy]
+["env.json".deploy.parameters]
+stack_name = "matmaster-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-18zbjrxxr8sg9"
+s3_prefix = "matmaster-api"
+region = "us-west-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []

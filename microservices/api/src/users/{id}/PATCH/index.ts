@@ -10,6 +10,7 @@ import { validateBody } from '../../../util/validation';
 import { authUser } from '../../../util/user';
 import imageDataUri from 'image-data-uri';
 import * as webp from 'webp-converter';
+import aws from '@aws-sdk/client-ses'
 
 // Signs up a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

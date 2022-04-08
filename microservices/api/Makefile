@@ -54,13 +54,15 @@ build-lambda-common:
 	cp -r dist "$(ARTIFACTS_DIR)/"
 
 build-ApiLayer:
-	cd $(shell echo "$(ARTIFACTS_DIR)" | sed 's@/.aws-sam.*@@')
+	cd "$(ARTIFACTS_DIR)/"
+	cd ../../../
 	mkdir -p "$(ARTIFACTS_DIR)/nodejs"
 	cp package.json "$(ARTIFACTS_DIR)/nodejs"
-	cp -r ../../common/types "$(ARTIFACTS_DIR)/nodejs"
+	cp -r ../../common "$(ARTIFACTS_DIR)/nodejs"
 	cd "$(ARTIFACTS_DIR)/nodejs"
 	sed --in-place 's/workspaces/dependencies/' package.json
-	sed --in-place 's/"types": ".*"/"types": "file:.\/types"/' package.json
+	sed --in-place 's/"@common\/types": ".*"/"@common\/types": "file:common\/types"/' package.json
+	sed --in-place 's/"@common\/types": ".*"/"@common\/types": "file:..\/types"/' common/util/package.json
+	sed --in-place 's/"@common\/util": ".*"/"@common\/util": "file:common\/util"/' package.json
 	touch yarn.lock
-	touch test.txt
 	yarn workspaces focus --production

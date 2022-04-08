@@ -1,0 +1,1 @@
+sam deploy --guided --config-env env.json
