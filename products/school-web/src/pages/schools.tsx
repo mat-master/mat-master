@@ -27,6 +27,7 @@ const SchoolsPage: React.FC = () => {
 						.fill(undefined)
 						.map((_, i) => (
 							<Skeleton
+								key={i}
 								sx={(theme) => ({
 									boxShadow: theme.shadows.sm,
 									border: `1px solid ${theme.colors.gray[3]}`,
