@@ -58,7 +58,7 @@ build-ApiLayer:
 	cd ../../../
 	mkdir -p "$(ARTIFACTS_DIR)/nodejs"
 	cp package.json "$(ARTIFACTS_DIR)/nodejs"
-	cp -r ../../common "$(ARTIFACTS_DIR)/nodejs"
+	cp -r ../common "$(ARTIFACTS_DIR)/nodejs"
 	cd "$(ARTIFACTS_DIR)/nodejs"
 	sed --in-place 's/workspaces/dependencies/' package.json
 	sed --in-place 's/"@common\/types": ".*"/"@common\/types": "file:common\/types"/' package.json
@@ -66,3 +66,4 @@ build-ApiLayer:
 	sed --in-place 's/"@common\/util": ".*"/"@common\/util": "file:common\/util"/' package.json
 	touch yarn.lock
 	yarn workspaces focus --production
+	rm -rf .yarn

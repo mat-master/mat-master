@@ -12,6 +12,7 @@ axios.defaults.baseURL =
 	'localhost' || window.location.hostname === '127.0.0.1'
 		? `http://${window.location.hostname}:3030`
 		: 'https://api.matmaster.app'
+//axios.defaults.baseURL = "https://x84vivosyf.execute-api.us-west-1.amazonaws.com/dev";       Uncomment for production
 
 const queryClient = new QueryClient({
 	defaultOptions: {
