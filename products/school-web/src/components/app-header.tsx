@@ -15,8 +15,8 @@ const AppHeader: React.FC = () => {
 				borderBottom: `1px solid ${theme.colors.gray[2]}`,
 			})}
 		>
-			<Skeleton width='fit-content' visible={isLoading}>
-				<Title order={3}>{school?.name ?? 'School Name'}</Title>
+			<Skeleton width='max-content' visible={isLoading}>
+				<Title order={3}>{school?.name ?? 'Mat Master'}</Title>
 			</Skeleton>
 		</Box>
 	)

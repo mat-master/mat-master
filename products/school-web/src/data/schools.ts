@@ -18,7 +18,9 @@ export const getSchools = async () => {
 }
 
 export const getCurrentSchool = async () => {
-	const res = await axios.get(`/schools/${getSchoolId()}`)
+	const schoolId = getSchoolId()
+	if (!schoolId) throw Error('The current school is undefined')
+	const res = await axios.get(`/schools/${schoolId}`)
 	if (res.status !== 200) throw res.data.error
 
 	// if (!(await validator.schoolSchema.validate(res.data))) throw undefined
