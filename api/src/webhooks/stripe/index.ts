@@ -20,13 +20,11 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         if(stripeEvent.type === "invoice.paid") {
             const invoice: Stripe.Invoice = stripeEvent.data.object as Stripe.Invoice;
             await query("UPDATE schools SET tier = $1 WHERE stripe_subscription_id = $2", [Tier.BASIC, invoice.subscription]);
-            console.log("Updated school tier with subscription id: " + invoice.subscription);
         }
         if(stripeEvent.type === "customer.subscription.updated") {
             const subscription: Stripe.Subscription = stripeEvent.data.object as Stripe.Subscription;
             
         }
-        console.log(stripeEvent.type);
         return res200(stripeEvent);
     } catch (err: any) {
         console.log({err: "Could not verify webhook signature", event: signature});

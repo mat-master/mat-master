@@ -35,6 +35,9 @@ Resources:
     Properties:
       Name: backend
       StageName: dev
+      Domain:
+        DomainName: "matmaster.app"
+        CertificateArn: "arn:aws:acm:us-west-1:595951039957:certificate/2953f9ee-b494-42b9-8746-cb24da17319e"
   Webhooks:
     Type: AWS::Serverless::Api
     Properties:
