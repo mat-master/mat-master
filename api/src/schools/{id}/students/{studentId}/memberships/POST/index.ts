@@ -24,7 +24,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
 
     const studentId = event.pathParameters.studentId;
 
-    const requests = body.memberships!.map(async membershipId => {
+    const requests = body.memberships!.map(async (membershipId): Promise<Response | null> => {
         const membership = await query("SELECT * FROM memberships WHERE school = $1 AND id = $2 LIMIT 1", [school.id, membershipId]);
         if(!membership || membership.rowCount === 0)
             return res404("Membership does not exist");
@@ -53,9 +53,12 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
         });
             
         await query("INSERT INTO student_memberships (student, membership, stripe_subscription_id) VALUES ($1, $2, $3)", [studentId, membership.rows[0].id, subscription.id]);    
+        return null;
     });
 
-    await Promise.all(requests);
+    const results = await Promise.all(requests);
+    for(const result of results)
+        if(result) return result;
 
     return res200();
 }
