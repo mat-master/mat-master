@@ -1,3 +1,4 @@
+import type { SchoolStudentsMembershipsPostBody } from '@common/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Button,
@@ -14,9 +15,9 @@ import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import * as yup from 'yup'
 import { getMemberships } from '../data/memberships'
-import { getStudent, StudentData, updateStudent } from '../data/students'
+import { getStudent, updateStudentMemberships } from '../data/students'
 
-const studentSchema: yup.SchemaOf<StudentData> = yup.object({
+const studentSchema: yup.SchemaOf<SchoolStudentsMembershipsPostBody> = yup.object({
 	memberships: yup.array().of(yup.string().required()).required(),
 })
 
@@ -24,12 +25,14 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 	studentId,
 	...props
 }) => {
-	const { mutateAsync } = useMutation((data: StudentData) => {
-		if (studentId) return updateStudent(studentId, data)
+	const { mutateAsync } = useMutation((data: SchoolStudentsMembershipsPostBody) => {
+		if (studentId) return updateStudentMemberships(studentId, data)
 		throw 'Students must be invited'
 	})
 
-	const form = useForm<StudentData>({ resolver: yupResolver(studentSchema) })
+	const form = useForm<SchoolStudentsMembershipsPostBody>({
+		resolver: yupResolver(studentSchema),
+	})
 
 	const handleClose = () => {
 		props.onClose()
@@ -37,7 +40,7 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 		form.clearErrors()
 	}
 
-	const handleSubmit = async (values: StudentData) => {
+	const handleSubmit = async (values: SchoolStudentsMembershipsPostBody) => {
 		await mutateAsync(values)
 		handleClose()
 	}
@@ -75,6 +78,7 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 								data={membershipOptions ?? []}
 								error={fieldState.error?.message}
 								{...field}
+								value={field.value?.map((snowflake) => snowflake.toString())}
 							/>
 						)}
 					/>

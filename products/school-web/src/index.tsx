@@ -8,7 +8,7 @@ import App from './app'
 
 axios.defaults.headers.common.Authorization = `Bearer ${window.localStorage.getItem('jwt')}`
 axios.defaults.validateStatus = () => true
-axios.defaults.baseURL =
+axios.defaults.baseURL = // 'https://api.matmaster.app/dev'
 	window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 		? `http://${window.location.hostname}:3030`
 		: 'https://api.matmaster.app/dev'
