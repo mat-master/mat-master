@@ -42,6 +42,8 @@ build-SchoolsIdJoinPOST:
 	$(MAKE) HANDLER=src/schools/{id}/join/POST/index.ts build-lambda-common
 build-SchoolsIdStudentsGET:
 	$(MAKE) HANDLER=src/schools/{id}/students/GET/index.ts build-lambda-common
+build-SchoolsIdStudentsMembershipsPOST:
+	$(MAKE) HANDLER=src/schools/{id}/students/{studentId}/memberships/POST/index.ts build-lambda-common
 
 build-WebhookStripe:
 	$(MAKE) HANDLER=src/webhooks/stripe/index.ts build-lambda-common

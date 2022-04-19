@@ -9502,9 +9502,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marketing-website@workspace:products/matmaster.app":
+"marketing-website@workspace:products/marketing":
   version: 0.0.0-use.local
-  resolution: "marketing-website@workspace:products/matmaster.app"
+  resolution: "marketing-website@workspace:products/marketing"
   dependencies:
     "@mantine/core": ^3.6.7
     "@mantine/hooks": ^3.6.7
@@ -12709,9 +12709,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"studentnative@workspace:products/studentnative":
+"studentnative@workspace:products/student-native":
   version: 0.0.0-use.local
-  resolution: "studentnative@workspace:products/studentnative"
+  resolution: "studentnative@workspace:products/student-native"
   dependencies:
     "@babel/core": ^7.12.9
     "@babel/runtime": ^7.12.5

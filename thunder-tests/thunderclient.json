@@ -49,16 +49,16 @@
     "colId": "50a6eaac-c652-49e8-bc78-916ea1277470",
     "containerId": "b84e0d30-4ddf-4a62-8cb6-bcd7cfa78a7b",
     "name": "Join POST",
-    "url": "http://127.0.0.1:3030/schools/22572923900395662/join",
+    "url": "http://127.0.0.1:3030/schools/39106904816877839/join",
     "method": "POST",
     "sortNum": 40000,
     "created": "2022-03-06T18:55:42.701Z",
-    "modified": "2022-03-06T19:33:21.783Z",
+    "modified": "2022-04-18T23:52:59.607Z",
     "headers": [],
     "params": [],
     "auth": {
       "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNDQwMTAxMDM4NTIyNTIxIiwiZW1haWwiOiJuYXRlMTk1MjJAZ21haWwuY29tIiwicHJpdmlsZWdlIjoxLCJzdHJpcGVDdXN0b21lcklkIjoiY3VzX0xGc2hkTUhZQVJKVHdsIiwiaWF0IjoxNjQ2NTE1NDAyfQ.UjBjao7N5dMhRmWkmMsTiqLtMxzu0TG-5vZIZFyiCcM"
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNDQwMTAxMDM4NTIyNTIxIiwiZW1haWwiOiJuYXRlMTk1MjJAZ21haWwuY29tIiwicHJpdmlsZWdlIjoxLCJzdHJpcGVDdXN0b21lcklkIjoiY3VzX0xGc2hkTUhZQVJKVHdsIiwiaWF0IjoxNjUwMzE4ODAxfQ.CNPwugZSXQH0boWGsU5pHhRYbQWBjK-mt75Qa_uMfFI"
     },
     "tests": []
   },

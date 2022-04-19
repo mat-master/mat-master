@@ -36,7 +36,9 @@ Resources:
       Name: backend
       StageName: dev
       Domain:
-        DomainName: "matmaster.app"
+        DomainName: "api.matmaster.app"
+        BasePath:
+         - dev
         CertificateArn: "arn:aws:acm:us-west-1:595951039957:certificate/2953f9ee-b494-42b9-8746-cb24da17319e"
   Webhooks:
     Type: AWS::Serverless::Api
@@ -289,6 +291,19 @@ Resources:
           Properties:
             Path: /schools/{id}/students
             Method: GET
+            RestApiId: !Ref Api
+  SchoolsIdStudentsMembershipsPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/students/{studentId}/memberships/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/students/{studentId}/memberships
+            Method: POST
             RestApiId: !Ref Api
   WebhookStripe:
     Type: AWS::Serverless::Function
