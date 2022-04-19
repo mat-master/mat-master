@@ -24,34 +24,38 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
 
     const studentId = event.pathParameters.studentId;
 
-    const membership = await query("SELECT * FROM memberships WHERE school = $1 AND id = $2 LIMIT 1", [school.id, body.membership]);
-    if(!membership || membership.rowCount === 0)
-        return res404("Membership does not exist");
-    const student = await query("SELECT * FROM students WHERE school = $1 AND id = $2 LIMIT 1", [school.id, studentId]);
-    if(!student || student.rowCount === 0)
-        return res404("Student does not exist");    
-
-    const res = await query("SELECT * FROM student_memberships WHERE student = $1 AND membership = $2 LIMIT 1", [studentId, membership.rows[0].id]);
-    if(!res)
-        return res500();
-     
-    if(res.rowCount > 0)
-        return res400("Student already has membership");
-
-    const subscription = await stripe.subscriptions.create({
-        customer: student.rows[0].stripe_customer_id,
-        items: [{
-            price: membership.rows[0].stripe_price_id 
-        }],
-        metadata: {
-            membership: membership.rows[0].id,
-            student: studentId
-        }
-    }, {
-        stripeAccount: school.stripeAccountId
+    const requests = body.memberships!.map(async membershipId => {
+        const membership = await query("SELECT * FROM memberships WHERE school = $1 AND id = $2 LIMIT 1", [school.id, membershipId]);
+        if(!membership || membership.rowCount === 0)
+            return res404("Membership does not exist");
+        const student = await query("SELECT * FROM students WHERE school = $1 AND id = $2 LIMIT 1", [school.id, studentId]);
+        if(!student || student.rowCount === 0)
+            return res404("Student does not exist");    
+    
+        const res = await query("SELECT * FROM student_memberships WHERE student = $1 AND membership = $2 LIMIT 1", [studentId, membership.rows[0].id]);
+        if(!res)
+            return res500();
+         
+        if(res.rowCount > 0)
+            return res400("Student already has membership");
+    
+        const subscription = await stripe.subscriptions.create({
+            customer: student.rows[0].stripe_customer_id,
+            items: [{
+                price: membership.rows[0].stripe_price_id 
+            }],
+            metadata: {
+                membership: membership.rows[0].id,
+                student: studentId
+            }
+        }, {
+            stripeAccount: school.stripeAccountId
+        });
+            
+        await query("INSERT INTO student_memberships (student, membership, stripe_subscription_id) VALUES ($1, $2, $3)", [studentId, membership.rows[0].id, subscription.id]);    
     });
-        
-    await query("INSERT INTO student_memberships (student, membership, stripe_subscription_id) VALUES ($1, $2, $3)", [studentId, membership.rows[0].id, subscription.id]);
+
+    await Promise.all(requests);
 
     return res200();
 }

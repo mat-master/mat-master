@@ -100,7 +100,7 @@ export namespace api {
 	})
 
 	export const schoolStudentsMembershipsPostSchema: SchemaOf<SchoolStudentsMembershipsPostBody> = object({
-		membership: snowflakeSchema.required()
+		memberships: array().of(snowflakeSchema).min(1).required()
 	});
 
 	export const schoolInvitesPostSchema: SchemaOf<SchoolInvitesPostBody> = object({
