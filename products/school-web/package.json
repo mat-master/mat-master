@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "buildDeps": "(cd ../../common/types && yarn build) && (cd ../../common/util && yarn build)",
     "preview": "vite preview"
   },
   "dependencies": {
