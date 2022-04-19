@@ -1,4 +1,8 @@
-import type { SchoolInvitesPostBody, Student } from '@common/types'
+import type {
+	SchoolInvitesPostBody,
+	SchoolStudentsMembershipsPostBody,
+	Student,
+} from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
 import * as yup from 'yup'
@@ -24,11 +28,10 @@ export const getStudent = async (id: string) => {
 	return res.data as Student
 }
 
-export type StudentData = {
-	memberships: string[]
-}
-
-export const updateStudent = async (id: string, data: StudentData) => {
-	const res = await axios.post(`/schools/${getSchoolId()}/students/${id}`, data)
+export const updateStudentMemberships = async (
+	id: string,
+	data: SchoolStudentsMembershipsPostBody
+) => {
+	const res = await axios.post(`/schools/${getSchoolId()}/students/${id}/memberships`, data)
 	if (res.status !== 200) throw res.data.error
 }
