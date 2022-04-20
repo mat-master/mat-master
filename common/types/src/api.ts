@@ -67,7 +67,7 @@ export type SchoolJoinPostResponse = void | string;
 
 export type SchoolStudentsGetResponse = Student[];
 
-export interface SchoolStudentsMembershipsPostBody {
+export interface SchoolStudentsMembershipsPutBody {
 	memberships: Snowflake[]
 }
 

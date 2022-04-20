@@ -9,7 +9,7 @@ import { validateBody } from '../../../../../../util/validation';
 import stripe from '../../../../../../util/stripe';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
-    const body = await validateBody(validator.api.schoolStudentsMembershipsPostSchema, event.body);
+    const body = await validateBody(validator.api.schoolStudentsMembershipsPutSchema, event.body);
     if(isResponse(body))
         return body;
 

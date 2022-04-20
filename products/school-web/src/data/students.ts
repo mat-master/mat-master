@@ -1,6 +1,6 @@
 import type {
 	SchoolInvitesPostBody,
-	SchoolStudentsMembershipsPostBody,
+	SchoolStudentsMembershipsPutBody,
 	Student,
 } from '@common/types'
 import { validator } from '@common/util'
@@ -30,8 +30,8 @@ export const getStudent = async (id: string) => {
 
 export const updateStudentMemberships = async (
 	id: string,
-	data: SchoolStudentsMembershipsPostBody
+	data: SchoolStudentsMembershipsPutBody
 ) => {
-	const res = await axios.post(`/schools/${getSchoolId()}/students/${id}/memberships`, data)
+	const res = await axios.put(`/schools/${getSchoolId()}/students/${id}/memberships`, data)
 	if (res.status !== 200) throw res.data.error
 }

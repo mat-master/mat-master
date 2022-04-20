@@ -8,7 +8,7 @@ import type {
 	SchoolInvitesPostBody,
 	SchoolMembershipsPostBody,
 	SchoolPostBody,
-	SchoolStudentsMembershipsPostBody,
+	SchoolStudentsMembershipsPutBody,
 	SignupPostBody,
 	Snowflake,
 	Student,
@@ -99,7 +99,7 @@ export namespace api {
 		intervalCount: number().integer().required(),
 	})
 
-	export const schoolStudentsMembershipsPostSchema: SchemaOf<SchoolStudentsMembershipsPostBody> = object({
+	export const schoolStudentsMembershipsPutSchema: SchemaOf<SchoolStudentsMembershipsPutBody> = object({
 		memberships: array().of(snowflakeSchema).min(1).required()
 	});
 
