@@ -1,4 +1,4 @@
-import type { SchoolStudentsMembershipsPostBody } from '@common/types'
+import type { SchoolStudentsMembershipsPutBody } from '@common/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Button,
@@ -17,7 +17,7 @@ import * as yup from 'yup'
 import { getMemberships } from '../data/memberships'
 import { getStudent, updateStudentMemberships } from '../data/students'
 
-const studentSchema: yup.SchemaOf<SchoolStudentsMembershipsPostBody> = yup.object({
+const studentSchema: yup.SchemaOf<SchoolStudentsMembershipsPutBody> = yup.object({
 	memberships: yup.array().of(yup.string().required()).required(),
 })
 
@@ -25,12 +25,12 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 	studentId,
 	...props
 }) => {
-	const { mutateAsync } = useMutation((data: SchoolStudentsMembershipsPostBody) => {
+	const { mutateAsync } = useMutation((data: SchoolStudentsMembershipsPutBody) => {
 		if (studentId) return updateStudentMemberships(studentId, data)
 		throw 'Students must be invited'
 	})
 
-	const form = useForm<SchoolStudentsMembershipsPostBody>({
+	const form = useForm<SchoolStudentsMembershipsPutBody>({
 		resolver: yupResolver(studentSchema),
 	})
 
@@ -40,7 +40,7 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 		form.clearErrors()
 	}
 
-	const handleSubmit = async (values: SchoolStudentsMembershipsPostBody) => {
+	const handleSubmit = async (values: SchoolStudentsMembershipsPutBody) => {
 		await mutateAsync(values)
 		handleClose()
 	}

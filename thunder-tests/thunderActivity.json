@@ -44,5 +44,46 @@
       "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNDQwMTAxMDM4NTIyNTIxIiwiZW1haWwiOiJuYXRlMTk1MjJAZ21haWwuY29tIiwicHJpdmlsZWdlIjoxLCJzdHJpcGVDdXN0b21lcklkIjoiY3VzX0xGc2hkTUhZQVJKVHdsIiwiaWF0IjoxNjQ2NTE1NDAyfQ.UjBjao7N5dMhRmWkmMsTiqLtMxzu0TG-5vZIZFyiCcM"
     },
     "tests": []
+  },
+  {
+    "_id": "293afb0b-041f-4c8c-ad25-eae1568b74f2",
+    "colId": "history",
+    "containerId": "",
+    "name": "https://api.matmaster.app/dev/users/me/verify",
+    "url": "https://api.matmaster.app/dev/users/me/verify",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-04-20T03:35:29.157Z",
+    "modified": "2022-04-20T03:35:34.132Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5NTQ5MzU3NjE2MjY4MTc2IiwiZW1haWwiOiJuYXRoYW5AcGVuZ2llLmRldiIsInByaXZpbGVnZSI6MCwic3RyaXBlQ3VzdG9tZXJJZCI6bnVsbCwiaWF0IjoxNjUwNDI1Njg5fQ.5sgVNZ_oqYtOO-5Kt_gZB0KcQ2m5s86j0-sAXdYCh4Y"
+    },
+    "tests": []
+  },
+  {
+    "_id": "a913554d-31b0-4e5b-bcc4-b2ca71bcffd0",
+    "colId": "history",
+    "containerId": "",
+    "name": "https://api.matmaster.app/dev/auth/verify",
+    "url": "https://api.matmaster.app/dev/auth/verify",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-04-20T03:35:57.918Z",
+    "modified": "2022-04-20T03:36:00.147Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5NTQ5MzU3NjE2MjY4MTc2IiwiaWF0IjoxNjUwNDI1NzMyLCJleHAiOjE2NTA0MjY2MzJ9.MxNrcwu3ZvVvAE79RhxlzZexPjszz-LArc_UY00Phjs\"}",
+      "form": []
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5NTQ5MzU3NjE2MjY4MTc2IiwiZW1haWwiOiJuYXRoYW5AcGVuZ2llLmRldiIsInByaXZpbGVnZSI6MCwic3RyaXBlQ3VzdG9tZXJJZCI6bnVsbCwiaWF0IjoxNjUwNDI1Njg5fQ.5sgVNZ_oqYtOO-5Kt_gZB0KcQ2m5s86j0-sAXdYCh4Y"
+    },
+    "tests": []
   }
 ]

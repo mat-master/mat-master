@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import ClassesPage from './pages/school/classes'
 import DashboardPage from './pages/school/dashboard'
@@ -25,6 +25,7 @@ const App: React.FC = () => (
 				</Route>
 			</Route>
 
+			<Route path='/' element={<Navigate to='/schools' />} />
 			<Route path='*' element='404' />
 		</Routes>
 	</BrowserRouter>

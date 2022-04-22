@@ -23,6 +23,10 @@ export interface VerifyPostBody {
 	token: string
 }
 
+export interface VerifyPostResponse {
+	jwt: string
+}
+
 // Schools
 
 export interface SchoolPostBody {
@@ -66,6 +70,12 @@ export interface SchoolInvitesDeleteBody {
 export type SchoolJoinPostResponse = void | string;
 
 export type SchoolStudentsGetResponse = Student[];
+
+export interface SchoolAttendancePostBody {
+	student: Snowflake,
+	classes: Snowflake[],
+	date: Date
+}
 
 export interface SchoolStudentsMembershipsPutBody {
 	memberships: Snowflake[]

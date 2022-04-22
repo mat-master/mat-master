@@ -3,6 +3,7 @@ import type {
 	LoginPostBody,
 	MembershipInterval,
 	School,
+	SchoolAttendancePostBody,
 	SchoolClassesPostBody,
 	SchoolInvitesDeleteBody,
 	SchoolInvitesPostBody,
@@ -16,7 +17,7 @@ import type {
 	UserPatchBody,
 	VerifyPostBody,
 } from '@common/types'
-import { array, mixed, number, object, SchemaOf, string } from 'yup'
+import { array, date, mixed, number, object, SchemaOf, string } from 'yup'
 
 export const snowflakeSchema: SchemaOf<Snowflake> = mixed().required()
 
@@ -31,7 +32,7 @@ export const userSchema: SchemaOf<User> = object({
 })
 
 export const addressSchema: SchemaOf<Address> = object({
-	state: string().required(),
+	state: string().length(2).required(),
 	city: string().required(),
 	postalCode: string().length(5).required(),
 	line1: string().required(),
@@ -62,7 +63,7 @@ export const classTimeSchema = object({
 
 export const membershipIntervalSchema: SchemaOf<MembershipInterval> = mixed()
 	.oneOf(['day', 'week', 'month', 'year'])
-	.required()
+	.required();
 
 export namespace api {
 	export const signupPostSchema: SchemaOf<SignupPostBody> = object({
@@ -109,6 +110,12 @@ export namespace api {
 	export const schoolInvitesDeleteSchema: SchemaOf<SchoolInvitesDeleteBody> = object({
 		email: string().email().required(),
 	})
+
+	export const schoolAttendanceSchema: SchemaOf<SchoolAttendancePostBody> = object({
+		student: snowflakeSchema.required(),
+		classes: array().of(snowflakeSchema).required(),
+		date: date().required()
+	})	
 
 	export const userPatchSchema: SchemaOf<UserPatchBody> = object({
 		firstName: string().optional(),

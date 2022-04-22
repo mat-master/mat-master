@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     const user = await authUser(event);
     if(isResponse(user)) return user;
 
-    const school = await getSchool(event);
+    const school = await getSchoolAuth(user, event);
     if(isResponse(school)) return school;
 
     const clazz = await query("INSERT INTO classes (id, school, name, schedule) VALUES ($1, $2, $3, $4) RETURNING *", [generateSnowflake(), school.id, body.name, body.schedule]);
