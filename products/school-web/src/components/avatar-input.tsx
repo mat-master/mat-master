@@ -19,7 +19,6 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-		borderRadius: '50%',
 		opacity: 0,
 		backdropFilter: 'blur(1px)',
 		backgroundColor: getPrimaryColor(theme),
@@ -55,12 +54,18 @@ const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 					style={{ display: 'none' }}
 					onChange={(e) => setValue(e.target.files?.item(0) ?? null)}
 				/>
-				<Avatar src={src} size='xl' radius={128} color={theme.primaryColor}>
+				<Avatar
+					src={src}
+					size='xl'
+					radius='lg'
+					color={theme.primaryColor}
+					styles={{ root: { overflow: 'hidden' } }}
+				>
 					{children}
+					<div className={classes.editOverlay}>
+						<EditIcon size={32} color={theme.white} />
+					</div>
 				</Avatar>
-				<div className={classes.editOverlay}>
-					<EditIcon size={32} color={theme.white} />
-				</div>
 			</label>
 		)
 	}

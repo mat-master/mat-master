@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import AccountPage from './pages/school/account'
 import ClassesPage from './pages/school/classes'
 import DashboardPage from './pages/school/dashboard'
 import MembershipsPage from './pages/school/memberships'
@@ -19,6 +20,7 @@ const App: React.FC = () => (
 				<Route index element={<SchoolsPage />} />
 				<Route path=':school'>
 					<Route index element={<DashboardPage />} />
+					<Route path='account' element={<AccountPage />} />
 					<Route path='students' element={<StudentsPage />} />
 					<Route path='classes' element={<ClassesPage />} />
 					<Route path='memberships' element={<MembershipsPage />} />

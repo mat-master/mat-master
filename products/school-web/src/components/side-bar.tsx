@@ -41,24 +41,27 @@ const SideBar: React.FC = () => {
 					<SideBarLink to='..' leftIcon={<DashboardIcon size={ICON_SIZE} />}>
 						Dashboard
 					</SideBarLink>
-					<SideBarLink to='../students' leftIcon={<StudentsIcon size={ICON_SIZE} />}>
+					<SideBarLink
+						to='../students'
+						leftIcon={<StudentsIcon size={ICON_SIZE} />}
+					>
 						Students
 					</SideBarLink>
 					<SideBarLink to='../classes' leftIcon={<ClassesIcon size={ICON_SIZE} />}>
 						Classes
 					</SideBarLink>
-					<SideBarLink to='../memberships' leftIcon={<MembershipsIcon size={ICON_SIZE} />}>
+					<SideBarLink
+						to='../memberships'
+						leftIcon={<MembershipsIcon size={ICON_SIZE} />}
+					>
 						Memberships
 					</SideBarLink>
 				</Group>
 
 				<Group direction='column' spacing='sm'>
-					<SideBarButton
-						leftIcon={<AccountIcon size={ICON_SIZE} />}
-						onClick={() => setModals({ account: true })}
-					>
+					<SideBarLink to='../account' leftIcon={<AccountIcon size={ICON_SIZE} />}>
 						Account
-					</SideBarButton>
+					</SideBarLink>
 
 					<SideBarButton
 						leftIcon={<SettingsIcon size={ICON_SIZE} />}
@@ -69,7 +72,12 @@ const SideBar: React.FC = () => {
 				</Group>
 			</Box>
 
-			<UserModal opened={modals.account} onClose={() => setModals({ account: false })} />
+			{modals.account && (
+				<UserModal
+					opened={modals.account}
+					onClose={() => setModals({ account: false })}
+				/>
+			)}
 		</>
 	)
 }
