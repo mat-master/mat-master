@@ -1,13 +1,10 @@
-import { Avatar, Box, Group, Skeleton, Title, useMantineTheme } from '@mantine/core'
+import { Box, Group, Skeleton, Title } from '@mantine/core'
 import type React from 'react'
 import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router'
 import { getCurrentSchool } from '../data/schools'
 
 const AppHeader: React.FC = () => {
 	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
-	const theme = useMantineTheme()
-	const navigate = useNavigate()
 
 	return (
 		<Box
@@ -22,17 +19,6 @@ const AppHeader: React.FC = () => {
 				<Skeleton width='max-content' visible={isLoading}>
 					<Title order={3}>{school?.name ?? 'Mat Master'}</Title>
 				</Skeleton>
-
-				<div>
-					<Avatar
-						radius='sm'
-						color={theme.primaryColor}
-						style={{ cursor: 'pointer' }}
-						onClick={() => navigate('/account')}
-					>
-						NS
-					</Avatar>
-				</div>
 			</Group>
 		</Box>
 	)

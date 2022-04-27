@@ -1,8 +1,7 @@
-import { Avatar, createStyles, useMantineTheme } from '@mantine/core'
+import { ActionIcon, Avatar, createStyles, useMantineTheme } from '@mantine/core'
 import { useUncontrolled } from '@mantine/hooks'
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { Pencil as EditIcon } from 'tabler-icons-react'
-import { getPrimaryColor } from '../utils/get-colors'
 
 export interface AvatarInputProps {
 	value?: string | File | null
@@ -12,32 +11,24 @@ export interface AvatarInputProps {
 }
 
 const useStyles = createStyles((theme) => ({
-	wrapper: { position: 'relative', overflow: 'hidden' },
-	editOverlay: {
+	editIcon: {
 		position: 'absolute',
-		inset: 0,
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		opacity: 0,
-		backdropFilter: 'blur(1px)',
-		backgroundColor: getPrimaryColor(theme),
-		cursor: 'pointer',
-		transition: `opacity 200ms ${theme.transitionTimingFunction}`,
-		'&:hover': { opacity: 1 },
+		right: -6,
+		bottom: -6,
 	},
 }))
 
 const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 	({ children, value: controlledValue, defaultValue, onChange }) => {
+		const inputRef = useRef<HTMLInputElement>(null)
 		const theme = useMantineTheme()
-		const { classes } = useStyles()
 		const [value, setValue] = useUncontrolled({
 			value: controlledValue,
 			finalValue: null,
 			defaultValue,
 			onChange,
-			rule: (value) => typeof value === 'string' || value instanceof File || value === null,
+			rule: (value) =>
+				typeof value === 'string' || value instanceof File || value === null,
 		})
 
 		let src: string | undefined
@@ -47,8 +38,9 @@ const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 		}, [value])
 
 		return (
-			<label className={classes.wrapper}>
+			<div style={{ position: 'relative' }}>
 				<input
+					ref={inputRef}
 					type='file'
 					accept='image/*'
 					style={{ display: 'none' }}
@@ -62,11 +54,21 @@ const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 					styles={{ root: { overflow: 'hidden' } }}
 				>
 					{children}
-					<div className={classes.editOverlay}>
-						<EditIcon size={32} color={theme.white} />
-					</div>
 				</Avatar>
-			</label>
+				<ActionIcon
+					size='md'
+					variant='filled'
+					color={theme.primaryColor}
+					onClick={() => inputRef.current?.click()}
+					style={{
+						position: 'absolute',
+						right: -6,
+						bottom: -6,
+					}}
+				>
+					<EditIcon size={18} />
+				</ActionIcon>
+			</div>
 		)
 	}
 )
