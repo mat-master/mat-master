@@ -1,15 +1,14 @@
 import { Paper, SimpleGrid, Title } from '@mantine/core'
 import type React from 'react'
-import AccountForm from '../../components/account-form'
-import AppHeader from '../../components/app-header'
-import SideBar from '../../components/side-bar'
-import Page from '../../page'
+import AccountForm from '../components/account-form'
+import AppHeader from '../components/app-header'
+import Page from '../page'
 
 const AccountPage: React.FC = () => {
 	return (
-		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
+		<Page authorized header={<AppHeader />}>
 			<SimpleGrid cols={2} spacing='sm'>
-			<AccountForm />
+				<AccountForm />
 				<Paper shadow='sm' padding='lg'>
 					<Title>Billing Information</Title>
 				</Paper>

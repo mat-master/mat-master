@@ -3,9 +3,9 @@ import type React from 'react'
 import {
 	CalendarTime as ClassesIcon,
 	Layout2 as DashboardIcon,
-	Receipt2 as MembershipsIcon,
+	Receipt2 as BillingIcon,
+	Repeat as MembershipsIcon,
 	Settings as SettingsIcon,
-	UserCircle as AccountIcon,
 	Users as StudentsIcon,
 } from 'tabler-icons-react'
 import SideBarButton from './side-bar-button'
@@ -42,13 +42,12 @@ const SideBar: React.FC = () => (
 			>
 				Memberships
 			</SideBarLink>
+			<SideBarLink to='../billing' leftIcon={<BillingIcon size={ICON_SIZE} />}>
+				Billing
+			</SideBarLink>
 		</Group>
 
 		<Group direction='column' spacing='sm'>
-			<SideBarLink to='../account' leftIcon={<AccountIcon size={ICON_SIZE} />}>
-				Account
-			</SideBarLink>
-
 			<SideBarButton leftIcon={<SettingsIcon size={ICON_SIZE} />}>
 				Settings
 			</SideBarButton>

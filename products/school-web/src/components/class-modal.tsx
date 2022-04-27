@@ -17,7 +17,10 @@ import { createClass, getClass } from '../data/classes'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
 
-const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...props }) => {
+const ClassModal: React.FC<ModalProps & { classId?: string }> = ({
+	classId,
+	...props
+}) => {
 	const { mutateAsync } = useMutation((data: SchoolClassesPostBody) => {
 		if (classId) throw 'Unimplemented'
 		return createClass(data)
@@ -39,7 +42,7 @@ const ClassModal: React.FC<ModalProps & { classId?: string }> = ({ classId, ...p
 	}
 
 	const { data: _class, isLoading } = useQuery(
-		['classes', { id: classId }],
+		[classId],
 		async () => {
 			const _class = await getClass(classId ?? '')
 			form.reset(_class)

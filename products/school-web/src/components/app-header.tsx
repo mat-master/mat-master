@@ -1,9 +1,26 @@
-import { Box, Group, Skeleton, Title } from '@mantine/core'
+import {
+	Avatar,
+	Box,
+	Group,
+	Menu,
+	Skeleton,
+	Title,
+	useMantineTheme,
+} from '@mantine/core'
 import type React from 'react'
 import { useQuery } from 'react-query'
+import { Link, useNavigate } from 'react-router-dom'
+import { Logout as LogoutIcon, User as AccountIcon } from 'tabler-icons-react'
+import { signout } from '../data/auth'
 import { getCurrentSchool } from '../data/schools'
+import { getUser } from '../data/user'
+import getInitials from '../utils/get-initials'
 
 const AppHeader: React.FC = () => {
+	const theme = useMantineTheme()
+	const navigate = useNavigate()
+
+	const { data: user } = useQuery('me', getUser)
 	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
 
 	return (
@@ -19,6 +36,32 @@ const AppHeader: React.FC = () => {
 				<Skeleton width='max-content' visible={isLoading}>
 					<Title order={3}>{school?.name ?? 'Mat Master'}</Title>
 				</Skeleton>
+
+				<Menu
+					control={
+						<Avatar
+							radius='sm'
+							color={theme.primaryColor}
+							style={{ cursor: 'pointer' }}
+						>
+							{user && getInitials(user)}
+						</Avatar>
+					}
+				>
+					<Menu.Item
+						component={Link}
+						to='/account'
+						icon={<AccountIcon size={16} />}
+					>
+						Account
+					</Menu.Item>
+					<Menu.Item
+						icon={<LogoutIcon size={16} />}
+						onClick={() => signout(navigate)}
+					>
+						Log Out
+					</Menu.Item>
+				</Menu>
 			</Group>
 		</Box>
 	)

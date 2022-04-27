@@ -53,16 +53,22 @@ const StudentEditModal: React.FC<ModalProps & { studentId?: string }> = ({
 
 	const { data: memberships, isLoading: membershipsLoading } = useQuery(
 		'memberships',
-		getMemberships
+		getMemberships,
+		{ enabled: props.opened }
 	)
 	const membershipOptions = useMemo(
-		() => memberships?.map(({ id, name }) => ({ value: id.toString(), label: name })),
+		() =>
+			memberships?.map(({ id, name }) => ({ value: id.toString(), label: name })),
 		[memberships]
 	)
 
 	return (
 		<Modal
-			title={<Title order={3}>{`${student?.user.firstName} ${student?.user.lastName}`}</Title>}
+			title={
+				<Title
+					order={3}
+				>{`${student?.user.firstName} ${student?.user.lastName}`}</Title>
+			}
 			{...props}
 		>
 			<LoadingOverlay visible={membershipsLoading || studentLoading} radius='sm' />

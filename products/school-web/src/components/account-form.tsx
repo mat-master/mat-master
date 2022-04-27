@@ -5,16 +5,20 @@ import {
 	Button,
 	Center,
 	Group,
-	LoadingOverlay,
+	Loader,
+	Overlay,
 	Paper,
 	PasswordInput,
+	Text,
 	TextInput,
 	Title,
 } from '@mantine/core'
 import type React from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { getUser, updateUser } from '../data/user'
+import getErrorMessage from '../utils/get-error-message'
 import getInitials from '../utils/get-initials'
 import AvatarInput from './avatar-input'
 
@@ -25,12 +29,13 @@ const AccountForm: React.FC = () => {
 	})
 
 	const { mutateAsync } = useMutation('me', updateUser)
-	const { data, isLoading, error } = useQuery('me', async () => {
-		const user = await getUser()
+	const { data: user, isLoading, error } = useQuery('me', getUser)
+
+	useEffect(() => {
+		if (!user) return
 		const { firstName, lastName, avatar } = user
 		form.reset({ firstName, lastName, avatar: avatar?.toString() })
-		return user
-	})
+	}, [user])
 
 	const { touchedFields } = form.formState
 	const handleSubmit = (values: UserPatchBody) => {
@@ -46,7 +51,22 @@ const AccountForm: React.FC = () => {
 
 	return (
 		<Paper shadow='sm' padding='lg' style={{ position: 'relative' }}>
-			<LoadingOverlay visible={isLoading} />
+			{(!!error || isLoading) && (
+				<Overlay
+					radius='sm'
+					opacity={0.8}
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						backdropFilter: 'blur(2px)',
+					}}
+				>
+					{isLoading && <Loader />}
+					<Text color='red'>{!!error && getErrorMessage(error)}</Text>
+				</Overlay>
+			)}
+
 			<Title>Account</Title>
 			<form onSubmit={form.handleSubmit(handleSubmit)}>
 				<Group direction='column' grow>
@@ -55,13 +75,13 @@ const AccountForm: React.FC = () => {
 							{...form.register('avatar')}
 							onChange={(img) => form.setValue('avatar', '')}
 						>
-							{data && getInitials(data)}
+							{user && getInitials(user)}
 						</AvatarInput>
 					</Center>
 
 					<TextInput label='First Name' {...form.register('firstName')} />
 					<TextInput label='Last Name' {...form.register('lastName')} />
-					<TextInput label='Email' />
+					<TextInput label='Email' value={user?.email || ''} disabled />
 					<PasswordInput label='Reset Password' />
 
 					<Group position='right'>

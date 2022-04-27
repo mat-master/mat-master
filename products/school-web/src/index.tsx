@@ -15,7 +15,7 @@ axios.defaults.baseURL = // 'https://api.matmaster.app/dev'
 
 const queryClient = new QueryClient({
 	defaultOptions: {
-		queries: { refetchOnWindowFocus: false, retry: false },
+		queries: { refetchOnWindowFocus: false, retry: false, refetchOnMount: false },
 		mutations: { retry: false },
 	},
 })
