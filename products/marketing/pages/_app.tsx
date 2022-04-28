@@ -1,13 +1,8 @@
-import { MantineProvider } from '@mantine/core';
-import type { AppProps } from 'next/app';
-import '../styles/globals.css';
+import '../styles/globals.css'
+import type { AppProps } from 'next/app'
 
-function App({ Component, pageProps }: AppProps) {
-	return (
-		<MantineProvider theme={{ primaryColor: 'red' }}>
-			<Component {...pageProps} />
-		</MantineProvider>
-	);
+function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
 }
 
-export default App;
+export default MyApp
