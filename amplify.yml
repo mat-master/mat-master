@@ -22,6 +22,7 @@ applications:
         build:
           commands:
             - yarn build
+            - yarn export
       artifacts:
         baseDirectory: out
         files:
