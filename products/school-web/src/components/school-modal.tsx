@@ -1,21 +1,20 @@
 import type { SchoolPostBody } from '@common/types'
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Group, Modal, ModalProps, TextInput, Title } from '@mantine/core'
+import { Button, Group, Modal, ModalProps, TextInput, Title } from '@mantine/core'
 import type React from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { createSchool } from '../data/schools'
-import ModalActions from './modal-actions'
 
 const SchoolModal: React.FC<ModalProps> = (props) => {
-	const mutation = useMutation(createSchool)
+	const { mutateAsync } = useMutation('schools', createSchool)
 	const form = useForm<SchoolPostBody>({
 		resolver: yupResolver(validator.api.schoolPostSchema),
 	})
 
-	const handleSubmit = (data: SchoolPostBody) => {
-		mutation.mutate(data)
+	const handleSubmit = async (data: SchoolPostBody) => {
+		await mutateAsync(data)
 		props.onClose()
 	}
 
@@ -55,7 +54,11 @@ const SchoolModal: React.FC<ModalProps> = (props) => {
 					/>
 				</Group>
 
-				<ModalActions primaryLabel='Create' />
+				<Group position='right'>
+					<Button type='submit' loading={form.formState.isSubmitting}>
+						Save
+					</Button>
+				</Group>
 			</form>
 		</Modal>
 	)

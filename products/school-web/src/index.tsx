@@ -1,4 +1,5 @@
 import { Global, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
 import axios from 'axios'
 import React from 'react'
@@ -34,12 +35,17 @@ ReactDOM.render(
 					styles={(theme) => ({
 						'*, *::before, *::after': { boxSizing: 'border-box' },
 						'body, #root': { margin: 0, width: '100vw', height: '100vh' },
-						body: { backgroundColor: theme.colors.gray[1], ...theme.fn.fontStyles() },
+						body: {
+							backgroundColor: theme.colors.gray[1],
+							...theme.fn.fontStyles(),
+						},
 					})}
 				/>
 
 				<NotificationsProvider>
-					<App />
+					<ModalsProvider>
+						<App />
+					</ModalsProvider>
 				</NotificationsProvider>
 			</MantineProvider>
 		</QueryClientProvider>

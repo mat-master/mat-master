@@ -1,6 +1,6 @@
-import { ActionIcon, Avatar, createStyles, useMantineTheme } from '@mantine/core'
+import { ActionIcon, Avatar, useMantineTheme } from '@mantine/core'
 import { useUncontrolled } from '@mantine/hooks'
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { Pencil as EditIcon } from 'tabler-icons-react'
 
 export interface AvatarInputProps {
@@ -10,17 +10,8 @@ export interface AvatarInputProps {
 	children?: React.ReactNode
 }
 
-const useStyles = createStyles((theme) => ({
-	editIcon: {
-		position: 'absolute',
-		right: -6,
-		bottom: -6,
-	},
-}))
-
 const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
-	({ children, value: controlledValue, defaultValue, onChange }) => {
-		const inputRef = useRef<HTMLInputElement>(null)
+	({ children, value: controlledValue, defaultValue, onChange }, ref) => {
 		const theme = useMantineTheme()
 		const [value, setValue] = useUncontrolled({
 			value: controlledValue,
@@ -40,7 +31,7 @@ const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 		return (
 			<div style={{ position: 'relative' }}>
 				<input
-					ref={inputRef}
+					ref={ref}
 					type='file'
 					accept='image/*'
 					style={{ display: 'none' }}
@@ -59,7 +50,6 @@ const AvatarInput = React.forwardRef<HTMLInputElement, AvatarInputProps>(
 					size='md'
 					variant='filled'
 					color={theme.primaryColor}
-					onClick={() => inputRef.current?.click()}
 					style={{
 						position: 'absolute',
 						right: -6,
