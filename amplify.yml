@@ -14,3 +14,16 @@ applications:
         files:
           - '**/*'
     appRoot: products/school-web
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+        build:
+          commands:
+            - yarn build
+      artifacts:
+        baseDirectory: out
+        files:
+          - '**/*'
+    appRoot: products/marketing
