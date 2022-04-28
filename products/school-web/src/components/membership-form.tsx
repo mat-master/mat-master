@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { NumberInput, TextInput } from '@mantine/core'
 import type React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { createMembership, getMembership } from '../data/memberships'
 import ClassesSelect from './classes-select'
@@ -24,23 +24,27 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
 		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
 	})
 
-	const { isLoading } = useQuery(['memberships', id], () => getMembership(id!), {
+	const queryKey = ['memberships', { id }] as const
+	const { isLoading } = useQuery(queryKey, () => getMembership(id!), {
 		enabled: !!id,
 		onSuccess: form.reset,
 	})
 
+	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(
-		['memberships', id],
+		queryKey,
 		(values: SchoolMembershipsPostBody) => {
 			if (!id) return createMembership(values)
 			throw 'Unimplemented'
-		}
+		},
+		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
 	)
 
-	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-		await form.handleSubmit((values) => mutateAsync(values))(e)
-		onSubmit && onSubmit(e)
-	}
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
 
 	return (
 		<Form loading={isLoading} {...props} onSubmit={handleSubmit}>

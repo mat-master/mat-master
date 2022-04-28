@@ -4,8 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
-import { createInvitation } from '../data/invitations'
+import { useMutation, useQueryClient } from 'react-query'
+import { createInvite } from '../data/invites'
 import Form, { FormProps } from './form'
 
 const StudentInviteForm: React.FC<FormProps> = ({ onSubmit, ...props }) => {
@@ -13,11 +13,17 @@ const StudentInviteForm: React.FC<FormProps> = ({ onSubmit, ...props }) => {
 		resolver: yupResolver(validator.api.schoolInvitesPostSchema),
 	})
 
-	const { mutateAsync } = useMutation('invitations', createInvitation)
-	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-		await form.handleSubmit((values) => mutateAsync(values))(e)
-		onSubmit && (await onSubmit(e))
-	}
+	const queryKey = 'invites'
+	const queryClient = useQueryClient()
+	const { mutateAsync } = useMutation(queryKey, createInvite, {
+		onSuccess: () => queryClient.invalidateQueries(queryKey),
+	})
+
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
 
 	return (
 		<Form submitLabel='Send' {...props} onSubmit={handleSubmit}>

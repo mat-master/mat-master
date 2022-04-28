@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import { createSchool } from '../data/schools'
 import Form, { FormProps } from './form'
 
@@ -13,11 +13,17 @@ const SchoolForm: React.FC<FormProps> = ({ onSubmit, ...props }) => {
 		resolver: yupResolver(validator.api.schoolPostSchema),
 	})
 
-	const { mutateAsync } = useMutation('schools', createSchool)
-	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-		await form.handleSubmit((values) => mutateAsync(values))(e)
-		onSubmit && (await onSubmit(e))
-	}
+	const queryKey = 'schools'
+	const queryClient = useQueryClient()
+	const { mutateAsync } = useMutation(queryKey, createSchool, {
+		onSuccess: () => queryClient.invalidateQueries(queryKey),
+	})
+
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
 
 	return (
 		<Form {...props} onSubmit={handleSubmit}>
