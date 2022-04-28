@@ -6,26 +6,25 @@ import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import * as yup from 'yup'
 import { getStudent, updateStudentMemberships } from '../data/students'
-import Form from './form'
+import Form, { FormProps } from './form'
 
 const studentSchema: yup.SchemaOf<SchoolStudentsMembershipsPutBody> = yup.object({
 	memberships: yup.array().of(yup.string().required()).required(),
 })
 
-export interface StudentEditFormProps {
+export type StudentEditFormProps = FormProps & {
 	id: string
 }
 
-const StudentEditForm: React.FC<StudentEditFormProps> = ({ id }) => {
+const StudentEditForm: React.FC<StudentEditFormProps> = ({
+	id,
+	onSubmit,
+	...props
+}) => {
 	const form = useForm<SchoolStudentsMembershipsPutBody>({
 		defaultValues: {},
 		resolver: yupResolver(studentSchema),
 	})
-
-	const { mutateAsync } = useMutation(
-		['students', id],
-		(data: SchoolStudentsMembershipsPutBody) => updateStudentMemberships(id, data)
-	)
 
 	const { data, isLoading } = useQuery(
 		['students', id],
@@ -33,19 +32,24 @@ const StudentEditForm: React.FC<StudentEditFormProps> = ({ id }) => {
 		// { onSuccess: (data) => form.reset({ memberships: })}
 	)
 
+	const { mutateAsync } = useMutation(
+		['students', id],
+		(data: SchoolStudentsMembershipsPutBody) => updateStudentMemberships(id, data)
+	)
+
 	// const { touchedFields } = form.formState
-	const handleSubmit = (values: SchoolStudentsMembershipsPutBody) => {
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+		await form.handleSubmit((values) => mutateAsync(values))(e)
+		onSubmit && (await onSubmit(e))
 		// const data = Object.fromEntries(
 		// 	Object.entries(values).filter(
 		// 		([key]) => !touchedFields[key as keyof SchoolStudentsMembershipsPutBody]
 		// 	)
 		// )
-
-		return mutateAsync(values)
 	}
 
 	return (
-		<Form>
+		<Form {...props} onSubmit={handleSubmit}>
 			<Controller
 				name='memberships'
 				control={form.control}

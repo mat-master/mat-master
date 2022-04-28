@@ -5,6 +5,7 @@ import { useState } from 'react'
 export type FormProps = JSX.IntrinsicElements['form'] & {
 	loading?: boolean
 	error?: string
+	submitLabel?: string
 }
 
 const Form: React.FC<FormProps> = ({
@@ -12,6 +13,7 @@ const Form: React.FC<FormProps> = ({
 	error,
 	children,
 	onSubmit,
+	submitLabel = 'Save',
 	...props
 }) => {
 	const [submitting, setSubmitting] = useState(false)
@@ -33,10 +35,12 @@ const Form: React.FC<FormProps> = ({
 
 			<Group direction='column' spacing='sm' grow>
 				{children}
-				{error && <Text color='red'>{error}</Text>}
 				<Group position='right'>
-					<Button type='submit'>Save</Button>
+					<Button type='submit' loading={submitting}>
+						{submitLabel}
+					</Button>
 				</Group>
+				{error && <Text color='red'>{error}</Text>}
 			</Group>
 		</form>
 	)

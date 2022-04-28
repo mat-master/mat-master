@@ -8,13 +8,13 @@ import { useMutation, useQuery } from 'react-query'
 import { createClass, getClass } from '../data/classes'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
-import Form from './form'
+import Form, { FormProps } from './form'
 
-export interface ClassFormProps {
+export type ClassFormProps = FormProps & {
 	id?: string
 }
 
-const ClassForm: React.FC<ClassFormProps> = ({ id }) => {
+const ClassForm: React.FC<ClassFormProps> = ({ id, onSubmit, ...props }) => {
 	const form = useForm<SchoolClassesPostBody>({
 		defaultValues: {},
 		resolver: yupResolver(validator.api.schoolClassesPostSchema),
@@ -33,11 +33,17 @@ const ClassForm: React.FC<ClassFormProps> = ({ id }) => {
 		}
 	)
 
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+		await form.handleSubmit((values) => mutateAsync(values))(e)
+		onSubmit && (await onSubmit(e))
+	}
+
 	return (
 		<Form
 			loading={isLoading}
 			// error={(fetchError || createMutation.error || updateMutation.error)}
-			onSubmit={form.handleSubmit((values) => mutateAsync(values))}
+			{...props}
+			onSubmit={handleSubmit}
 		>
 			<TextInput
 				label='Name'
