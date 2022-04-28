@@ -1,9 +1,11 @@
 import { Card, createStyles, Image, Text } from '@mantine/core'
 import type React from 'react'
+import { Link } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
 	card: {
-		backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+		backgroundColor:
+			theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
 	},
 
 	section: {
@@ -38,8 +40,8 @@ const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href }) => {
 	return (
 		<Card
 			withBorder
-			component='a'
-			href={href}
+			component={Link}
+			to={href}
 			padding='md'
 			radius='md'
 			shadow='sm'

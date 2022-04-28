@@ -16,6 +16,7 @@
     "@mantine/core": "^3.6.9",
     "@mantine/dates": "^3.6.9",
     "@mantine/hooks": "^3.6.9",
+    "@mantine/modals": "^4.2.1",
     "@mantine/notifications": "^3.6.9",
     "axios": "^0.26.0",
     "cron-parser": "^4.2.1",

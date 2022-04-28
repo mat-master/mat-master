@@ -1,12 +1,11 @@
-import { Text } from '@mantine/core'
-import { useSetState } from '@mantine/hooks'
+import { Text, Title } from '@mantine/core'
+import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
-import ClassModal from '../../components/class-modal'
-import ConfirmationModal from '../../components/confirmation-modal'
+import ClassForm from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
@@ -17,23 +16,22 @@ import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import getReadableSchedule from '../../utils/get-readable-shedule'
 
-interface ClassesPageModals {
-	edit?: { open: boolean; classId?: string }
-	deleteConfirmation?: string | undefined
-}
-
 const ClassesPage: React.FC = () => {
-	const [modals, setModals] = useSetState<ClassesPageModals>({})
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
+	const modals = useModals()
 
-	const { data: classes, isLoading, isError, refetch } = useQuery('classes', getClasses)
+	const {
+		data: classes,
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery('classes', getClasses)
 	const filteredClasses = useMemo(() => {
 		if (!classes) return []
-		return classes.filter(({ name }) => name.toLowerCase().includes(searchTerm.toLowerCase()))
+		return classes.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		)
 	}, [debouncedSearchTerm, classes])
-
-	const deleteName =
-		classes?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'class'
 
 	return (
 		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
@@ -44,7 +42,11 @@ const ClassesPage: React.FC = () => {
 				actions={[
 					{
 						icon: NewClassIcon,
-						action: () => setModals({ edit: { open: true, classId: undefined } }),
+						action: () =>
+							modals.openModal({
+								title: <Title order={3}>New Class</Title>,
+								children: <ClassForm />,
+							}),
 					},
 				]}
 			/>
@@ -65,8 +67,17 @@ const ClassesPage: React.FC = () => {
 						schedule: getReadableSchedule(schedule),
 						menu: (
 							<ItemMenu
-								onEdit={() => setModals({ edit: { open: true, classId: id.toString() } })}
-								onDelete={() => setModals({ deleteConfirmation: id.toString() })}
+								onEdit={() =>
+									modals.openModal({
+										title: <Title order={3}>{name}</Title>,
+										children: <ClassForm id={id.toString()} />,
+									})
+								}
+								onDelete={() =>
+									modals.openConfirmModal({
+										title: `Are you sure you want to delete ${name}?`,
+									})
+								}
 							/>
 						),
 					},
@@ -87,24 +98,16 @@ const ClassesPage: React.FC = () => {
 					}
 					resourceLabel='classes'
 					refetchItems={refetch}
-					createItem={() => setModals({ edit: { open: true } })}
+					createItem={() =>
+						modals.openModal({
+							title: <Title order={3}>New Class</Title>,
+							children: <ClassForm />,
+						})
+					}
 					createMessage='Create A Class'
 					createIcon={NewClassIcon}
 				/>
 			</Table>
-
-			<ClassModal
-				opened={!!modals.edit?.open}
-				classId={modals.edit?.classId}
-				onClose={() => setModals({ edit: undefined })}
-			/>
-			<ConfirmationModal
-				open={!!modals.deleteConfirmation}
-				actionType='delete'
-				resourceLabel={deleteName}
-				action={() => {}}
-				onClose={() => setModals({ deleteConfirmation: undefined })}
-			/>
 		</Page>
 	)
 }

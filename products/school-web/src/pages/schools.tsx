@@ -41,7 +41,7 @@ const SchoolsPage: React.FC = () => {
 					<Skeleton key={school.id.toString()} visible={isLoading}>
 						<SchoolCard
 							name={school.name}
-							href={`/schools/${school.id}`}
+							href={`./${school.id}`}
 							image='https://images.unsplash.com/photo-1647708941340-fd3a55d5fc87?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80'
 						/>
 					</Skeleton>

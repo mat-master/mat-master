@@ -1,6 +1,8 @@
 import type React from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import AccountPage from './pages/account'
+import BillingPage from './pages/school/billing'
 import ClassesPage from './pages/school/classes'
 import DashboardPage from './pages/school/dashboard'
 import MembershipsPage from './pages/school/memberships'
@@ -14,6 +16,7 @@ const App: React.FC = () => (
 		<Routes>
 			<Route path='sign-in' element={<SignInPage />} />
 			<Route path='sign-up' element={<SignUpPage />} />
+			<Route path='account' element={<AccountPage />} />
 
 			<Route path='schools'>
 				<Route index element={<SchoolsPage />} />
@@ -22,6 +25,7 @@ const App: React.FC = () => (
 					<Route path='students' element={<StudentsPage />} />
 					<Route path='classes' element={<ClassesPage />} />
 					<Route path='memberships' element={<MembershipsPage />} />
+					<Route path='billing' element={<BillingPage />} />
 				</Route>
 			</Route>
 

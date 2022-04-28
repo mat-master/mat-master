@@ -19,7 +19,7 @@ export const getSchools = async () => {
 
 export const getCurrentSchool = async () => {
 	const schoolId = getSchoolId()
-	if (!schoolId) throw Error('The current school is undefined')
+	if (!schoolId) return undefined
 	const res = await axios.get(`/schools/${schoolId}`)
 	if (res.status !== 200) throw res.data.error
 
