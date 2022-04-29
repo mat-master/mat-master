@@ -1,7 +1,7 @@
-import type { SchoolMembershipsPostBody } from '@common/types'
+import type { MembershipInterval, SchoolMembershipsPostBody } from '@common/types'
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { NumberInput, TextInput } from '@mantine/core'
+import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
 import type React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -13,6 +13,8 @@ import Form, { FormProps } from './form'
 export type MembershipFormProps = FormProps & {
 	id?: string
 }
+
+const INTERVALS: MembershipInterval[] = ['day', 'week', 'month', 'year']
 
 const MembershipForm: React.FC<MembershipFormProps> = ({
 	id,
@@ -78,6 +80,24 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
 					/>
 				)}
 			/>
+			<InputWrapper label='Billing Interval'>
+				<Grid columns={4} grow>
+					<Grid.Col span={1}>
+						<Controller
+							name='intervalCount'
+							control={form.control}
+							render={({ field }) => <NumberInput {...field} hideControls />}
+						/>
+					</Grid.Col>
+					<Grid.Col span={3}>
+						<Controller
+							name='interval'
+							control={form.control}
+							render={({ field }) => <Select data={INTERVALS} {...field} />}
+						/>
+					</Grid.Col>
+				</Grid>
+			</InputWrapper>
 		</Form>
 	)
 }

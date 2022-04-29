@@ -8,13 +8,13 @@ import AppHeader from '../../components/app-header'
 import ClassForm from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
+import ScheduleDisplay from '../../components/schedule-display'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getClasses } from '../../data/classes'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
-import getReadableSchedule from '../../utils/get-readable-shedule'
 import openFormModal from '../../utils/open-form-modal'
 
 const ClassesPage: React.FC = () => {
@@ -61,7 +61,7 @@ const ClassesPage: React.FC = () => {
 						name: <Text weight={700}>{name}</Text>,
 						studentAvatars: 'TODO',
 						memberships: 'TODO',
-						schedule: getReadableSchedule(schedule),
+						schedule: <ScheduleDisplay schedule={schedule} />,
 						menu: (
 							<ItemMenu
 								onEdit={() =>
