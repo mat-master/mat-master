@@ -50,11 +50,11 @@
     "colId": "history",
     "containerId": "",
     "name": "https://api.matmaster.app/dev/users/me/verify",
-    "url": "https://api.matmaster.app/dev/users/me/verify",
+    "url": "http://127.0.0.1:3030/users/me/verify",
     "method": "POST",
     "sortNum": 0,
     "created": "2022-04-20T03:35:29.157Z",
-    "modified": "2022-04-20T03:35:34.132Z",
+    "modified": "2022-04-29T17:35:21.747Z",
     "headers": [],
     "params": [],
     "auth": {
