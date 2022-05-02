@@ -10,6 +10,7 @@ import StudentsPage from './pages/school/students'
 import SchoolsPage from './pages/schools'
 import SignInPage from './pages/sign-in'
 import SignUpPage from './pages/sign-up'
+import VerifyPage from './pages/verify'
 
 const App: React.FC = () => (
 	<BrowserRouter>
@@ -17,6 +18,7 @@ const App: React.FC = () => (
 			<Route path='sign-in' element={<SignInPage />} />
 			<Route path='sign-up' element={<SignUpPage />} />
 			<Route path='account' element={<AccountPage />} />
+			<Route path='verify' element={<VerifyPage />} />
 
 			<Route path='schools'>
 				<Route index element={<SchoolsPage />} />

@@ -4,40 +4,50 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { createClass, getClass } from '../data/classes'
 import ClassScheduleInput from './class-schedule-input'
 import { defaultClassTime } from './class-time-input'
-import Form from './form'
+import Form, { FormProps } from './form'
 
-export interface ClassFormProps {
+export type ClassFormProps = FormProps & {
 	id?: string
 }
 
-const ClassForm: React.FC<ClassFormProps> = ({ id }) => {
+const ClassForm: React.FC<ClassFormProps> = ({ id, onSubmit, ...props }) => {
 	const form = useForm<SchoolClassesPostBody>({
 		defaultValues: {},
 		resolver: yupResolver(validator.api.schoolClassesPostSchema),
 	})
 
-	const { isLoading } = useQuery(['classes', id], () => getClass(id!), {
+	const queryKey = ['classes', { id }] as const
+	const { isLoading } = useQuery(queryKey, () => getClass(id!), {
 		enabled: !!id,
 		onSuccess: form.reset,
 	})
 
+	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(
-		['classes', id],
+		queryKey,
 		(values: SchoolClassesPostBody) => {
 			if (!id) return createClass(values)
 			throw 'Unimplemented'
-		}
+		},
+		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
 	)
+
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
 
 	return (
 		<Form
 			loading={isLoading}
 			// error={(fetchError || createMutation.error || updateMutation.error)}
-			onSubmit={form.handleSubmit((values) => mutateAsync(values))}
+			{...props}
+			onSubmit={handleSubmit}
 		>
 			<TextInput
 				label='Name'

@@ -1,25 +1,34 @@
-import { SimpleGrid, Skeleton } from '@mantine/core'
+import { SimpleGrid, Skeleton, Title } from '@mantine/core'
+import { useModals } from '@mantine/modals'
 import type React from 'react'
-import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { Apps as NewSchoolIcon } from 'tabler-icons-react'
 import AppHeader from '../components/app-header'
 import PageHeader from '../components/page-header'
 import SchoolCard from '../components/school-card'
-import SchoolModal from '../components/school-modal'
+import SchoolForm from '../components/school-form'
 import { getSchools } from '../data/schools'
 import Page from '../page'
 
 const SchoolsPage: React.FC = () => {
+	const modals = useModals()
 	const { data: schools, isLoading } = useQuery('schools', getSchools)
-	const [modalOpen, setModalOpen] = useState(false)
 
 	return (
 		<Page authorized header={<AppHeader />}>
 			<PageHeader
 				title='Schools'
 				search={() => {}}
-				actions={[{ icon: NewSchoolIcon, action: () => setModalOpen(true) }]}
+				actions={[
+					{
+						icon: NewSchoolIcon,
+						action: () =>
+							modals.openModal({
+								title: <Title order={3}>New School</Title>,
+								children: SchoolForm,
+							}),
+					},
+				]}
 			/>
 			<SimpleGrid cols={4} spacing='xl'>
 				{isLoading &&
@@ -47,8 +56,6 @@ const SchoolsPage: React.FC = () => {
 					</Skeleton>
 				))}
 			</SimpleGrid>
-
-			<SchoolModal opened={modalOpen} onClose={() => setModalOpen(false)} />
 		</Page>
 	)
 }

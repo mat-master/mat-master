@@ -3,49 +3,51 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { MultiSelect } from '@mantine/core'
 import type React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import * as yup from 'yup'
 import { getStudent, updateStudentMemberships } from '../data/students'
-import Form from './form'
+import Form, { FormProps } from './form'
 
 const studentSchema: yup.SchemaOf<SchoolStudentsMembershipsPutBody> = yup.object({
 	memberships: yup.array().of(yup.string().required()).required(),
 })
 
-export interface StudentEditFormProps {
+export type StudentEditFormProps = FormProps & {
 	id: string
 }
 
-const StudentEditForm: React.FC<StudentEditFormProps> = ({ id }) => {
+const StudentEditForm: React.FC<StudentEditFormProps> = ({
+	id,
+	onSubmit,
+	...props
+}) => {
 	const form = useForm<SchoolStudentsMembershipsPutBody>({
 		defaultValues: {},
 		resolver: yupResolver(studentSchema),
 	})
 
-	const { mutateAsync } = useMutation(
-		['students', id],
-		(data: SchoolStudentsMembershipsPutBody) => updateStudentMemberships(id, data)
-	)
-
+	const queryKey = ['students', { id }] as const
 	const { data, isLoading } = useQuery(
-		['students', id],
+		queryKey,
 		() => getStudent(id)
 		// { onSuccess: (data) => form.reset({ memberships: })}
 	)
 
-	// const { touchedFields } = form.formState
-	const handleSubmit = (values: SchoolStudentsMembershipsPutBody) => {
-		// const data = Object.fromEntries(
-		// 	Object.entries(values).filter(
-		// 		([key]) => !touchedFields[key as keyof SchoolStudentsMembershipsPutBody]
-		// 	)
-		// )
+	const queryClient = useQueryClient()
+	const { mutateAsync } = useMutation(
+		queryKey,
+		(data: SchoolStudentsMembershipsPutBody) => updateStudentMemberships(id, data),
+		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
+	)
 
-		return mutateAsync(values)
-	}
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
 
 	return (
-		<Form>
+		<Form {...props} onSubmit={handleSubmit}>
 			<Controller
 				name='memberships'
 				control={form.control}

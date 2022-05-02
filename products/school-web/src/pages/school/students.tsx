@@ -9,11 +9,13 @@ import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
 import StudentEditForm from '../../components/student-edit-form'
+import StudentInviteForm from '../../components/student-invite-form'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getStudents } from '../../data/students'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
+import openFormModal from '../../utils/open-form-modal'
 
 const StudentsPage: React.FC = () => {
 	const modals = useModals()
@@ -38,7 +40,13 @@ const StudentsPage: React.FC = () => {
 				title='Students'
 				search={setSearchTerm}
 				searchTerm={searchTerm}
-				actions={[{ icon: AddUserIcon, action: () => modals.openModal({}) }]}
+				actions={[
+					{
+						icon: AddUserIcon,
+						action: () =>
+							openFormModal(modals, 'Invite a Student', <StudentInviteForm />),
+					},
+				]}
 			/>
 
 			<Table
@@ -53,9 +61,9 @@ const StudentsPage: React.FC = () => {
 					data: {
 						avatarUrl: <Avatar radius='xl' />,
 						name: (
-							<Text
-								weight={700}
-							>{`${student.user.firstName} ${student.user.lastName}`}</Text>
+							<Text weight={700}>
+								{`${student.user.firstName} ${student.user.lastName}`}
+							</Text>
 						),
 						status: (
 							<Badge variant='outline' color={'dark'}>
@@ -66,23 +74,20 @@ const StudentsPage: React.FC = () => {
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									modals.openModal({
-										title: (
-											<Title order={3}>
-												{student.user.firstName} {student.user.lastName}
-											</Title>
-										),
-										children: <StudentEditForm id={student.id.toString()} />,
-									})
+									openFormModal(
+										modals,
+										`${student.user.firstName} ${student.user.lastName}`,
+										<StudentEditForm id={student.id.toString()} />
+									)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({
 										title: (
-											<Title>
-												Are you sure you want to delete {student.user.firstName}{' '}
-												{student.user.lastName}
+											<Title order={3}>
+												Delete {student.user.firstName} {student.user.lastName}?
 											</Title>
 										),
+										children: `This will permanantly delete this student and all associated information, including memberships.`,
 									})
 								}
 							/>
@@ -105,7 +110,9 @@ const StudentsPage: React.FC = () => {
 					}
 					resourceLabel='students'
 					refetchItems={refetch}
-					createItem={() => modals.openModal({})}
+					createItem={() =>
+						openFormModal(modals, 'Invite a Student', <StudentInviteForm />)
+					}
 					createMessage='Invite a student'
 					createIcon={AddUserIcon}
 				/>

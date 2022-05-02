@@ -22,3 +22,11 @@ export const signout = async (navigate?: NavigateFunction) => {
 	window.localStorage.removeItem('jwt')
 	navigate && navigate('/sign-in')
 }
+
+export const verifyEmail = async (token: any) => {
+	if (typeof token !== 'string' || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(token))
+		throw 'Invalid Token'
+
+	const res = await axios.post('/auth/verify', { token })
+	if (res.status !== 200) throw "Couldn't verify your email"
+}

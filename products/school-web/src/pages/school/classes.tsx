@@ -1,4 +1,4 @@
-import { Text, Title } from '@mantine/core'
+import { Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useMemo } from 'react'
@@ -8,13 +8,14 @@ import AppHeader from '../../components/app-header'
 import ClassForm from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
+import ScheduleDisplay from '../../components/schedule-display'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getClasses } from '../../data/classes'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
-import getReadableSchedule from '../../utils/get-readable-shedule'
+import openFormModal from '../../utils/open-form-modal'
 
 const ClassesPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
@@ -42,11 +43,7 @@ const ClassesPage: React.FC = () => {
 				actions={[
 					{
 						icon: NewClassIcon,
-						action: () =>
-							modals.openModal({
-								title: <Title order={3}>New Class</Title>,
-								children: <ClassForm />,
-							}),
+						action: () => openFormModal(modals, 'New Class', <ClassForm />),
 					},
 				]}
 			/>
@@ -64,14 +61,11 @@ const ClassesPage: React.FC = () => {
 						name: <Text weight={700}>{name}</Text>,
 						studentAvatars: 'TODO',
 						memberships: 'TODO',
-						schedule: getReadableSchedule(schedule),
+						schedule: <ScheduleDisplay schedule={schedule} />,
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									modals.openModal({
-										title: <Title order={3}>{name}</Title>,
-										children: <ClassForm id={id.toString()} />,
-									})
+									openFormModal(modals, name, <ClassForm id={id.toString()} />)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({
@@ -98,12 +92,7 @@ const ClassesPage: React.FC = () => {
 					}
 					resourceLabel='classes'
 					refetchItems={refetch}
-					createItem={() =>
-						modals.openModal({
-							title: <Title order={3}>New Class</Title>,
-							children: <ClassForm />,
-						})
-					}
+					createItem={() => openFormModal(modals, 'New Class', <ClassForm />)}
 					createMessage='Create A Class'
 					createIcon={NewClassIcon}
 				/>

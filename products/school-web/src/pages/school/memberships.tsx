@@ -1,4 +1,4 @@
-import { Text, Title } from '@mantine/core'
+import { Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useMemo } from 'react'
@@ -14,6 +14,7 @@ import TableState from '../../components/table-state'
 import { getMemberships } from '../../data/memberships'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
+import openFormModal from '../../utils/open-form-modal'
 
 const MembershipsPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
@@ -42,10 +43,7 @@ const MembershipsPage: React.FC = () => {
 					{
 						icon: NewMembershipIcon,
 						action: () =>
-							modals.openModal({
-								title: <Title order={3}>New Membership</Title>,
-								children: <MembershipForm />,
-							}),
+							openFormModal(modals, 'New Membership', <MembershipForm />),
 					},
 				]}
 			/>
@@ -67,10 +65,7 @@ const MembershipsPage: React.FC = () => {
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									modals.openModal({
-										title: <Title order={3}>{name}</Title>,
-										children: <MembershipForm id={id.toString()} />,
-									})
+									openFormModal(modals, name, <MembershipForm id={id.toString()} />)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({
@@ -98,10 +93,7 @@ const MembershipsPage: React.FC = () => {
 					resourceLabel='memberships'
 					refetchItems={refetch}
 					createItem={() =>
-						modals.openModal({
-							title: <Title order={3}>New Membership</Title>,
-							children: <MembershipForm />,
-						})
+						openFormModal(modals, 'New Membership', <MembershipForm />)
 					}
 					createMessage='Create A Membership'
 				/>

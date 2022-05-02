@@ -1,43 +1,55 @@
-import type { SchoolMembershipsPostBody } from '@common/types'
+import type { MembershipInterval, SchoolMembershipsPostBody } from '@common/types'
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { NumberInput, TextInput } from '@mantine/core'
+import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
 import type React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { createMembership, getMembership } from '../data/memberships'
 import ClassesSelect from './classes-select'
-import Form from './form'
+import Form, { FormProps } from './form'
 
-export interface MembershipFormProps {
+export type MembershipFormProps = FormProps & {
 	id?: string
 }
 
-const MembershipForm: React.FC<MembershipFormProps> = ({ id }) => {
+const INTERVALS: MembershipInterval[] = ['day', 'week', 'month', 'year']
+
+const MembershipForm: React.FC<MembershipFormProps> = ({
+	id,
+	onSubmit,
+	...props
+}) => {
 	const form = useForm<SchoolMembershipsPostBody>({
 		defaultValues: { interval: 'month', intervalCount: 1 },
 		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
 	})
 
-	const { isLoading } = useQuery(['memberships', id], () => getMembership(id!), {
+	const queryKey = ['memberships', { id }] as const
+	const { isLoading } = useQuery(queryKey, () => getMembership(id!), {
 		enabled: !!id,
 		onSuccess: form.reset,
 	})
 
+	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(
-		['memberships', id],
+		queryKey,
 		(values: SchoolMembershipsPostBody) => {
 			if (!id) return createMembership(values)
 			throw 'Unimplemented'
-		}
+		},
+		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
 	)
 
+	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
+		form.handleSubmit(async (values) => {
+			await mutateAsync(values)
+			onSubmit && (await onSubmit(e))
+		})(e)
+
 	return (
-		<Form
-			loading={isLoading}
-			onSubmit={form.handleSubmit((values) => mutateAsync(values))}
-		>
+		<Form loading={isLoading} {...props} onSubmit={handleSubmit}>
 			<TextInput
 				label='Name'
 				error={form.formState.errors.name?.message}
@@ -68,6 +80,24 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ id }) => {
 					/>
 				)}
 			/>
+			<InputWrapper label='Billing Interval'>
+				<Grid columns={4} grow>
+					<Grid.Col span={1}>
+						<Controller
+							name='intervalCount'
+							control={form.control}
+							render={({ field }) => <NumberInput {...field} hideControls />}
+						/>
+					</Grid.Col>
+					<Grid.Col span={3}>
+						<Controller
+							name='interval'
+							control={form.control}
+							render={({ field }) => <Select data={INTERVALS} {...field} />}
+						/>
+					</Grid.Col>
+				</Grid>
+			</InputWrapper>
 		</Form>
 	)
 }

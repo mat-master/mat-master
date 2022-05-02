@@ -43,7 +43,7 @@ ReactDOM.render(
 				/>
 
 				<NotificationsProvider>
-					<ModalsProvider>
+					<ModalsProvider labels={{ confirm: "Yes, I'm Sure", cancel: 'Cancel' }}>
 						<App />
 					</ModalsProvider>
 				</NotificationsProvider>
