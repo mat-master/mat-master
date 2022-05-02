@@ -6,6 +6,7 @@ export type FormProps = JSX.IntrinsicElements['form'] & {
 	loading?: boolean
 	error?: string
 	submitLabel?: string
+	canSubmit?: boolean
 }
 
 const Form: React.FC<FormProps> = ({
@@ -14,6 +15,7 @@ const Form: React.FC<FormProps> = ({
 	children,
 	onSubmit,
 	submitLabel = 'Save',
+	canSubmit,
 	...props
 }) => {
 	const [submitting, setSubmitting] = useState(false)
@@ -21,8 +23,12 @@ const Form: React.FC<FormProps> = ({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		if (submitting) return
 		setSubmitting(true)
-		onSubmit && (await onSubmit(e))
-		setSubmitting(false)
+
+		try {
+			onSubmit && (await onSubmit(e))
+		} finally {
+			setSubmitting(false)
+		}
 	}
 
 	return (
@@ -36,7 +42,7 @@ const Form: React.FC<FormProps> = ({
 			<Group direction='column' spacing='sm' grow>
 				{children}
 				<Group position='right'>
-					<Button type='submit' loading={submitting}>
+					<Button type='submit' loading={submitting} disabled={!canSubmit}>
 						{submitLabel}
 					</Button>
 				</Group>

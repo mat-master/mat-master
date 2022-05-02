@@ -27,10 +27,14 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
 	})
 
 	const queryKey = ['memberships', { id }] as const
-	const { isLoading } = useQuery(queryKey, () => getMembership(id!), {
-		enabled: !!id,
-		onSuccess: form.reset,
-	})
+	const { data: membership, isLoading } = useQuery(
+		queryKey,
+		() => getMembership(id!),
+		{
+			enabled: !!id,
+			onSuccess: form.reset,
+		}
+	)
 
 	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(
@@ -86,7 +90,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
 						<Controller
 							name='intervalCount'
 							control={form.control}
-							render={({ field }) => <NumberInput {...field} hideControls />}
+							render={({ field }) => <NumberInput {...field} />}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
