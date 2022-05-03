@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
 import ItemMenu from '../../components/item-menu'
-import MembershipForm from '../../components/membership-form'
+import { RemoteMembershipForm } from '../../components/membership-form'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
@@ -43,7 +43,7 @@ const MembershipsPage: React.FC = () => {
 					{
 						icon: NewMembershipIcon,
 						action: () =>
-							openFormModal(modals, 'New Membership', <MembershipForm />),
+							openFormModal(modals, 'New Membership', <RemoteMembershipForm />),
 					},
 				]}
 			/>
@@ -65,7 +65,11 @@ const MembershipsPage: React.FC = () => {
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									openFormModal(modals, name, <MembershipForm id={id.toString()} />)
+									openFormModal(
+										modals,
+										name,
+										<RemoteMembershipForm id={id.toString()} />
+									)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({
@@ -93,7 +97,7 @@ const MembershipsPage: React.FC = () => {
 					resourceLabel='memberships'
 					refetchItems={refetch}
 					createItem={() =>
-						openFormModal(modals, 'New Membership', <MembershipForm />)
+						openFormModal(modals, 'New Membership', <RemoteMembershipForm />)
 					}
 					createMessage='Create A Membership'
 				/>

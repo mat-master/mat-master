@@ -1,59 +1,67 @@
 import type { MembershipInterval, SchoolMembershipsPostBody } from '@common/types'
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
+import {
+	Center,
+	Grid,
+	InputWrapper,
+	Loader,
+	NumberInput,
+	Select,
+	Text,
+	TextInput,
+} from '@mantine/core'
 import type React from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { createMembership, getMembership } from '../data/memberships'
+import getErrorMessage from '../utils/get-error-message'
 import ClassesSelect from './classes-select'
-import Form, { FormProps } from './form'
+import type { FormProps } from './form'
+import Form from './form'
 
-export type MembershipFormProps = FormProps & {
-	id?: string
+export type MembershipFormProps = Omit<FormProps, 'onSubmit'> & {
+	defaultValues?: SchoolMembershipsPostBody
+	onSubmit?: (
+		e: React.FormEvent<HTMLFormElement>,
+		values: SchoolMembershipsPostBody
+	) => void
 }
 
 const INTERVALS: MembershipInterval[] = ['day', 'week', 'month', 'year']
 
-const MembershipForm: React.FC<MembershipFormProps> = ({
-	id,
+export const MembershipForm: React.FC<MembershipFormProps> = ({
+	defaultValues,
 	onSubmit,
 	...props
 }) => {
 	const form = useForm<SchoolMembershipsPostBody>({
-		defaultValues: { interval: 'month', intervalCount: 1 },
 		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
+		defaultValues: {
+			name: '',
+			price: 0,
+			classes: [],
+			interval: 'month',
+			intervalCount: 1,
+			...defaultValues,
+		},
 	})
 
-	const queryKey = ['memberships', { id }] as const
-	const { data: membership, isLoading } = useQuery(
-		queryKey,
-		() => getMembership(id!),
-		{
-			enabled: !!id,
-			onSuccess: form.reset,
-		}
-	)
-
-	const queryClient = useQueryClient()
-	const { mutateAsync } = useMutation(
-		queryKey,
-		(values: SchoolMembershipsPostBody) => {
-			if (!id) return createMembership(values)
-			throw 'Unimplemented'
-		},
-		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
-	)
+	const { isDirty } = form.formState
+	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(async (values) => {
-			await mutateAsync(values)
-			onSubmit && (await onSubmit(e))
-		})(e)
+		form.handleSubmit(
+			async (values) => {
+				onSubmit && (await onSubmit(e, values))
+			},
+			(error) => {}
+		)(e)
 
 	return (
-		<Form loading={isLoading} {...props} onSubmit={handleSubmit}>
+		<Form {...props} onSubmit={handleSubmit}>
 			<TextInput
 				label='Name'
 				error={form.formState.errors.name?.message}
@@ -106,4 +114,49 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
 	)
 }
 
-export default MembershipForm
+export type RemoteMembershipFormProps = FormProps & {
+	id?: string
+}
+
+export const RemoteMembershipForm: React.FC<RemoteMembershipFormProps> = ({
+	id,
+	onSubmit,
+	...props
+}) => {
+	const queryKey = ['memberships', { id }] as const
+	const { data, isLoading, isError, error } = useQuery(
+		queryKey,
+		() => getMembership(id!),
+		{ enabled: !!id }
+	)
+
+	const queryClient = useQueryClient()
+	const { mutateAsync } = useMutation(
+		queryKey,
+		(values: SchoolMembershipsPostBody) => {
+			if (!id) return createMembership(values)
+			throw 'Unimplemented'
+		},
+		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
+	)
+
+	if (isLoading || isError) {
+		return (
+			<Center>
+				{isLoading && <Loader />}
+				{isError && <Text color='red'>{getErrorMessage(error)}</Text>}
+			</Center>
+		)
+	}
+
+	return (
+		<MembershipForm
+			{...props}
+			// TODO: add default values
+			onSubmit={async (e, values) => {
+				await mutateAsync(values)
+				onSubmit && (await onSubmit(e))
+			}}
+		/>
+	)
+}

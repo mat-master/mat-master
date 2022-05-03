@@ -1,16 +1,14 @@
-import { Button, Group, LoadingOverlay, Text } from '@mantine/core'
+import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
 import { useState } from 'react'
 
 export type FormProps = JSX.IntrinsicElements['form'] & {
-	loading?: boolean
 	error?: string
 	submitLabel?: string
 	canSubmit?: boolean
 }
 
 const Form: React.FC<FormProps> = ({
-	loading,
 	error,
 	children,
 	onSubmit,
@@ -37,8 +35,6 @@ const Form: React.FC<FormProps> = ({
 			onSubmit={handleSubmit}
 			style={{ ...props.style, position: 'relative' }}
 		>
-			<LoadingOverlay visible={!!loading} />
-
 			<Group direction='column' spacing='sm' grow>
 				{children}
 				<Group position='right'>

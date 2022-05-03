@@ -1,4 +1,3 @@
-import type { SchemaOf } from 'yup'
 import * as yup from 'yup'
 
 export type MappedErrors<T> = { [_ in keyof T]?: string }
@@ -27,13 +26,11 @@ export const getSynchronousErrorMessage = (error: unknown) => {
 	}
 }
 
-const getErrorMessage = <T>(error: unknown, schema?: SchemaOf<T>) => {
+const getErrorMessage = (error: unknown) => {
 	if (typeof error === 'string') {
 		return error
 	} else if (error instanceof Error) {
 		return error.message
-	} else if (schema && getErrorSchema(schema).validateSync(error)) {
-		return error as MappedErrors<T>
 	} else {
 		return 'An unknown error ocurred'
 	}

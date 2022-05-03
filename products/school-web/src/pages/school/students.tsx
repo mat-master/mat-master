@@ -5,11 +5,11 @@ import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
+import { RemoteInviteForm } from '../../components/invite-form'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
-import StudentEditForm from '../../components/student-edit-form'
-import StudentInviteForm from '../../components/student-invite-form'
+import { RemoteStudentForm } from '../../components/student-form'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
 import { getStudents } from '../../data/students'
@@ -44,7 +44,7 @@ const StudentsPage: React.FC = () => {
 					{
 						icon: AddUserIcon,
 						action: () =>
-							openFormModal(modals, 'Invite a Student', <StudentInviteForm />),
+							openFormModal(modals, 'Invite a Student', <RemoteInviteForm />),
 					},
 				]}
 			/>
@@ -77,7 +77,7 @@ const StudentsPage: React.FC = () => {
 									openFormModal(
 										modals,
 										`${student.user.firstName} ${student.user.lastName}`,
-										<StudentEditForm id={student.id.toString()} />
+										<RemoteStudentForm id={student.id.toString()} />
 									)
 								}
 								onDelete={() =>
@@ -111,7 +111,7 @@ const StudentsPage: React.FC = () => {
 					resourceLabel='students'
 					refetchItems={refetch}
 					createItem={() =>
-						openFormModal(modals, 'Invite a Student', <StudentInviteForm />)
+						openFormModal(modals, 'Invite a Student', <RemoteInviteForm />)
 					}
 					createMessage='Invite a student'
 					createIcon={AddUserIcon}

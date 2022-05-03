@@ -1,37 +1,31 @@
-import type { SchoolClassesPostBody } from '@common/types'
+import type { SchoolStudentsMembershipsPutBody } from '@common/types'
 import { validator } from '@common/util'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Center, Loader, Text, TextInput } from '@mantine/core'
+import { Center, Loader, MultiSelect, Text } from '@mantine/core'
 import type React from 'react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { createClass, getClass } from '../data/classes'
+import { getStudent, updateStudentMemberships } from '../data/students'
 import getErrorMessage from '../utils/get-error-message'
-import ClassScheduleInput from './class-schedule-input'
-import { defaultClassTime } from './class-time-input'
 import Form, { FormProps } from './form'
 
-export type ClassFormProps = Omit<FormProps, 'onSubmit'> & {
-	defaultValues?: SchoolClassesPostBody
+export type StudentFormProps = Omit<FormProps, 'onSubmit'> & {
+	defaultValues?: SchoolStudentsMembershipsPutBody
 	onSubmit?: (
 		e: React.FormEvent<HTMLFormElement>,
-		values: SchoolClassesPostBody
+		values: SchoolStudentsMembershipsPutBody
 	) => void
 }
 
-export const ClassForm: React.FC<ClassFormProps> = ({
+export const StudentForm: React.FC<StudentFormProps> = ({
 	defaultValues,
 	onSubmit,
 	...props
 }) => {
-	const form = useForm<SchoolClassesPostBody>({
-		resolver: yupResolver(validator.api.schoolClassesPostSchema),
-		defaultValues: {
-			name: '',
-			schedule: [{ duration: 60, schedule: '* * * * *' }],
-			...defaultValues,
-		},
+	const form = useForm<SchoolStudentsMembershipsPutBody>({
+		defaultValues: {},
+		resolver: yupResolver(validator.api.schoolStudentsMembershipsPutSchema),
 	})
 
 	const { isDirty } = form.formState
@@ -49,20 +43,16 @@ export const ClassForm: React.FC<ClassFormProps> = ({
 			onSubmit={handleSubmit}
 			error={globalError}
 		>
-			<TextInput
-				label='Name'
-				{...form.register('name')}
-				error={form.formState.errors.name?.message}
-			/>
 			<Controller
-				name='schedule'
+				name='memberships'
 				control={form.control}
-				defaultValue={[defaultClassTime]}
 				render={({ field, fieldState }) => (
-					<ClassScheduleInput
-						label='Schedule'
+					<MultiSelect
+						label='Memberships'
+						data={[]}
 						error={fieldState.error?.message}
 						{...field}
+						value={field.value?.map((snowflake) => snowflake.toString())}
 					/>
 				)}
 			/>
@@ -70,31 +60,27 @@ export const ClassForm: React.FC<ClassFormProps> = ({
 	)
 }
 
-export type RemoteClassFormProps = FormProps & {
-	id?: string
+export type RemoteStudentFormProps = FormProps & {
+	id: string
 }
 
-export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
+export const RemoteStudentForm: React.FC<RemoteStudentFormProps> = ({
 	id,
 	onSubmit,
 	...props
 }) => {
-	const queryKey = ['classes', { id }] as const
-	const { data, isLoading, isError, error } = useQuery(
-		queryKey,
-		() => getClass(id!),
-		{
-			enabled: !!id,
-		}
-	)
+	const queryKey = ['students', { id }] as const
+	const {
+		data: student,
+		isLoading,
+		isError,
+		error,
+	} = useQuery(queryKey, () => getStudent(id))
 
 	const queryClient = useQueryClient()
 	const { mutateAsync } = useMutation(
 		queryKey,
-		(values: SchoolClassesPostBody) => {
-			if (!id) return createClass(values)
-			throw 'Unimplemented'
-		},
+		(data: SchoolStudentsMembershipsPutBody) => updateStudentMemberships(id, data),
 		{ onSuccess: () => queryClient.invalidateQueries(queryKey[0]) }
 	)
 
@@ -108,9 +94,9 @@ export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
 	}
 
 	return (
-		<ClassForm
+		<StudentForm
 			{...props}
-			defaultValues={data}
+			defaultValues={{ memberships: [] }}
 			onSubmit={async (e, values) => {
 				await mutateAsync(values)
 				onSubmit && (await onSubmit(e))
