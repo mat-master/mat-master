@@ -22,6 +22,7 @@ export const UserForm: React.FC<UserFormProps> = ({
 	...props
 }) => {
 	const form = useForm<UserPatchBody>({
+		mode: 'onBlur',
 		resolver: yupResolver(validator.api.userPatchSchema),
 		defaultValues: {
 			avatar: '',
@@ -31,18 +32,19 @@ export const UserForm: React.FC<UserFormProps> = ({
 		},
 	})
 
-	const { isDirty } = form.formState
+	const { isDirty, isValid } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(async (values) => {
-			onSubmit && (await onSubmit(e, values))
-		})
+		form.handleSubmit(
+			async (values) => onSubmit && (await onSubmit(e, values)),
+			(error) => setGlobalError(getErrorMessage(error))
+		)(e)
 
 	return (
 		<Form
 			{...props}
-			canSubmit={isDirty}
+			canSubmit={isDirty && isValid}
 			onSubmit={handleSubmit}
 			error={globalError}
 		>

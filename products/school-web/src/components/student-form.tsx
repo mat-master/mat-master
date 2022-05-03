@@ -24,22 +24,24 @@ export const StudentForm: React.FC<StudentFormProps> = ({
 	...props
 }) => {
 	const form = useForm<SchoolStudentsMembershipsPutBody>({
-		defaultValues: {},
+		mode: 'onBlur',
+		defaultValues: { memberships: [] },
 		resolver: yupResolver(validator.api.schoolStudentsMembershipsPutSchema),
 	})
 
-	const { isDirty } = form.formState
+	const { isDirty, isValid } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(async (values) => {
-			onSubmit && (await onSubmit(e, values))
-		})
+		form.handleSubmit(
+			async (values) => onSubmit && (await onSubmit(e, values)),
+			(error) => setGlobalError(getErrorMessage(error))
+		)(e)
 
 	return (
 		<Form
 			{...props}
-			canSubmit={isDirty}
+			canSubmit={isDirty && isValid}
 			onSubmit={handleSubmit}
 			error={globalError}
 		>

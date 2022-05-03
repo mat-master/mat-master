@@ -38,30 +38,31 @@ export const MembershipForm: React.FC<MembershipFormProps> = ({
 	...props
 }) => {
 	const form = useForm<SchoolMembershipsPostBody>({
+		mode: 'onBlur',
 		resolver: yupResolver(validator.api.schoolMembershipsPostSchema),
 		defaultValues: {
 			name: '',
-			price: 0,
 			classes: [],
-			interval: 'month',
-			intervalCount: 1,
 			...defaultValues,
 		},
 	})
 
-	const { isDirty } = form.formState
+	const { isDirty, isValid } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
 		form.handleSubmit(
-			async (values) => {
-				onSubmit && (await onSubmit(e, values))
-			},
-			(error) => {}
+			async (values) => onSubmit && (await onSubmit(e, values)),
+			(error) => setGlobalError(getErrorMessage(error))
 		)(e)
 
 	return (
-		<Form {...props} onSubmit={handleSubmit}>
+		<Form
+			canSubmit={isDirty && isValid}
+			error={globalError}
+			{...props}
+			onSubmit={handleSubmit}
+		>
 			<TextInput
 				label='Name'
 				error={form.formState.errors.name?.message}
@@ -87,7 +88,7 @@ export const MembershipForm: React.FC<MembershipFormProps> = ({
 						label='Price'
 						icon={<PriceIcon size={16} />}
 						error={fieldState.error?.message}
-						hideControls
+						min={0}
 						{...field}
 					/>
 				)}
@@ -98,7 +99,7 @@ export const MembershipForm: React.FC<MembershipFormProps> = ({
 						<Controller
 							name='intervalCount'
 							control={form.control}
-							render={({ field }) => <NumberInput {...field} />}
+							render={({ field }) => <NumberInput min={0} {...field} />}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>

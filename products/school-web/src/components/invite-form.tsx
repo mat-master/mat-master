@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { createInvite } from '../data/invites'
+import getErrorMessage from '../utils/get-error-message'
 import Form, { FormProps } from './form'
 
 export type InviteFormProps = Omit<FormProps, 'onSubmit'> & {
@@ -23,28 +24,31 @@ const InviteForm: React.FC<InviteFormProps> = ({
 	...props
 }) => {
 	const form = useForm<SchoolInvitesPostBody>({
+		mode: 'onBlur',
 		resolver: yupResolver(validator.api.schoolInvitesPostSchema),
+		defaultValues: { email: '', ...defaultValues },
 	})
 
-	const { isDirty } = form.formState
+	const { isDirty, isValid, errors } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(async (values) => {
-			onSubmit && (await onSubmit(e, values))
-		})
+		form.handleSubmit(
+			async (values) => onSubmit && (await onSubmit(e, values)),
+			(error) => setGlobalError(getErrorMessage(error))
+		)(e)
 
 	return (
 		<Form
 			submitLabel='Send'
-			canSubmit={isDirty}
+			canSubmit={isDirty && isValid}
 			error={globalError}
 			{...props}
 			onSubmit={handleSubmit}
 		>
 			<TextInput
 				label='Email'
-				error={form.formState.errors.email?.message}
+				error={errors.email?.message}
 				{...form.register('email')}
 			/>
 		</Form>

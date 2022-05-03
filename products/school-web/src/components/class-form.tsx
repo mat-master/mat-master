@@ -26,6 +26,7 @@ export const ClassForm: React.FC<ClassFormProps> = ({
 	...props
 }) => {
 	const form = useForm<SchoolClassesPostBody>({
+		mode: 'onBlur',
 		resolver: yupResolver(validator.api.schoolClassesPostSchema),
 		defaultValues: {
 			name: '',
@@ -34,20 +35,21 @@ export const ClassForm: React.FC<ClassFormProps> = ({
 		},
 	})
 
-	const { isDirty } = form.formState
+	const { isDirty, isValid } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(async (values) => {
-			onSubmit && (await onSubmit(e, values))
-		})
+		form.handleSubmit(
+			async (values) => onSubmit && (await onSubmit(e, values)),
+			(error) => setGlobalError(getErrorMessage(error))
+		)(e)
 
 	return (
 		<Form
-			{...props}
-			canSubmit={isDirty}
-			onSubmit={handleSubmit}
+			canSubmit={isDirty && isValid}
 			error={globalError}
+			{...props}
+			onSubmit={handleSubmit}
 		>
 			<TextInput
 				label='Name'

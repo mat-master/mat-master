@@ -19,6 +19,7 @@ const Form: React.FC<FormProps> = ({
 	const [submitting, setSubmitting] = useState(false)
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
 		if (submitting) return
 		setSubmitting(true)
 
