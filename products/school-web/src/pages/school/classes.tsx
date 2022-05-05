@@ -68,7 +68,10 @@ const ClassesPage: React.FC = () => {
 									openFormModal(
 										modals,
 										name,
-										<RemoteClassForm id={id.toString()} />
+										<RemoteClassForm
+											id={id.toString()}
+											defaultValues={{ name, schedule }}
+										/>
 									)
 								}
 								onDelete={() =>

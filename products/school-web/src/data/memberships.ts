@@ -1,5 +1,4 @@
 import type {
-	Membership,
 	SchoolMembershipsGetResponse,
 	SchoolMembershipsPostBody,
 } from '@common/types'
@@ -17,7 +16,7 @@ export const getMembership = async (id: string) => {
 	const res = await axios.get(`school/${getSchoolId()}/memberships/${id}`)
 	if (res.status !== 200) throw res.data.error
 
-	return res.data as Membership
+	return res.data as SchoolMembershipsPostBody
 }
 
 export const createMembership = async (data: SchoolMembershipsPostBody) => {

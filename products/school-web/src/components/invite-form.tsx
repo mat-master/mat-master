@@ -1,87 +1,47 @@
 import type { SchoolInvitesPostBody } from '@common/types'
 import { validator } from '@common/util'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
-import { createInvite } from '../data/invites'
-import getErrorMessage from '../utils/get-error-message'
-import Form, { FormProps } from './form'
+import { createInvite, getInvite } from '../data/invites'
+import Form, { FormWrapperProps } from './form'
+import type { RemoteFormWrapperProps } from './remote-form'
+import RemoteForm from './remote-form'
 
-export type InviteFormProps = Omit<FormProps, 'onSubmit'> & {
-	defaultValues?: SchoolInvitesPostBody
-	onSubmit?: (
-		e: React.FormEvent<HTMLFormElement>,
-		values: SchoolInvitesPostBody
-	) => void
-}
+export type InviteFormProps = FormWrapperProps<SchoolInvitesPostBody>
 
-const InviteForm: React.FC<InviteFormProps> = ({
-	defaultValues,
-	onSubmit,
-	...props
-}) => {
-	const form = useForm<SchoolInvitesPostBody>({
-		mode: 'onBlur',
-		resolver: yupResolver(validator.api.schoolInvitesPostSchema),
-		defaultValues: { email: '', ...defaultValues },
-	})
+const InviteForm: React.FC<InviteFormProps> = (props) => (
+	<Form<SchoolInvitesPostBody>
+		{...props}
+		schema={validator.api.schoolInvitesPostSchema}
+		child={({ form }) => {
+			const { errors } = form.formState
 
-	const { isDirty, isValid, errors } = form.formState
-	const [globalError, setGlobalError] = useState<string>()
+			return (
+				<TextInput
+					label='Email'
+					error={errors.email?.message}
+					{...form.register('email')}
+				/>
+			)
+		}}
+	/>
+)
 
-	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>
-		form.handleSubmit(
-			async (values) => onSubmit && (await onSubmit(e, values)),
-			(error) => setGlobalError(getErrorMessage(error))
-		)(e)
-
-	return (
-		<Form
-			submitLabel='Send'
-			canSubmit={isDirty && isValid}
-			error={globalError}
-			{...props}
-			onSubmit={handleSubmit}
-		>
-			<TextInput
-				label='Email'
-				error={errors.email?.message}
-				{...form.register('email')}
-			/>
-		</Form>
-	)
-}
-
-export type RemoteInviteFormProps = FormProps & {
-	id?: string
-}
+export type RemoteInviteFormProps =
+	RemoteFormWrapperProps<SchoolInvitesPostBody> & {
+		id?: string
+	}
 
 export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = ({
-	id,
-	onSubmit,
+	id = 'new',
 	...props
-}) => {
-	const queryKey = ['invites', { id }]
-	const queryClient = useQueryClient()
-	const { mutateAsync } = useMutation(
-		queryKey,
-		(data: SchoolInvitesPostBody) => {
-			if (!id) return createInvite(data)
-			throw 'Unimplemented'
-		},
-		{ onSuccess: () => queryClient.invalidateQueries(queryKey) }
-	)
-
-	return (
-		<InviteForm
-			{...props}
-			onSubmit={async (e, values) => {
-				await mutateAsync(values)
-				onSubmit && (await onSubmit(e))
-			}}
-		/>
-	)
-}
+}) => (
+	<RemoteForm<SchoolInvitesPostBody>
+		{...props}
+		queryKey={['invites', { id }]}
+		getResource={id ? () => getInvite(id) : undefined}
+		createResource={id ? undefined : createInvite}
+		updateResource={id ? () => {} : undefined}
+		child={InviteForm}
+	/>
+)

@@ -1,49 +1,66 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
 import { useState } from 'react'
+import {
+	DefaultValues,
+	FieldValues,
+	SubmitHandler,
+	useForm,
+	UseFormReturn,
+} from 'react-hook-form'
+import type * as yup from 'yup'
+import getErrorMessage from '../utils/get-error-message'
 
-export type FormProps = JSX.IntrinsicElements['form'] & {
+export type FormProps<T extends FieldValues = FieldValues> = Omit<
+	JSX.IntrinsicElements['form'],
+	'onSubmit'
+> & {
+	schema: yup.SchemaOf<T>
+	onSubmit: SubmitHandler<T>
+	child: React.FC<{ form: UseFormReturn<T> }>
 	error?: string
+	defaultValues?: T
 	submitLabel?: string
-	canSubmit?: boolean
 }
 
-const Form: React.FC<FormProps> = ({
-	error,
-	children,
+export type FormWrapperProps<T extends FieldValues = FieldValues> = Omit<
+	FormProps<T>,
+	'schema' | 'child'
+>
+
+const Form = <T extends FieldValues>({
+	schema,
 	onSubmit,
+	child: Child,
+	error,
+	defaultValues,
 	submitLabel = 'Save',
-	canSubmit,
 	...props
-}) => {
-	const [submitting, setSubmitting] = useState(false)
+}: FormProps<T>) => {
+	const form = useForm<T>({
+		resolver: yupResolver(schema),
+		defaultValues: defaultValues as DefaultValues<T>,
+	})
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		if (submitting) return
-		setSubmitting(true)
-
-		try {
-			onSubmit && (await onSubmit(e))
-		} finally {
-			setSubmitting(false)
-		}
-	}
+	const { isSubmitting } = form.formState
+	const [globalError, setGlobalError] = useState<string>()
+	const handleSubmit = form.handleSubmit(onSubmit, (err) =>
+		setGlobalError(getErrorMessage(err))
+	)
 
 	return (
-		<form
-			{...props}
-			onSubmit={handleSubmit}
-			style={{ ...props.style, position: 'relative' }}
-		>
+		<form {...props} onSubmit={handleSubmit}>
 			<Group direction='column' spacing='sm' grow>
-				{children}
-				<Group position='right'>
-					<Button type='submit' loading={submitting} disabled={!canSubmit}>
-						{submitLabel}
-					</Button>
-				</Group>
-				{error && <Text color='red'>{error}</Text>}
+				<Child form={form} />
+				<Button type='submit' loading={isSubmitting} ml='auto'>
+					{submitLabel}
+				</Button>
+				{(error || globalError) && (
+					<Text color='red' align='center'>
+						{error ?? globalError}
+					</Text>
+				)}
 			</Group>
 		</form>
 	)
