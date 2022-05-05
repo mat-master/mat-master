@@ -67,10 +67,10 @@ export const membershipIntervalSchema: SchemaOf<MembershipInterval> = mixed()
 
 export namespace api {
 	export const signupPostSchema: SchemaOf<SignupPostBody> = object({
-		firstName: string().required(),
-		lastName: string().required(),
-		email: string().email().required(),
-		password: string().min(6).required(),
+		firstName: string().required('Required'),
+		lastName: string().required('Required'),
+		email: string().required('Required').email('Must be a valid email'),
+		password: string().required('Required').min(6, 'Must be at least 6 characters'),
 	})
 
 	export const loginPostSchema: SchemaOf<LoginPostBody> = object({

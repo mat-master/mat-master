@@ -47,10 +47,7 @@ export type RemoteClassFormProps = RemoteFormWrapperProps<SchoolClassesPostBody>
 	id?: string
 }
 
-export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
-	id = 'new',
-	...props
-}) => (
+export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({ id, ...props }) => (
 	<RemoteForm<SchoolClassesPostBody>
 		{...props}
 		queryKey={['classes', { id }]}

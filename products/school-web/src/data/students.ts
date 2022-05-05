@@ -1,17 +1,16 @@
-import type {
-	SchoolInvitesPostBody,
-	SchoolStudentsMembershipsPutBody,
-	Student,
-} from '@common/types'
+import type { Student } from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
 import * as yup from 'yup'
 import getSchoolId from '../utils/get-school-id'
 
-export const inviteStudent = async (data: SchoolInvitesPostBody) => {
-	const res = await axios.post(`/schools/${getSchoolId()}/invites`, data)
-	if (res.status !== 200) throw res.data.error
-}
+export const temporaryStudentPostSchema = yup
+	.object({
+		memberships: yup.array().of(yup.string().required()),
+	})
+	.required()
+
+export type TemporaryStudentPostBody = yup.TypeOf<typeof temporaryStudentPostSchema>
 
 export const getStudents = async () => {
 	const res = await axios.get(`/schools/${getSchoolId()}/students`)
@@ -28,10 +27,7 @@ export const getStudent = async (id: string) => {
 	return res.data as Student
 }
 
-export const updateStudentMemberships = async (
-	id: string,
-	data: SchoolStudentsMembershipsPutBody
-) => {
-	const res = await axios.put(`/schools/${getSchoolId()}/students/${id}/memberships`, data)
+export const updateStudent = async (id: string, data: TemporaryStudentPostBody) => {
+	const res = await axios.patch(`/schools/${getSchoolId()}/students/${id}`, data)
 	if (res.status !== 200) throw res.data.error
 }

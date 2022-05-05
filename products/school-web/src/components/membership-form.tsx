@@ -84,7 +84,7 @@ export type RemoteMembershipFormProps =
 	}
 
 export const RemoteMembershipForm: React.FC<RemoteMembershipFormProps> = ({
-	id = 'new',
+	id,
 	...props
 }) => (
 	<RemoteForm<SchoolMembershipsPostBody>

@@ -1,97 +1,89 @@
-import type { SignupPostBody } from '@common/types'
-import { validator } from '@common/util'
-import { yupResolver } from '@hookform/resolvers/yup'
 import {
-	Anchor,
 	Button,
 	Center,
 	Group,
 	Paper,
-	PasswordInput,
+	Stepper,
 	Text,
-	TextInput,
 	Title,
+	useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorageValue } from '@mantine/hooks'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
-import { signin, signup } from '../data/auth'
-import getErrorMessage from '../utils/get-error-message'
+import React, { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { CircleCheck, CreditCard, ShieldLock, User } from 'tabler-icons-react'
+import { RemoteSignUpForm } from '../components/sign-up-form'
 
 const SignUpPage: React.FC = () => {
 	const [jwt] = useLocalStorageValue({ key: 'jwt' })
+	const [queryParams] = useSearchParams()
 	const navigate = useNavigate()
-	const redirect = '/schools'
+	const theme = useMantineTheme()
 
-	useEffect(() => {
-		if (jwt) navigate(redirect)
-	}, [])
-
-	const [globalError, setGlobalError] = useState<string>()
-	const form = useForm<SignupPostBody>({
-		resolver: yupResolver(validator.api.signupPostSchema),
-	})
-
-	const handleSubmit = async (values: SignupPostBody) => {
-		try {
-			setGlobalError(undefined)
-			await signup(values)
-			await signin({ email: values.email, password: values.password })
-			navigate(redirect)
-		} catch (error) {
-			const message = getErrorMessage(error, validator.api.signupPostSchema)
-			typeof message === 'string' && setGlobalError(message)
-		}
-	}
+	const [activeStep, setStep] = useState(0)
+	const step = () => setStep(activeStep + 1)
 
 	return (
 		<Center style={{ flexDirection: 'column' }}>
-			<Paper padding='lg' mt='xl' mb='sm' shadow='sm' withBorder>
-				<form onSubmit={form.handleSubmit(handleSubmit)}>
-					<Group direction='column' spacing='sm' grow>
-						<Title order={2}>Sign up</Title>
+			<Paper
+				padding='lg'
+				mt='xl'
+				mb='sm'
+				shadow='sm'
+				withBorder
+				style={{ width: 512 }}
+			>
+				<Title mb='lg'>Sign Up</Title>
+				<Stepper
+					active={activeStep}
+					radius='md'
+					completedIcon={<CircleCheck />}
+					styles={{
+						stepIcon: {
+							backgroundColor: 'transparent',
+							color: theme.colors.gray[3],
+							borderColor: theme.colors.gray[3],
+						},
+						separator: {
+							backgroundColor: theme.colors.gray[3],
+						},
+					}}
+				>
+					<Stepper.Step
+						icon={
+							<User color={activeStep === 0 ? theme.primaryColor : undefined} />
+						}
+					>
+						<RemoteSignUpForm submitLabel='Continue' onSubmit={step} />
+					</Stepper.Step>
 
-						<TextInput
-							label='First Name'
-							error={form.formState.errors.firstName?.message}
-							style={{ width: '36ch' }}
-							{...form.register('firstName')}
-						/>
-						<TextInput
-							label='Last Name'
-							error={form.formState.errors.lastName?.message}
-							{...form.register('lastName')}
-						/>
-						<TextInput
-							label='Email'
-							error={form.formState.errors.email?.message}
-							{...form.register('email')}
-						/>
-						<PasswordInput
-							label='Password'
-							error={form.formState.errors.password?.message}
-							{...form.register('password')}
-						/>
-						<Button type='submit' loading={form.formState.isSubmitting}>
-							Sign Up
-						</Button>
+					<Stepper.Step
+						icon={
+							<ShieldLock
+								color={activeStep === 1 ? theme.primaryColor : undefined}
+							/>
+						}
+					>
+						<Text color='dimmed' align='center' mb='lg'>
+							We sent an email to benbaldwin000@gmail.com. If you don't see it in
+							the next couple minutes either check your spam folder or resend the
+							email.
+						</Text>
+						<Group position='right' spacing='lg'>
+							<Button variant='outline'>Resend Email</Button>
+							<Button onClick={step}>Check Verification</Button>
+						</Group>
+					</Stepper.Step>
 
-						{globalError && (
-							<Text color='red' align='center'>
-								{globalError}
-							</Text>
-						)}
-					</Group>
-				</form>
+					<Stepper.Step
+						icon={
+							<CreditCard
+								color={activeStep === 2 ? theme.primaryColor : undefined}
+							/>
+						}
+					></Stepper.Step>
+				</Stepper>
 			</Paper>
-
-			<Text color='dimmed'>
-				Already have an account?{' '}
-				<Anchor component={Link} to='../sign-in'>
-					Sign in
-				</Anchor>
-			</Text>
 		</Center>
 	)
 }
