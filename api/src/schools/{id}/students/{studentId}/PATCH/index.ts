@@ -30,7 +30,9 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
         if(currMembershipsReq && currMembershipsReq.rowCount > 0)
             currMemberships = currMembershipsReq.rows[0].memberships;
         for(const membership of body.memberships) {
-            if(currMemberships.includes(membership))
+            if(currMemberships.includes(membership)) {
+                
+            }
         }
     }
 

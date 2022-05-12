@@ -81,6 +81,10 @@ export interface SchoolStudentsMembershipsPutBody {
 	memberships: Snowflake[]
 }
 
+export interface SchoolStudentsPatchBody {
+	memberships?: Snowflake[],
+}
+
 export interface SchoolKioskPatchBody {
 	pin: string
 }

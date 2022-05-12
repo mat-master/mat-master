@@ -9,6 +9,7 @@ import type {
 	SchoolInvitesDeleteBody,
 	SchoolInvitesPostBody,
 	SchoolKioskPatchBody,
+	SchoolStudentsPatchBody,
 	SchoolMembershipsPostBody,
 	SchoolPostBody,
 	SchoolStudentsMembershipsPutBody,
@@ -53,8 +54,8 @@ export const schoolSchema: SchemaOf<School> = object({
 
 export const studentSchema: SchemaOf<Student> = object({
 	id: snowflakeSchema,
-	school: snowflakeSchema,
 	user: userSchema,
+	memberships: array().of(snowflakeSchema).required(),
 	stripeCustomerId: string().required(),
 })
 
@@ -105,6 +106,10 @@ export namespace api {
 	export const schoolStudentsMembershipsPutSchema: SchemaOf<SchoolStudentsMembershipsPutBody> = object({
 		memberships: array().of(snowflakeSchema).min(1).required()
 	});
+
+	export const schoolStudentsPatchSchema: SchemaOf<SchoolStudentsPatchBody> = object({
+		memberships: array().of(snowflakeSchema).optional()
+	}).test("Has-Field", "At least one field must be present", value => Object.keys(value).length > 0);
 
 	export const schoolInvitesPostSchema: SchemaOf<SchoolInvitesPostBody> = object({
 		email: string().email().required(),
