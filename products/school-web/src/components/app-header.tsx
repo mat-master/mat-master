@@ -20,7 +20,7 @@ const AppHeader: React.FC = () => {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
 
-	const { data: user } = useQuery('me', getUser)
+	const { data: user } = useQuery(['users', { id: 'me' }], () => getUser('me'))
 	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
 
 	return (

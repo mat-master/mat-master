@@ -17,6 +17,7 @@ const ScheduleDisplay: React.FC<ScheduleDisplayProps> = ({ schedule }) => {
 
 				return (
 					<Box
+						key={i}
 						sx={(theme) => ({
 							width: 24,
 							height: 24,

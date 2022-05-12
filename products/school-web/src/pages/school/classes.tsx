@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
-import ClassForm from '../../components/class-form'
+import { RemoteClassForm } from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
 import PageHeader from '../../components/page-header'
 import ScheduleDisplay from '../../components/schedule-display'
@@ -43,7 +43,7 @@ const ClassesPage: React.FC = () => {
 				actions={[
 					{
 						icon: NewClassIcon,
-						action: () => openFormModal(modals, 'New Class', <ClassForm />),
+						action: () => openFormModal(modals, 'New Class', <RemoteClassForm />),
 					},
 				]}
 			/>
@@ -65,7 +65,14 @@ const ClassesPage: React.FC = () => {
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									openFormModal(modals, name, <ClassForm id={id.toString()} />)
+									openFormModal(
+										modals,
+										name,
+										<RemoteClassForm
+											id={id.toString()}
+											defaultValues={{ name, schedule }}
+										/>
+									)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({
@@ -92,7 +99,7 @@ const ClassesPage: React.FC = () => {
 					}
 					resourceLabel='classes'
 					refetchItems={refetch}
-					createItem={() => openFormModal(modals, 'New Class', <ClassForm />)}
+					createItem={() => openFormModal(modals, 'New Class', <RemoteClassForm />)}
 					createMessage='Create A Class'
 					createIcon={NewClassIcon}
 				/>
