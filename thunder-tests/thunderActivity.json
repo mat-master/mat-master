@@ -85,5 +85,55 @@
       "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5NTQ5MzU3NjE2MjY4MTc2IiwiZW1haWwiOiJuYXRoYW5AcGVuZ2llLmRldiIsInByaXZpbGVnZSI6MCwic3RyaXBlQ3VzdG9tZXJJZCI6bnVsbCwiaWF0IjoxNjUwNDI1Njg5fQ.5sgVNZ_oqYtOO-5Kt_gZB0KcQ2m5s86j0-sAXdYCh4Y"
     },
     "tests": []
+  },
+  {
+    "_id": "659f28a2-cbed-44a4-b263-27c96705b042",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1/schools/39558269451109118/kiosk",
+    "url": "http://127.0.0.1/schools/39558269451109118/kiosk",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-05-03T15:32:01.200Z",
+    "modified": "2022-05-03T15:32:01.266Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "8fa1b60a-ddc3-4e63-8df3-a9b5cacec88d",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:3030/schools/39558269451109118/kiosk",
+    "url": "http://127.0.0.1:3030/schools/39558269451109118/kiosk",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-05-03T15:32:15.435Z",
+    "modified": "2022-05-03T15:33:06.997Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNDQwMTAxMDM4NTIyNTIxIiwiZW1haWwiOiJuYXRlMTk1MjJAZ21haWwuY29tIiwicHJpdmlsZWdlIjoxLCJzdHJpcGVDdXN0b21lcklkIjoiY3VzX0xGc2hkTUhZQVJKVHdsIiwiaWF0IjoxNjUwMzE4ODAxfQ.CNPwugZSXQH0boWGsU5pHhRYbQWBjK-mt75Qa_uMfFI"
+    },
+    "tests": []
+  },
+  {
+    "_id": "79702031-a66c-4142-a605-6bb1e389080c",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:3030/schools/22572923900395662/kiosk",
+    "url": "http://127.0.0.1:3030/schools/22572923900395662/kiosk",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-05-03T15:33:33.172Z",
+    "modified": "2022-05-03T15:34:57.274Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNDQwMTAxMDM4NTIyNTIxIiwiZW1haWwiOiJuYXRlMTk1MjJAZ21haWwuY29tIiwicHJpdmlsZWdlIjoxLCJzdHJpcGVDdXN0b21lcklkIjoiY3VzX0xGc2hkTUhZQVJKVHdsIiwiaWF0IjoxNjUwMzE4ODAxfQ.CNPwugZSXQH0boWGsU5pHhRYbQWBjK-mt75Qa_uMfFI"
+    },
+    "tests": []
   }
 ]

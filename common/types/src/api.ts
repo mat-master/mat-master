@@ -1,6 +1,6 @@
 import type { Address } from './address';
 import type { Class, ClassTime, Membership, MembershipInterval, School, Student, Tier } from './school';
-import type { User } from './user';
+import type { Card, User } from './user';
 
 export type Snowflake = bigint | string;
 
@@ -81,6 +81,21 @@ export interface SchoolStudentsMembershipsPutBody {
 	memberships: Snowflake[]
 }
 
+export interface SchoolKioskPatchBody {
+	pin: string
+}
+
+// Kiosk
+
+export interface KioskLoginPostBody {
+	school: Snowflake,
+	pin: string
+}
+
+export interface KioskLoginPostResponse {
+	jwt: string
+}
+
 // Users
 
 export type UserGetResponse = User;
@@ -96,4 +111,10 @@ export type UserInvitesGetResponse = bigint[];
 export interface UserSchoolsGetResponse {
 	adminSchools: School[],
 	studentSchools: School[]
+}
+
+export type UserBillingGetResponse = Card[];
+
+export interface UserBillingPostResponse {
+	stripeClientId: string
 }

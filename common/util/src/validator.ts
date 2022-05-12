@@ -1,5 +1,6 @@
 import type {
 	Address,
+	KioskLoginPostBody,
 	LoginPostBody,
 	MembershipInterval,
 	School,
@@ -7,6 +8,7 @@ import type {
 	SchoolClassesPostBody,
 	SchoolInvitesDeleteBody,
 	SchoolInvitesPostBody,
+	SchoolKioskPatchBody,
 	SchoolMembershipsPostBody,
 	SchoolPostBody,
 	SchoolStudentsMembershipsPutBody,
@@ -111,11 +113,22 @@ export namespace api {
 		email: string().email().required(),
 	})
 
-	export const schoolAttendanceSchema: SchemaOf<SchoolAttendancePostBody> = object({
+	export const schoolAttendancePostSchema: SchemaOf<SchoolAttendancePostBody> = object({
 		student: snowflakeSchema.required(),
 		classes: array().of(snowflakeSchema).required(),
 		date: date().required()
 	})	
+
+	const pinSchema = string().matches(/^[0-9]{6,}$/).required()
+
+	export const schoolKioskPatchSchema: SchemaOf<SchoolKioskPatchBody> = object({
+		pin: pinSchema.required()
+	});
+
+	export const kioskLoginPostSchema: SchemaOf<KioskLoginPostBody> = object({
+		school: snowflakeSchema.required(),
+		pin: pinSchema.required()
+	});
 
 	export const userPatchSchema: SchemaOf<UserPatchBody> = object({
 		firstName: string().optional(),

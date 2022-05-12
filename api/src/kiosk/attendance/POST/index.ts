@@ -1,10 +1,10 @@
 import { validator } from "@common/util";
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import { query } from "../../../../util/db";
-import { isResponse, res200, Response } from "../../../../util/res";
-import { getSchoolAuth } from "../../../../util/school";
-import { authUser } from "../../../../util/user";
-import { validateBody } from "../../../../util/validation";
+import { query } from "../../../util/db";
+import { isResponse, res200, Response } from "../../../util/res";
+import { getSchoolAuth } from "../../../util/school";
+import { authUser } from "../../../util/user";
+import { validateBody } from "../../../util/validation";
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const body = await validateBody(validator.api.schoolAttendancePostSchema, event.body);

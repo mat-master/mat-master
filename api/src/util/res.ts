@@ -23,6 +23,8 @@ export const resError = (statusCode: number, error: string): Response => {
 export const res400 = (error: string): Response => resError(400, error);
 /** Response for unauthorized. */
 export const res401 = (error: string): Response => resError(401, error);
+/** Response for payment required. */
+export const res402 = <resType extends any>(body: resType): Response => ({statusCode: 402, headers: responseHeaders, body: JSON.stringify(body)});
 /** Response for unauthorized. */
 export const res403 = (error: string): Response => resError(403, error);
 /** Response for resource not found. */

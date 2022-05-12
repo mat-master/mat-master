@@ -150,6 +150,32 @@ Resources:
             Path: /users/{id}/schools
             Method: GET
             RestApiId: !Ref Api
+  UserIdBillingGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/billing/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}/billing
+            Method: GET
+            RestApiId: !Ref Api
+  UserIdBillingPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/users/{id}/billing/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users/{id}/billing
+            Method: POST
+            RestApiId: !Ref Api
   SchoolsPOST:
     Type: AWS::Serverless::Function
     Metadata:
@@ -304,6 +330,19 @@ Resources:
           Type: Api
           Properties:
             Path: /schools/{id}/students/{studentId}/memberships
+            Method: POST
+            RestApiId: !Ref Api
+  SchoolsIdKioskPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/kiosk/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/kiosk
             Method: POST
             RestApiId: !Ref Api
   WebhookStripe:

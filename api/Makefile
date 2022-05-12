@@ -19,6 +19,10 @@ build-UsersIdInvitesGET:
 	$(MAKE) HANDLER=src/users/{id}/verify/POST/index.ts build-lambda-common
 build-UserIdSchoolsGET:
 	$(MAKE) HANDLER=src/users/{id}/schools/GET/index.ts build-lambda-common
+build-UserIdBillingGET:
+	$(MAKE) HANDLER=src/users/{id}/billing/GET/index.ts build-lambda-common
+build-UserIdBillingPOST:
+	$(MAKE) HANDLER=src/users/{id}/billing/POST/index.ts build-lambda-common
 
 build-SchoolsPOST:
 	$(MAKE) HANDLER=src/schools/POST/index.ts build-lambda-common
@@ -44,6 +48,8 @@ build-SchoolsIdStudentsGET:
 	$(MAKE) HANDLER=src/schools/{id}/students/GET/index.ts build-lambda-common
 build-SchoolsIdStudentsMembershipsPOST:
 	$(MAKE) HANDLER=src/schools/{id}/students/{studentId}/memberships/POST/index.ts build-lambda-common
+build-SchoolsIdKioskPOST:
+	$(MAKE) HANDLER=src/schools/{id}/kiosk/POST/index.ts build-lambda-common
 
 build-WebhookStripe:
 	$(MAKE) HANDLER=src/webhooks/stripe/index.ts build-lambda-common
