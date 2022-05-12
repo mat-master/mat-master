@@ -5,7 +5,7 @@ sgmail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 export const sendVerification = async (id: bigint, email: string, firstName: string, lastName: string) => {
     // Create Verify JWT that expires in 15 minutes
-    const verifyToken = jwt.sign({"id": id}, process.env.JWT_SECRET as string, {expiresIn: "15m"});
+    const verifyToken = jwt.sign({"id": id.toString()}, process.env.JWT_SECRET as string, {expiresIn: "15m"});
     const msg: sgmail.MailDataRequired = {
         to: email,
         from: 'nate19522@gmail.com',

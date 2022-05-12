@@ -7,6 +7,7 @@ import { generateSnowflake } from '../../../../../util/snowflake';
 import { validator } from '@common/util';
 import { validateBody } from '../../../../../util/validation';
 import stripe from '../../../../../util/stripe';
+import type { Snowflake } from '@common/types';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<Response> => {
     const body = await validateBody(validator.api.schoolStudentsPatchSchema, event.body);
@@ -24,14 +25,20 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
 
     const studentId = event.pathParameters.studentId;
 
+    interface MembershipPair {
+        membership: Snowflake
+        stripeSubscriptionId: string
+    }
+
     if(body.memberships) {
-        const currMembershipsReq = await query("SELECT json_build_array(membership) as memberships FROM student_memberships WHERE student = $1", [studentId]);
-        let currMemberships = [];
+        const currMembershipsReq = await query(`SELECT json_build_array(json_build_object('membership', membership, 'stripeSubscriptionId', stripe_subscription_id)) as memberships FROM student_memberships WHERE student = $1`, [studentId]);
+        let currMemberships: MembershipPair[] = [];
         if(currMembershipsReq && currMembershipsReq.rowCount > 0)
             currMemberships = currMembershipsReq.rows[0].memberships;
+        const flatMemberships = currMemberships.map(m => m.membership);
         for(const membership of body.memberships) {
-            if(currMemberships.includes(membership)) {
-                
+            if(flatMemberships.includes(membership)) {
+
             }
         }
     }
