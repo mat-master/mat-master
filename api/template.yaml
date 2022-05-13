@@ -319,18 +319,18 @@ Resources:
             Path: /schools/{id}/students
             Method: GET
             RestApiId: !Ref Api
-  SchoolsIdStudentsMembershipsPOST:
+  SchoolsIdStudentsPatch:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: dist/schools/{id}/students/{studentId}/memberships/POST/index.handler
+      Handler: dist/schools/{id}/students/{studentId}/PATCH/index.handler
       Events:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /schools/{id}/students/{studentId}/memberships
-            Method: POST
+            Path: /schools/{id}/students/{studentId}
+            Method: PATCH
             RestApiId: !Ref Api
   SchoolsIdKioskPOST:
     Type: AWS::Serverless::Function
