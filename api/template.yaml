@@ -85,6 +85,19 @@ Resources:
             Path: /auth/verify
             Method: POST
             RestApiId: !Ref Api
+  AuthRefreshPOST:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/auth/refresh/POST/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /auth/refresh
+            Method: POST
+            RestApiId: !Ref Api
   UsersIdGET:
     Type: AWS::Serverless::Function
     Metadata:

@@ -8,6 +8,8 @@ build-AuthSignupPOST:
 	$(MAKE) HANDLER=src/auth/signup/POST/index.ts build-lambda-common
 build-AuthVerifyPOST:
 	$(MAKE) HANDLER=src/auth/verify/POST/index.ts build-lambda-common
+build-AuthRefreshPOST:
+	$(MAKE) HANDLER=src/auth/refresh/POST/index.ts build-lambda-common
 	
 build-UsersIdGET:
 	$(MAKE) HANDLER=src/users/{id}/GET/index.ts build-lambda-common

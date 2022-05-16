@@ -27,6 +27,10 @@ export interface VerifyPostResponse {
 	jwt: string
 }
 
+export interface RefreshPostResponse {
+	jwt: string
+}
+
 // Schools
 
 export interface SchoolPostBody {
