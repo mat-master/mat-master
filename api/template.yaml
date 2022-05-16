@@ -319,7 +319,7 @@ Resources:
             Path: /schools/{id}/students
             Method: GET
             RestApiId: !Ref Api
-  SchoolsIdStudentsPatch:
+  SchoolsIdStudentsPATCH:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
@@ -331,6 +331,19 @@ Resources:
           Properties:
             Path: /schools/{id}/students/{studentId}
             Method: PATCH
+            RestApiId: !Ref Api
+  SchoolsIdStudentsIdGET:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: dist/schools/{id}/students/{studentId}/GET/index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /schools/{id}/students/{studentId}
+            Method: GET
             RestApiId: !Ref Api
   SchoolsIdKioskPOST:
     Type: AWS::Serverless::Function

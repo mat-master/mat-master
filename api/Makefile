@@ -46,6 +46,8 @@ build-SchoolsIdJoinPOST:
 	$(MAKE) HANDLER=src/schools/{id}/join/POST/index.ts build-lambda-common
 build-SchoolsIdStudentsGET:
 	$(MAKE) HANDLER=src/schools/{id}/students/GET/index.ts build-lambda-common
+build-SchoolsIdStudentsIdGET:
+	$(MAKE) HANDLER=src/schools/{id}/students/{id}/GET/index.ts build-lambda-common
 build-SchoolsIdStudentsPATCH:
 	$(MAKE) HANDLER=src/schools/{id}/students/{studentId}/PATCH/index.ts build-lambda-common
 build-SchoolsIdKioskPOST:
