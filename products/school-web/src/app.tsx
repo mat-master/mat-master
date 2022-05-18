@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import AcceptInvitePage from './pages/accept-invite'
 import AccountPage from './pages/account'
 import BillingPage from './pages/school/billing'
 import ClassesPage from './pages/school/classes'
@@ -17,6 +18,7 @@ const App: React.FC = () => (
 		<Routes>
 			<Route path='sign-in' element={<SignInPage />} />
 			<Route path='sign-up' element={<SignUpPage />} />
+			<Route path='accept-invite' element={<AcceptInvitePage />} />
 			<Route path='account' element={<AccountPage />} />
 			<Route path='verify' element={<VerifyPage />} />
 

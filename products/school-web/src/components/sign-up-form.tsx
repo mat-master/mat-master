@@ -12,6 +12,7 @@ export type SignUpFormProps = FormWrapperProps<SignupPostBody>
 
 export const SignUpForm: React.FC<SignUpFormProps> = (props) => (
 	<Form
+		submitLabel='Sign Up'
 		{...props}
 		schema={validator.api.signupPostSchema}
 		child={({ form }) => {

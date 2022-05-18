@@ -1,6 +1,7 @@
 import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
+import { loadStripe } from '@stripe/stripe-js'
 import axios from 'axios'
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -20,6 +21,10 @@ const queryClient = new QueryClient({
 		mutations: { retry: false },
 	},
 })
+
+const stripePromise = loadStripe(
+	'pk_test_51JetjJGsHxGKM7KBPLMtSBtvx9DrWf1We61NLq9Jxq15a8L0zixNQAG72uyTA8EYEawIwEuJfNeacAd3SbUDgGwi00JC8U6MAI'
+)
 
 ReactDOM.render(
 	<React.StrictMode>

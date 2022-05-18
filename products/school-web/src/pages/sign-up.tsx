@@ -8,16 +8,12 @@ import {
 	Title,
 	useMantineTheme,
 } from '@mantine/core'
-import { useLocalStorageValue } from '@mantine/hooks'
+import axios from 'axios'
 import React, { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CircleCheck, CreditCard, ShieldLock, User } from 'tabler-icons-react'
 import { RemoteSignUpForm } from '../components/sign-up-form'
 
 const SignUpPage: React.FC = () => {
-	const [jwt] = useLocalStorageValue({ key: 'jwt' })
-	const [queryParams] = useSearchParams()
-	const navigate = useNavigate()
 	const theme = useMantineTheme()
 
 	const [activeStep, setStep] = useState(0)
@@ -70,7 +66,15 @@ const SignUpPage: React.FC = () => {
 							email.
 						</Text>
 						<Group position='right' spacing='lg'>
-							<Button variant='outline'>Resend Email</Button>
+							<Button
+								variant='outline'
+								onClick={async () => {
+									await axios.post('/users/me/verify')
+									step()
+								}}
+							>
+								Resend Email
+							</Button>
 							<Button onClick={step}>Check Verification</Button>
 						</Group>
 					</Stepper.Step>
