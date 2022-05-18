@@ -8,7 +8,7 @@ import {
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { Logout as LogoutIcon, User as AccountIcon } from 'tabler-icons-react'
 import { signout } from '../data/auth'
@@ -19,6 +19,7 @@ import getInitials from '../utils/get-initials'
 const AppHeader: React.FC = () => {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
+	const queryClient = useQueryClient()
 
 	const { data: user } = useQuery(['users', { id: 'me' }], () => getUser('me'))
 	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
@@ -57,7 +58,7 @@ const AppHeader: React.FC = () => {
 					</Menu.Item>
 					<Menu.Item
 						icon={<LogoutIcon size={16} />}
-						onClick={() => signout(navigate)}
+						onClick={() => signout({ navigate, queryClient })}
 					>
 						Log Out
 					</Menu.Item>

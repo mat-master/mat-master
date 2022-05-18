@@ -1,10 +1,8 @@
 import {
-	Anchor,
 	Center,
 	Paper,
 	Stepper,
 	StepProps,
-	Text,
 	Title,
 	useMantineTheme,
 } from '@mantine/core'
@@ -18,9 +16,8 @@ import {
 	User as UserIcon,
 } from 'tabler-icons-react'
 import BillingForm from '../components/billing-form'
-import EmailVerificationForm from '../components/email-verification-form'
-import { RemoteSignInForm } from '../components/sign-in-form'
-import { RemoteSignUpForm } from '../components/sign-up-form'
+import EmailVerifier from '../components/email-verifier'
+import SignUpLoginForm from '../components/sign-up-login-form'
 import { getPrimaryColor } from '../utils/get-colors'
 
 type AuthIntent = 'Sign up' | 'Sign in'
@@ -28,7 +25,7 @@ type AuthIntent = 'Sign up' | 'Sign in'
 export interface AcceptInvitePageProps {}
 
 const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
-	const [currentStep, setCurrentStep] = useState(2)
+	const [currentStep, setCurrentStep] = useState(0)
 	const step = () => setCurrentStep(currentStep + 1)
 
 	const [authIntent, setAuthIntent] = useState<AuthIntent>('Sign up')
@@ -65,23 +62,11 @@ const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 					}}
 				>
 					<Stepper.Step {...stepProps(0, authIntent, UserIcon)}>
-						{authIntent === 'Sign up' ? (
-							<RemoteSignUpForm onSubmit={step} />
-						) : (
-							<RemoteSignInForm onSubmit={step} />
-						)}
-
-						<Text align='center' color='dimmed' mt='lg'>
-							Already have an account?{' '}
-							<Anchor onClick={() => setAuthIntent(oppositeAuthIntent)}>
-								{oppositeAuthIntent}
-							</Anchor>{' '}
-							instead
-						</Text>
+						<SignUpLoginForm onSubmit={step} />
 					</Stepper.Step>
 
 					<Stepper.Step {...stepProps(1, 'Verify Email', VerifyIcon)}>
-						<EmailVerificationForm onVerified={step} />
+						<EmailVerifier onVerified={step} />
 					</Stepper.Step>
 
 					<Stepper.Step {...stepProps(2, 'Billing Details', CreditCardIcon)}>

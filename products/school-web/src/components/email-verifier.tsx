@@ -1,27 +1,27 @@
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
-import { useMutation } from 'react-query'
-import { sendVerificationEmail, verifyEmail } from '../data/auth'
+import { useMutation, useQuery } from 'react-query'
+import { checkEmailVerification, sendVerificationEmail } from '../data/auth'
 
 export interface EmailVerificationFormProps {
 	onVerified?: VoidFunction
 	onSent?: VoidFunction
 }
 
-const EmailVerificationForm: React.FC<EmailVerificationFormProps> = ({
+const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
 	onVerified,
 	onSent,
 }) => {
-	const { isLoading: verifying, mutateAsync: verify } = useMutation(
-		'verified',
+	const { isLoading: verifying, refetch: checkVerification } = useQuery(
+		'email verified',
 		async () => {
-			await verifyEmail()
-			onVerified && (await onVerified())
+			const verified = await checkEmailVerification()
+			if (verified && onVerified) await onVerified()
 		}
 	)
 
 	const { isLoading: sendingEmail, mutateAsync: sendEmail } = useMutation(
-		'verification-email',
+		'send verification email',
 		async () => {
 			await sendVerificationEmail()
 			onSent && (await onSent())
@@ -31,8 +31,8 @@ const EmailVerificationForm: React.FC<EmailVerificationFormProps> = ({
 	return (
 		<div>
 			<Text color='dimmed' align='center' mb='lg'>
-				We sent an email to benbaldwin000@gmail.com. If you don't see it in the next
-				couple minutes either check your spam folder or resend the email.
+				We sent an email to EMAIL. If you don't see it in the next couple minutes
+				either check your spam folder or resend the email.
 			</Text>
 			<Group position='right' spacing='lg'>
 				<Button
@@ -46,7 +46,7 @@ const EmailVerificationForm: React.FC<EmailVerificationFormProps> = ({
 					Resend Email
 				</Button>
 
-				<Button onClick={() => verify()} loading={verifying}>
+				<Button onClick={() => checkVerification()} loading={verifying}>
 					Check Verification
 				</Button>
 			</Group>
@@ -54,4 +54,4 @@ const EmailVerificationForm: React.FC<EmailVerificationFormProps> = ({
 	)
 }
 
-export default EmailVerificationForm
+export default EmailVerifier

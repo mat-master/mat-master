@@ -1,7 +1,7 @@
 import { Button, Center, Group, Loader, Text, Title } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import { Refresh as RetryIcon } from 'tabler-icons-react'
@@ -13,14 +13,21 @@ const VerifyPage: React.FC = () => {
 	const navigate = useNavigate()
 	const [query] = useSearchParams()
 	const token = query.get('token')
+	if (!token) {
+		navigate('/sign-up')
+		return null
+	}
 
-	const { mutate, isLoading, isError, error } = useMutation(
-		'email verification',
+	const queryClient = useQueryClient()
+	const { mutateAsync, isLoading, isError, error } = useMutation(
+		'verify email',
 		verifyEmail,
-		{ onSuccess: () => signout(navigate) }
+		{ onSuccess: () => signout({ navigate, queryClient }) }
 	)
 
-	useEffect(() => mutate(token), [token])
+	useEffect(() => {
+		mutateAsync({ token })
+	}, [token])
 
 	return (
 		<Page>
@@ -35,7 +42,10 @@ const VerifyPage: React.FC = () => {
 								<br />
 								{getErrorMessage(error)}
 							</Text>
-							<Button leftIcon={<RetryIcon />} onClick={() => mutate(token)}>
+							<Button
+								leftIcon={<RetryIcon />}
+								onClick={() => mutateAsync({ token })}
+							>
 								Retry
 							</Button>
 						</>

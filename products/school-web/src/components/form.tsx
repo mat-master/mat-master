@@ -17,7 +17,7 @@ export type FormProps<T extends FieldValues = FieldValues> = Omit<
 	'onSubmit'
 > & {
 	schema: yup.SchemaOf<T>
-	onSubmit: SubmitHandler<T>
+	onSubmit?: SubmitHandler<T>
 	child: React.FC<{ form: UseFormReturn<T> }>
 	error?: string
 	defaultValues?: T
@@ -45,7 +45,7 @@ const Form = <T extends FieldValues>({
 
 	const { isSubmitting } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
-	const handleSubmit = form.handleSubmit(onSubmit, (err) =>
+	const handleSubmit = form.handleSubmit(onSubmit ?? (() => {}), (err) =>
 		setGlobalError(getErrorMessage(err))
 	)
 

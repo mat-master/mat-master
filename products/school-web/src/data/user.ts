@@ -1,4 +1,4 @@
-import type { UserPatchBody } from '@common/types'
+import type { UserGetResponse, UserPatchBody } from '@common/types'
 import { validator } from '@common/util'
 import axios from 'axios'
 
@@ -12,7 +12,7 @@ export const getUser = async (id = 'me') => {
 	const user = validator.userSchema.cast(res.data)
 	if (!validator.userSchema.validate(user)) throw undefined
 
-	return user as UserPatchBody
+	return user as UserGetResponse
 }
 
 export const updateUser = async (id = 'me', data: UserPatchBody) => {

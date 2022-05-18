@@ -9,15 +9,14 @@ import DashboardPage from './pages/school/dashboard'
 import MembershipsPage from './pages/school/memberships'
 import StudentsPage from './pages/school/students'
 import SchoolsPage from './pages/schools'
-import SignInPage from './pages/sign-in'
-import SignUpPage from './pages/sign-up'
+import SignUpLoginPage from './pages/sign-up-login'
 import VerifyPage from './pages/verify'
 
 const App: React.FC = () => (
 	<BrowserRouter>
 		<Routes>
-			<Route path='sign-in' element={<SignInPage />} />
-			<Route path='sign-up' element={<SignUpPage />} />
+			<Route path='sign-in' element={<SignUpLoginPage intention='Sign in' />} />
+			<Route path='sign-up' element={<SignUpLoginPage intention='Sign up' />} />
 			<Route path='accept-invite' element={<AcceptInvitePage />} />
 			<Route path='account' element={<AccountPage />} />
 			<Route path='verify' element={<VerifyPage />} />

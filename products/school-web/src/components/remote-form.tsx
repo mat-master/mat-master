@@ -10,13 +10,7 @@ import filterUpdated from '../utils/filter-updated'
 import getErrorMessage from '../utils/get-error-message'
 import type { FormWrapperProps } from './form'
 
-type PassedFormProps<T extends FieldValues> = Omit<
-	FormWrapperProps<T>,
-	'onSubmit'
-> &
-	Partial<Pick<FormWrapperProps<T>, 'onSubmit'>>
-
-export type RemoteFormProps<T extends FieldValues> = PassedFormProps<T> & {
+export type RemoteFormProps<T extends FieldValues> = FormWrapperProps<T> & {
 	queryKey: [string, Record<string, any>]
 	getResource?: () => Promise<T>
 	createResource?: SubmitHandler<T>
