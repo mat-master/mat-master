@@ -1,24 +1,29 @@
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
+import { useEffect } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { checkEmailVerification, sendVerificationEmail } from '../data/auth'
 
 export interface EmailVerificationFormProps {
+	email: string
 	onVerified?: VoidFunction
 	onSent?: VoidFunction
 }
 
 const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
+	email,
 	onVerified,
 	onSent,
 }) => {
-	const { isLoading: verifying, refetch: checkVerification } = useQuery(
-		'email verified',
-		async () => {
-			const verified = await checkEmailVerification()
-			if (verified && onVerified) await onVerified()
-		}
-	)
+	const {
+		data: verified,
+		isLoading: verifying,
+		refetch: checkVerification,
+	} = useQuery('email verified', checkEmailVerification)
+
+	useEffect(() => {
+		if (verified && onVerified) onVerified()
+	}, [verified])
 
 	const { isLoading: sendingEmail, mutateAsync: sendEmail } = useMutation(
 		'send verification email',
@@ -31,7 +36,7 @@ const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
 	return (
 		<div>
 			<Text color='dimmed' align='center' mb='lg'>
-				We sent an email to EMAIL. If you don't see it in the next couple minutes
+				We sent an email to {email}. If you don't see it in the next couple minutes
 				either check your spam folder or resend the email.
 			</Text>
 			<Group position='right' spacing='lg'>

@@ -5,7 +5,15 @@ import type { FormEvent } from 'react'
 import { useMutation } from 'react-query'
 import StripeProvider from '../stripe'
 
-const BillingFormInternals: React.FC = () => {
+export interface BillingFormProps {
+	redirect: string
+	onSubmit?(): void
+}
+
+const BillingFormInternals: React.FC<BillingFormProps> = ({
+	redirect,
+	onSubmit,
+}) => {
 	const stripe = useStripe()
 	const elements = useElements()
 	const { mutateAsync } = useMutation('card', async (e: FormEvent) => {
@@ -15,11 +23,12 @@ const BillingFormInternals: React.FC = () => {
 		const { error } = await stripe.confirmSetup({
 			elements,
 			confirmParams: {
-				return_url: window.location.href,
+				return_url: redirect,
 			},
 		})
 
-		if (error) console.error(error)
+		if (error) return
+		if (onSubmit) await onSubmit()
 	})
 
 	return (
@@ -32,10 +41,9 @@ const BillingFormInternals: React.FC = () => {
 	)
 }
 
-interface BillingFormProps {}
-const BillingForm: React.FC<BillingFormProps> = ({}) => (
+const BillingForm: React.FC<BillingFormProps> = (props) => (
 	<StripeProvider>
-		<BillingFormInternals />
+		<BillingFormInternals {...props} />
 	</StripeProvider>
 )
 

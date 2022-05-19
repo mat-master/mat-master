@@ -32,17 +32,13 @@ export type RemoteInviteFormProps =
 		id?: string
 	}
 
-export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = ({
-	id,
-	...props
-}) => (
+export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = ({ id, ...props }) => (
 	<RemoteForm<SchoolInvitesPostBody>
 		submitLabel='Send'
 		{...props}
 		queryKey={['invites', { id }]}
 		getResource={id ? () => getInvite(id) : undefined}
 		createResource={id ? undefined : createInvite}
-		updateResource={id ? () => {} : undefined}
 		child={InviteForm}
 	/>
 )

@@ -63,7 +63,6 @@ export const checkEmailVerification = async () => {
 	setJwt(refreshRes.data.jwt)
 
 	const meRes: AxiosResponse<UserGetResponse> = await axios.get('/users/me')
-	console.log(meRes.data)
 	if (meRes.status !== 200) throw 'An unknown error ocurred'
 
 	return !!meRes.data.privilege
