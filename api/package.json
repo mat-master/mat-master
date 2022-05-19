@@ -19,6 +19,7 @@
 		"@aws-sdk/client-ses": "^3.53.0",
 		"@common/types": "^1.0.0",
 		"@common/util": "^1.0.0",
+		"@sendgrid/mail": "^7.6.2",
 		"axios": "^0.26.0",
 		"bcryptjs": "^2.4.3",
 		"image-data-uri": "^2.0.1",

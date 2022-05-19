@@ -35,11 +35,11 @@
     "colId": "50a6eaac-c652-49e8-bc78-916ea1277470",
     "containerId": "4cc42fd1-c9b6-4309-bbbb-c48609dbc5d6",
     "name": "Invites GET",
-    "url": "http://127.0.0.1:3030/users/me/invites",
+    "url": "https://api.matmaster.app/dev/users/me/invites",
     "method": "GET",
     "sortNum": 30000,
     "created": "2022-03-05T21:22:45.792Z",
-    "modified": "2022-03-05T21:24:08.740Z",
+    "modified": "2022-04-20T03:52:42.909Z",
     "headers": [],
     "params": [],
     "tests": []
@@ -49,11 +49,11 @@
     "colId": "50a6eaac-c652-49e8-bc78-916ea1277470",
     "containerId": "b84e0d30-4ddf-4a62-8cb6-bcd7cfa78a7b",
     "name": "Join POST",
-    "url": "http://127.0.0.1:3030/schools/39106904816877839/join",
+    "url": "https://api.matmaster.app/dev/schools/39558269451109118/join",
     "method": "POST",
     "sortNum": 40000,
     "created": "2022-03-06T18:55:42.701Z",
-    "modified": "2022-04-18T23:52:59.607Z",
+    "modified": "2022-04-20T03:53:26.083Z",
     "headers": [],
     "params": [],
     "auth": {
@@ -230,12 +230,12 @@
     "method": "PATCH",
     "sortNum": 35000,
     "created": "2022-03-14T23:20:56.455Z",
-    "modified": "2022-04-12T17:26:51.800Z",
+    "modified": "2022-05-02T16:12:13.660Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"lastName\": \"Sancho\"\n}",
+      "raw": "{\n    \n}",
       "form": []
     },
     "tests": []

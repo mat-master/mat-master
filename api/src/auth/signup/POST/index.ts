@@ -2,11 +2,12 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as bcrypt from 'bcryptjs';
 import * as db from '../../../util/db';
 import { generateSnowflake, getLambdaIp } from '../../../util/snowflake';
-import { isResponse, res200, res400, resError } from '../../../util/res';
+import { isResponse, res200, res400, res500, resError } from '../../../util/res';
 import { Privilege } from '@common/types';
 import type { SignupPostBody } from '@common/types';
 import { validator } from '@common/util';
 import { validateBody } from '../../../util/validation';
+import { sendVerification } from '../../../util/mail';
 
 // Signs up a user
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -22,7 +23,12 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     // Hash and salt password, create new user
     const hashed = await bcrypt.hash(password, 5);
-    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege) VALUES ($1, $2, $3, $4, $5, $6)", [generateSnowflake(), firstName, lastName, email, hashed, Privilege.Unverified]);
+    const snowflake = generateSnowflake();
+    if(!snowflake)
+        return res500();
+    db.query("INSERT INTO users (id, first_name, last_name, email, password, privilege) VALUES ($1, $2, $3, $4, $5, $6)", [snowflake, firstName, lastName, email, hashed, Privilege.Unverified]);
     
+    await sendVerification(BigInt(snowflake), email, firstName, lastName);
+
     return res200();
 };

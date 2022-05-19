@@ -1,6 +1,6 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { query } from '../../../../util/db';
-import { isResponse, res200, res404, res500, Response } from '../../../../util/res';
+import { isResponse, res200, res402, res404, res500, Response } from '../../../../util/res';
 import { getSchool, getSchoolAuth } from '../../../../util/school';
 import { authUser, getUser, getUserId } from '../../../../util/user';
 import { generateSnowflake } from '../../../../util/snowflake';
@@ -21,7 +21,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
         const intent = await stripe.setupIntents.create();
         if(!intent.client_secret)
             return res500();
-        return res200<SchoolJoinPostResponse>(intent.client_secret)
+        return res402<SchoolJoinPostResponse>(intent.client_secret)
     }
 
     const invites = await query("DELETE FROM invites WHERE school = $1 AND email = $2 RETURNING *", [school.id, user.email]);

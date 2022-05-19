@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
     if(isResponse(school))
         return school;
 
-    const students = await query("SELECT * FROM students INNER JOIN users ON students.\"user\" = users.id WHERE students.school = $1", [school.id]);
+    const students = await query(studentQuery, [school.id]);
     if(!students)
         return res500();
 
@@ -29,6 +29,22 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
                 email: student.email,
                 privilege: student.privilege
             },
-            stripeCustomerId: student.stripeCustomerId
+            memberships: student.memberships,
+            stripeCustomerId: student.stripe_customer_id
     })));
 }
+
+const studentQuery = `SELECT
+students.id AS id,
+users.id AS "user",
+users.first_name AS first_name,
+users.last_name AS last_name,
+users.email AS email,
+users.privilege AS privilege,
+students.stripe_customer_id AS stripe_customer_id,
+json_build_array(student_memberships.membership) AS memberships 
+FROM students
+INNER JOIN users ON students."user" = users.id
+LEFT JOIN student_memberships on students.id = student_memberships.student
+WHERE students.school = $1
+`

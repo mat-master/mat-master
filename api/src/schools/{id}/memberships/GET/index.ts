@@ -25,7 +25,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<Response> =>
         return {
             id: membership.id,
             name: membership.name,
-            classes: membership.classes,
+            classes: membership.classes.map((clazz: any) => clazz.id),
             price: price.unit_amount!,
             interval: price.recurring!.interval,
             intervalCount: price.recurring!.interval_count,

@@ -35,3 +35,11 @@ export enum Privilege {
 	/** Admin user */
 	Admin = 2
 };
+
+export interface Card {
+	id: string,
+	brand: string,
+	last4: string,
+	expMonth: number,
+	expYear: number
+}

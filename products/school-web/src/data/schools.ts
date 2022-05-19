@@ -1,13 +1,19 @@
-import type { School, SchoolPostBody, UserSchoolsGetResponse } from '@common/types'
+import type {
+	School,
+	SchoolJoinPostResponse,
+	SchoolPostBody,
+	UserSchoolsGetResponse,
+} from '@common/types'
 import { validator } from '@common/util'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import * as yup from 'yup'
 import getSchoolId from '../utils/get-school-id'
 
-const userSchoolsGetResponseSchema: yup.SchemaOf<UserSchoolsGetResponse> = yup.object({
-	adminSchools: yup.array().of(validator.schoolSchema).required(),
-	studentSchools: yup.array().of(validator.schoolSchema).required(),
-})
+const userSchoolsGetResponseSchema: yup.SchemaOf<UserSchoolsGetResponse> =
+	yup.object({
+		adminSchools: yup.array().of(validator.schoolSchema).required(),
+		studentSchools: yup.array().of(validator.schoolSchema).required(),
+	})
 
 export const getSchools = async () => {
 	const res = await axios.get('/users/me/schools')
@@ -19,7 +25,7 @@ export const getSchools = async () => {
 
 export const getCurrentSchool = async () => {
 	const schoolId = getSchoolId()
-	if (!schoolId) throw Error('The current school is undefined')
+	if (!schoolId) return undefined
 	const res = await axios.get(`/schools/${schoolId}`)
 	if (res.status !== 200) throw res.data.error
 
@@ -30,4 +36,11 @@ export const getCurrentSchool = async () => {
 export const createSchool = async (data: SchoolPostBody) => {
 	const res = await axios.post('/schools', data)
 	if (res.status !== 200) throw res.data.error
+}
+
+export const joinSchool = async (id: string) => {
+	const res: AxiosResponse<SchoolJoinPostResponse> = await axios.post(
+		`/schools/${id}/join`
+	)
+	if (res.status !== 200) throw res.data
 }

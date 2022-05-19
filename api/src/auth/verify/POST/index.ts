@@ -2,11 +2,12 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { isResponse, res200, res400, res401, res500 } from '../../../util/res';
 import * as jwt from 'jsonwebtoken';
 import { query } from '../../../util/db';
-import { Privilege } from '@common/types';
+import { Privilege, VerifyPostResponse } from '@common/types';
 import stripe from '../../../util/stripe';
 import { getUserId } from '../../../util/user';
 import { validator } from '@common/util';
 import { validateBody } from '../../../util/validation';
+import type { Payload } from '../../../util/payload';
 
 // Verifies an email
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -48,5 +49,15 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const res = await query("UPDATE users SET stripe_customer_id = $1, privilege = $2 WHERE id = $3", [customer.id, Privilege.Verified, payload.id]);
     if(!res)
         return res500("Error verifying user, please try again later");
-    return res200();
+    const newPayload: Payload = {
+        id: user.id,
+        email: user.email,
+        privilege: Privilege.Verified,
+        stripeCustomerId: customer.id
+    };
+
+    // Create JWT
+    return res200<VerifyPostResponse>({
+        jwt: jwt.sign(payload, process.env.JWT_SECRET as string)
+    });
 }

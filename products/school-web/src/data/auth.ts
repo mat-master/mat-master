@@ -1,10 +1,18 @@
-import type { LoginPostBody, SignupPostBody } from '@common/types'
-import axios from 'axios'
+import type {
+	LoginPostBody,
+	RefreshPostResponse,
+	SignupPostBody,
+	UserGetResponse,
+	VerifyPostBody,
+} from '@common/types'
+import axios, { AxiosResponse } from 'axios'
+import type { QueryClient } from 'react-query'
 import type { NavigateFunction } from 'react-router'
 
-export const signup = async (data: SignupPostBody) => {
-	const res = await axios.post('/auth/signup', data)
-	if (res.status !== 200) throw res.data.error
+const setJwt = (token: string) => {
+	if (!/^([\w-]+\.){2}[\w-]+$/.test(token)) throw 'Invalid Jwt'
+	localStorage.setItem('jwt', token)
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 
 export const signin = async (data: LoginPostBody) => {
@@ -13,12 +21,49 @@ export const signin = async (data: LoginPostBody) => {
 
 	const { jwt } = res.data
 	if (typeof jwt !== 'string') throw undefined
-
-	localStorage.setItem('jwt', jwt)
-	axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
+	setJwt(jwt)
 }
 
-export const signout = async (navigate?: NavigateFunction) => {
+export const signup = async (data: SignupPostBody) => {
+	const res = await axios.post('/auth/signup', data)
+	if (res.status !== 200) throw res.data.error
+	await signin(data)
+}
+
+export const signout = async ({
+	navigate,
+	queryClient,
+}: {
+	navigate?: NavigateFunction
+	queryClient?: QueryClient
+}) => {
 	window.localStorage.removeItem('jwt')
-	navigate && navigate('/sign-in')
+	queryClient?.removeQueries(['users', { id: 'me' }])
+	if (navigate) navigate('/sign-in')
+}
+
+export const sendVerificationEmail = async () => {
+	const res: AxiosResponse = await axios.post('/users/me/verify')
+	if (res.status !== 200) throw res.data
+}
+
+export const verifyEmail = async (data: VerifyPostBody) => {
+	const res = await axios.post('/auth/verify', data)
+	if (res.status !== 200) throw res.data
+
+	const jwt = res.data?.jwt
+	if (jwt) setJwt(jwt)
+}
+
+export const checkEmailVerification = async () => {
+	const refreshRes: AxiosResponse<RefreshPostResponse> = await axios.post(
+		'/auth/refresh'
+	)
+	if (refreshRes.status !== 200) throw 'An unknown error ocurred'
+	setJwt(refreshRes.data.jwt)
+
+	const meRes: AxiosResponse<UserGetResponse> = await axios.get('/users/me')
+	if (meRes.status !== 200) throw 'An unknown error ocurred'
+
+	return !!meRes.data.privilege
 }

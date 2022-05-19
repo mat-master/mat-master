@@ -1,14 +1,18 @@
 import type {
 	Address,
+	KioskLoginPostBody,
 	LoginPostBody,
 	MembershipInterval,
 	School,
+	SchoolAttendancePostBody,
 	SchoolClassesPostBody,
 	SchoolInvitesDeleteBody,
 	SchoolInvitesPostBody,
+	SchoolKioskPatchBody,
+	SchoolStudentsPatchBody,
 	SchoolMembershipsPostBody,
 	SchoolPostBody,
-	SchoolStudentsMembershipsPostBody,
+	SchoolStudentsMembershipsPutBody,
 	SignupPostBody,
 	Snowflake,
 	Student,
@@ -16,7 +20,7 @@ import type {
 	UserPatchBody,
 	VerifyPostBody,
 } from '@common/types'
-import { array, mixed, number, object, SchemaOf, string } from 'yup'
+import { array, date, mixed, number, object, SchemaOf, string } from 'yup'
 
 export const snowflakeSchema: SchemaOf<Snowflake> = mixed().required()
 
@@ -31,7 +35,7 @@ export const userSchema: SchemaOf<User> = object({
 })
 
 export const addressSchema: SchemaOf<Address> = object({
-	state: string().required(),
+	state: string().length(2).required(),
 	city: string().required(),
 	postalCode: string().length(5).required(),
 	line1: string().required(),
@@ -50,8 +54,8 @@ export const schoolSchema: SchemaOf<School> = object({
 
 export const studentSchema: SchemaOf<Student> = object({
 	id: snowflakeSchema,
-	school: snowflakeSchema,
 	user: userSchema,
+	memberships: array().of(snowflakeSchema).required(),
 	stripeCustomerId: string().required(),
 })
 
@@ -62,14 +66,14 @@ export const classTimeSchema = object({
 
 export const membershipIntervalSchema: SchemaOf<MembershipInterval> = mixed()
 	.oneOf(['day', 'week', 'month', 'year'])
-	.required()
+	.required();
 
 export namespace api {
 	export const signupPostSchema: SchemaOf<SignupPostBody> = object({
-		firstName: string().required(),
-		lastName: string().required(),
-		email: string().email().required(),
-		password: string().min(6).required(),
+		firstName: string().required('Required'),
+		lastName: string().required('Required'),
+		email: string().required('Required').email('Must be a valid email'),
+		password: string().required('Required').min(6, 'Must be at least 6 characters'),
 	})
 
 	export const loginPostSchema: SchemaOf<LoginPostBody> = object({
@@ -99,9 +103,13 @@ export namespace api {
 		intervalCount: number().integer().required(),
 	})
 
-	export const schoolStudentsMembershipsPostSchema: SchemaOf<SchoolStudentsMembershipsPostBody> = object({
-		membership: snowflakeSchema.required()
+	export const schoolStudentsMembershipsPutSchema: SchemaOf<SchoolStudentsMembershipsPutBody> = object({
+		memberships: array().of(snowflakeSchema).min(1).required()
 	});
+
+	export const schoolStudentsPatchSchema: SchemaOf<SchoolStudentsPatchBody> = object({
+		memberships: array().of(snowflakeSchema).optional()
+	}).test("Has-Field", "At least one field must be present", value => Object.keys(value).length > 0);
 
 	export const schoolInvitesPostSchema: SchemaOf<SchoolInvitesPostBody> = object({
 		email: string().email().required(),
@@ -109,6 +117,23 @@ export namespace api {
 	export const schoolInvitesDeleteSchema: SchemaOf<SchoolInvitesDeleteBody> = object({
 		email: string().email().required(),
 	})
+
+	export const schoolAttendancePostSchema: SchemaOf<SchoolAttendancePostBody> = object({
+		student: snowflakeSchema.required(),
+		classes: array().of(snowflakeSchema).required(),
+		date: date().required()
+	})	
+
+	const pinSchema = string().matches(/^[0-9]{6,}$/).required()
+
+	export const schoolKioskPatchSchema: SchemaOf<SchoolKioskPatchBody> = object({
+		pin: pinSchema.required()
+	});
+
+	export const kioskLoginPostSchema: SchemaOf<KioskLoginPostBody> = object({
+		school: snowflakeSchema.required(),
+		pin: pinSchema.required()
+	});
 
 	export const userPatchSchema: SchemaOf<UserPatchBody> = object({
 		firstName: string().optional(),

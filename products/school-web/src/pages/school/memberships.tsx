@@ -1,13 +1,12 @@
 import { Text } from '@mantine/core'
-import { useSetState } from '@mantine/hooks'
+import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useMemo } from 'react'
 import { useQuery } from 'react-query'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
 import AppHeader from '../../components/app-header'
-import ConfirmationModal from '../../components/confirmation-modal'
 import ItemMenu from '../../components/item-menu'
-import MembershipModal from '../../components/membership-modal'
+import { RemoteMembershipForm } from '../../components/membership-form'
 import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
@@ -15,15 +14,11 @@ import TableState from '../../components/table-state'
 import { getMemberships } from '../../data/memberships'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
-
-interface MembershipModals {
-	edit?: { open: boolean; id?: string }
-	deleteConfirmation?: string
-}
+import openFormModal from '../../utils/open-form-modal'
 
 const MembershipsPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
-	const [modals, setModals] = useSetState<MembershipModals>({})
+	const modals = useModals()
 
 	const {
 		data: memberships,
@@ -38,9 +33,6 @@ const MembershipsPage: React.FC = () => {
 		)
 	}, [debouncedSearchTerm, memberships])
 
-	const deleteName =
-		memberships?.find(({ id }) => id === modals.deleteConfirmation)?.name ?? 'membership'
-
 	return (
 		<Page authorized header={<AppHeader />} sideBar={<SideBar />}>
 			<PageHeader
@@ -48,7 +40,11 @@ const MembershipsPage: React.FC = () => {
 				search={setSearchTerm}
 				searchTerm={searchTerm}
 				actions={[
-					{ icon: NewMembershipIcon, action: () => setModals({ edit: { open: true } }) },
+					{
+						icon: NewMembershipIcon,
+						action: () =>
+							openFormModal(modals, 'New Membership', <RemoteMembershipForm />),
+					},
 				]}
 			/>
 
@@ -63,13 +59,23 @@ const MembershipsPage: React.FC = () => {
 				items={filteredMemberships.map(({ id, name, classes, price }) => ({
 					data: {
 						name: <Text weight={700}>{name}</Text>,
-						classes: classes.map(({ name }) => name).join(', '),
+						classes: classes.map((id) => id).join(', '),
 						students: 'TODO',
 						price: `$${price} / mo.`,
 						menu: (
 							<ItemMenu
-								onEdit={() => setModals({ edit: { open: true, id: id.toString() } })}
-								onDelete={() => setModals({ deleteConfirmation: id.toString() })}
+								onEdit={() =>
+									openFormModal(
+										modals,
+										name,
+										<RemoteMembershipForm id={id.toString()} />
+									)
+								}
+								onDelete={() =>
+									modals.openConfirmModal({
+										title: `Are you sure you want to delete ${name}`,
+									})
+								}
 							/>
 						),
 					},
@@ -90,23 +96,12 @@ const MembershipsPage: React.FC = () => {
 					}
 					resourceLabel='memberships'
 					refetchItems={refetch}
-					createItem={() => setModals({ edit: { open: true } })}
+					createItem={() =>
+						openFormModal(modals, 'New Membership', <RemoteMembershipForm />)
+					}
 					createMessage='Create A Membership'
 				/>
 			</Table>
-
-			<MembershipModal
-				opened={!!modals.edit?.open}
-				membershipId={modals.edit?.id}
-				onClose={() => setModals({ edit: { open: false } })}
-			/>
-			<ConfirmationModal
-				open={!!modals.deleteConfirmation}
-				actionType='delete'
-				resourceLabel={deleteName}
-				action={() => {}}
-				onClose={() => setModals({ deleteConfirmation: undefined })}
-			/>
 		</Page>
 	)
 }

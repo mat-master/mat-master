@@ -1,6 +1,6 @@
 import type { Address } from './address';
 import type { Class, ClassTime, Membership, MembershipInterval, School, Student, Tier } from './school';
-import type { User } from './user';
+import type { Card, User } from './user';
 
 export type Snowflake = bigint | string;
 
@@ -21,6 +21,14 @@ export interface LoginPostResponse {
 
 export interface VerifyPostBody {
 	token: string
+}
+
+export interface VerifyPostResponse {
+	jwt: string
+}
+
+export interface RefreshPostResponse {
+	jwt: string
 }
 
 // Schools
@@ -67,8 +75,35 @@ export type SchoolJoinPostResponse = void | string;
 
 export type SchoolStudentsGetResponse = Student[];
 
-export interface SchoolStudentsMembershipsPostBody {
-	membership: Snowflake
+export interface SchoolAttendancePostBody {
+	student: Snowflake,
+	classes: Snowflake[],
+	date: Date
+}
+
+export interface SchoolStudentsMembershipsPutBody {
+	memberships: Snowflake[]
+}
+
+export interface SchoolStudentsPatchBody {
+	memberships?: Snowflake[],
+}
+
+export type SchoolStudentsIdGetResponse = Student;
+
+export interface SchoolKioskPatchBody {
+	pin: string
+}
+
+// Kiosk
+
+export interface KioskLoginPostBody {
+	school: Snowflake,
+	pin: string
+}
+
+export interface KioskLoginPostResponse {
+	jwt: string
 }
 
 // Users
@@ -86,4 +121,10 @@ export type UserInvitesGetResponse = bigint[];
 export interface UserSchoolsGetResponse {
 	adminSchools: School[],
 	studentSchools: School[]
+}
+
+export type UserBillingGetResponse = Card[];
+
+export interface UserBillingPostResponse {
+	stripeClientId: string
 }
