@@ -50,7 +50,7 @@ export const RemoteUserForm: React.FC<RemoteUserFormProps> = ({ id = 'me', ...pr
 	<RemoteForm<UserPatchBody>
 		{...props}
 		queryKey={['users', { id }]}
-		getResource={() => getUser(id)}
+		getResource={() => getUser(id) as Promise<UserPatchBody>}
 		updateResource={(data) => updateUser(id, data)}
 		child={UserForm}
 	/>

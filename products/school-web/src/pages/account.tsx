@@ -9,13 +9,13 @@ const AccountPage: React.FC = () => {
 	return (
 		<Page authorized header={<AppHeader />}>
 			<SimpleGrid cols={2} spacing='sm'>
-				<Paper shadow='sm' padding='lg'>
+				<Paper shadow='sm' p='lg'>
 					<Title>Account</Title>
 					<RemoteUserForm id='me' />
 				</Paper>
-				<Paper shadow='sm' padding='lg'>
+				<Paper shadow='sm' p='lg'>
 					<Title>Billing Information</Title>
-					<BillingForm />
+					<BillingForm redirect={window.location.href} />
 				</Paper>
 			</SimpleGrid>
 		</Page>

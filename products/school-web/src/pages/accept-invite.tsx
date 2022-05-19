@@ -7,8 +7,10 @@ import {
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router'
+import { useSearchParams } from 'react-router-dom'
 import {
 	CircleCheck as DoneIcon,
 	CreditCard as CreditCardIcon,
@@ -19,6 +21,7 @@ import {
 import BillingForm from '../components/billing-form'
 import EmailVerifier from '../components/email-verifier'
 import SignUpLoginForm from '../components/sign-up-login-form'
+import { joinSchool } from '../data/schools'
 import { getPrimaryColor } from '../utils/get-colors'
 
 type AuthIntent = 'Sign up' | 'Sign in'
@@ -26,12 +29,21 @@ type AuthIntent = 'Sign up' | 'Sign in'
 export interface AcceptInvitePageProps {}
 
 const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
+	const [queryParams] = useSearchParams()
+	const schoolId = queryParams.get('school')
+	const navigate = useNavigate()
+	const { mutate: join } = useMutation(['school', { id: schoolId }], async () => {
+		if (!schoolId) return navigate('/')
+		await joinSchool(schoolId)
+		navigate('/')
+	})
+	useEffect(join, [schoolId])
+
 	const [currentStep, setCurrentStep] = useState(0)
 	const step = () => setCurrentStep(currentStep + 1)
 	const [authIntent, setAuthIntent] = useState<AuthIntent>('Sign up')
 	const [email, setEmail] = useState('')
 
-	const navigate = useNavigate()
 	const theme = useMantineTheme()
 	const stepProps = (i: number, label: string, Icon: Icon): StepProps => ({
 		icon: <Icon color={currentStep === i ? getPrimaryColor(theme) : undefined} />,

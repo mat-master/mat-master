@@ -59,7 +59,7 @@ const MembershipsPage: React.FC = () => {
 				items={filteredMemberships.map(({ id, name, classes, price }) => ({
 					data: {
 						name: <Text weight={700}>{name}</Text>,
-						classes: classes.map(({ name, id }) => name).join(', '),
+						classes: classes.map((id) => id).join(', '),
 						students: 'TODO',
 						price: `$${price} / mo.`,
 						menu: (

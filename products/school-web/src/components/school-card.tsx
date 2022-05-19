@@ -42,7 +42,7 @@ const SchoolCard: React.FC<BadgeCardProps> = ({ image, name, href }) => {
 			withBorder
 			component={Link}
 			to={href}
-			padding='md'
+			p='md'
 			radius='md'
 			shadow='sm'
 			className={classes.card}
