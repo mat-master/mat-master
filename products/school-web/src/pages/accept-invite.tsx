@@ -30,13 +30,21 @@ export interface AcceptInvitePageProps {}
 
 const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 	const [queryParams] = useSearchParams()
-	const schoolId = queryParams.get('school')
+	const {
+		school: schoolId,
+		payment_intent,
+		payment_intent_client_secret,
+	} = Object.fromEntries(queryParams.entries())
 	const navigate = useNavigate()
-	const { mutate: join } = useMutation(['school', { id: schoolId }], async () => {
-		if (!schoolId) return navigate('/')
-		await joinSchool(schoolId)
-		navigate('/')
-	})
+	const { mutate: join, mutateAsync: joinAsync } = useMutation(
+		['school', { id: schoolId }],
+		async () => {
+			if (!schoolId) return navigate('/')
+			await joinSchool(schoolId)
+			navigate('/')
+		}
+	)
+
 	useEffect(join, [schoolId])
 
 	const [currentStep, setCurrentStep] = useState(0)
@@ -88,10 +96,7 @@ const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 					</Stepper.Step>
 
 					<Stepper.Step {...stepProps(2, 'Billing Details', CreditCardIcon)}>
-						<BillingForm
-							redirect='https://dashboard.matmaster.app'
-							onSubmit={() => navigate('/schools')}
-						/>
+						<BillingForm redirect={window.location.href} onSubmit={joinAsync} />
 					</Stepper.Step>
 				</Stepper>
 			</Paper>

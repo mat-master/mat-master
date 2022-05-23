@@ -2,11 +2,14 @@ import type { SchoolPostBody } from '@common/types'
 import { validator } from '@common/util'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
+import { createSchool } from '../data/schools'
 import Form, { FormWrapperProps } from './form'
+import type { RemoteFormWrapperProps } from './remote-form'
+import RemoteForm from './remote-form'
 
 export type SchoolFormProps = FormWrapperProps<SchoolPostBody>
 
-const SchoolForm: React.FC<SchoolFormProps> = (props) => (
+export const SchoolForm: React.FC<SchoolFormProps> = (props) => (
 	<Form
 		{...props}
 		schema={validator.api.schoolPostSchema}
@@ -49,4 +52,15 @@ const SchoolForm: React.FC<SchoolFormProps> = (props) => (
 	/>
 )
 
-export default SchoolForm
+export type RemoteSchoolFormProps = RemoteFormWrapperProps<SchoolPostBody>
+
+const RemoteSchoolForm: React.FC<RemoteSchoolFormProps> = (props) => (
+	<RemoteForm<SchoolPostBody>
+		{...props}
+		queryKey={['schools', { id: 'new' }]}
+		createResource={createSchool}
+		child={SchoolForm}
+	/>
+)
+
+export default RemoteSchoolForm
