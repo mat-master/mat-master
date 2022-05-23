@@ -6,7 +6,7 @@ import { Apps as NewSchoolIcon } from 'tabler-icons-react'
 import AppHeader from '../components/app-header'
 import PageHeader from '../components/page-header'
 import SchoolCard from '../components/school-card'
-import SchoolForm from '../components/school-form'
+import RemoteSchoolForm from '../components/school-form'
 import { getSchools } from '../data/schools'
 import Page from '../page'
 
@@ -25,7 +25,7 @@ const SchoolsPage: React.FC = () => {
 						action: () =>
 							modals.openModal({
 								title: <Title order={3}>New School</Title>,
-								children: SchoolForm,
+								children: <RemoteSchoolForm />,
 							}),
 					},
 				]}

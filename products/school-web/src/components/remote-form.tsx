@@ -41,7 +41,7 @@ const RemoteForm = <T extends FieldValues>({
 		error: queryError,
 	} = useQuery(queryKey, () => getResource && getResource(), {
 		initialData: defaultValues as T,
-		enabled: !!getResource && !defaultValues,
+		enabled: !!getResource && true,
 	})
 
 	const queryClient = useQueryClient()
@@ -52,6 +52,7 @@ const RemoteForm = <T extends FieldValues>({
 	} = useMutation(
 		queryKey,
 		async (data: UnpackNestedValue<T>) => {
+			console.log('mutating resource')
 			createResource && (await createResource(data))
 			updateResource &&
 				(await updateResource(
@@ -61,11 +62,13 @@ const RemoteForm = <T extends FieldValues>({
 		{ onSuccess: () => queryClient.invalidateQueries(queryKey) }
 	)
 
-	if (isLoading || isQueryError) {
+	if (isLoading || (isQueryError && getResource)) {
 		return (
 			<Center>
 				{isLoading && <Loader />}
-				{isQueryError && <Text color='red'>{getErrorMessage(queryError)}</Text>}
+				{isQueryError && getResource && (
+					<Text color='red'>{getErrorMessage(queryError)}</Text>
+				)}
 			</Center>
 		)
 	}
