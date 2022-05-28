@@ -2664,6 +2664,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prisma/client@npm:3.14.0, @prisma/client@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "@prisma/client@npm:3.14.0"
+  dependencies:
+    "@prisma/engines-version": 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+  peerDependencies:
+    prisma: "*"
+  peerDependenciesMeta:
+    prisma:
+      optional: true
+  checksum: 65ecb4e3c66cce717238b145791c8659c01d170ea6dda63230e5c5491d32a04b950d9fde427042e2e3a358724542052b8a1d16afefc14720451b4eb447789ba7
+  languageName: node
+  linkType: hard
+
+"@prisma/engines-version@npm:3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a":
+  version: 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+  resolution: "@prisma/engines-version@npm:3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a"
+  checksum: 89721b5a865514a70ddee40f2e0c6996a6157b7603602f5bcc7e37771824d8b69a85b9040e6ce85e9619cf77d7c2e1d603349319a2620e0b2e34273f063277e8
+  languageName: node
+  linkType: hard
+
+"@prisma/engines@npm:3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a":
+  version: 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+  resolution: "@prisma/engines@npm:3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a"
+  checksum: f5b1e09fc1e4fcc5a5f15f9e97b87b328067174310cf92d6d9779969510e8d9176e2aed69a3344d2a635f1c2c6b3484d174ce01cfbef4dae8fd49531a9bf9c0e
+  languageName: node
+  linkType: hard
+
 "@radix-ui/number@npm:0.1.0":
   version: 0.1.0
   resolution: "@radix-ui/number@npm:0.1.0"
@@ -4081,6 +4109,7 @@ __metadata:
     "@aws-sdk/client-ses": ^3.53.0
     "@common/types": ^1.0.0
     "@common/util": ^1.0.0
+    "@prisma/client": ^3.14.0
     "@sendgrid/mail": ^7.6.2
     "@types/aws-lambda": ^8.10.92
     "@types/axios": ^0.14.0
@@ -4095,6 +4124,7 @@ __metadata:
     jsonwebtoken: ^8.5.1
     ms: 3.0.0-canary.1
     pg: ^8.7.3
+    prisma: ^3.14.0
     stripe: ^8.205.0
     typescript: ^4.0.5
     webp-converter: ^2.3.3
@@ -9819,6 +9849,8 @@ __metadata:
 "mat-master@workspace:.":
   version: 0.0.0-use.local
   resolution: "mat-master@workspace:."
+  dependencies:
+    "@prisma/client": 3.14.0
   languageName: unknown
   linkType: soft
 
@@ -11487,6 +11519,18 @@ __metadata:
     ansi-styles: ^4.0.0
     react-is: ^17.0.1
   checksum: e3b808404d7e1519f0df1aa1f25cee0054ab475775c6b2b8c5568ff23194a92d54bf93274139b6f584ca70fd773be4eaa754b0e03f12bb0a8d1426b07f079976
+  languageName: node
+  linkType: hard
+
+"prisma@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "prisma@npm:3.14.0"
+  dependencies:
+    "@prisma/engines": 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+  bin:
+    prisma: build/index.js
+    prisma2: build/index.js
+  checksum: 4923371fda3bb430fd3c842615a7010de335a482273c890eb755038b54ab21184bf2a8d7720b63fd4037e5148dfa46c3ab550f205f5ce62884941539a95d62e9
   languageName: node
   linkType: hard
 
