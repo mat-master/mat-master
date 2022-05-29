@@ -1,9 +1,11 @@
 {
-	"name": "@mat-master/auth_api",
+	"name": "@mat-master/user_api",
 	"packageManager": "yarn@3.2.0",
 	"type": "module",
 	"dependencies": {
 		"@mat-master/api": "workspace:^",
+		"@mat-master/common": "workspace:^",
+		"@prisma/client": "^3.14.0",
 		"@trpc/server": "^9.23.6",
 		"zod": "^3.17.3"
 	}

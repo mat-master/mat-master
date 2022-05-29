@@ -1,4 +1,14 @@
 {
 	"name": "@mat-master/common",
-	"packageManager": "yarn@3.2.0"
+	"packageManager": "yarn@3.2.0",
+	"type": "module",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch"
+	},
+	"dependencies": {
+		"zod": "^3.17.3"
+	}
 }

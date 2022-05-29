@@ -5,8 +5,8 @@
 	"packageManager": "yarn@3.2.0",
 	"workspaces": [
 		"products/*",
-		"common/*",
-		"api/*"
+		"api/*",
+		"common"
 	],
 	"devDependencies": {
 		"prisma": "^3.14.0"
