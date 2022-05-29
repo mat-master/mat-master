@@ -1,2 +1,0 @@
-sam: sam local start-api --env-vars=env.json --template template.yaml --port 3030 --debug 2>&1 | tr "\r" "\n"
-tsc: yarn watch

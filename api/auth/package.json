@@ -1,0 +1,10 @@
+{
+	"name": "@mat-master/auth_api",
+	"packageManager": "yarn@3.2.0",
+	"type": "module",
+	"dependencies": {
+		"@mat-master/api": "workspace:^",
+		"@trpc/server": "^9.23.6",
+		"zod": "^3.17.3"
+	}
+}

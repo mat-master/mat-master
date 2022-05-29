@@ -1,0 +1,9 @@
+{
+	"name": "@mat-master/api",
+	"packageManager": "yarn@3.2.0",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"dependencies": {
+		"zod": "^3.17.3"
+	}
+}
