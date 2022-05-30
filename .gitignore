@@ -9,8 +9,7 @@ cache
 .env.test
 
 .next
-dist
-lib
+build
 
 .DS_Store
 *.zip

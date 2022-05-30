@@ -1,4 +1,4 @@
-import { snowflakeSchema } from '@mat-master/api'
+import { snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
 import { privilegeSchema } from './privilege'
 

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "ESNext",
+    "rootDir": "src",
     "lib": [
       "DOM",
       "DOM.Iterable",
@@ -17,13 +17,5 @@
   },
   "include": [
     "src"
-  ],
-  "references": [
-    {
-      "path": "../../common/types"
-    },
-    {
-      "path": "../../common/util"
-    }
-  ],
+  ]
 }

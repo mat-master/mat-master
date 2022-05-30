@@ -2,11 +2,11 @@
 	"name": "@mat-master/common",
 	"packageManager": "yarn@3.2.0",
 	"type": "module",
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
+	"main": "build/index.js",
+	"types": "build/index.d.ts",
 	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch"
+		"build": "tsc",
+		"dev": "tsc -w"
 	},
 	"dependencies": {
 		"zod": "^3.17.3"

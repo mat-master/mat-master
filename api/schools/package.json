@@ -1,9 +1,0 @@
-{
-	"name": "@mat-master/schools_api",
-	"packageManager": "yarn@3.2.0",
-	"type": "module",
-	"dependencies": {
-		"@mat-master/api": "workspace:^",
-		"zod": "^3.17.3"
-	}
-}
