@@ -1,0 +1,15 @@
+{
+	"name": "@mat-master/database",
+	"packageManager": "yarn@3.2.0",
+	"type": "module",
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"scripts": {
+		"build": "prisma format && prisma generate && tsc",
+		"dev": "prisma generate --watch & tsc -w"
+	},
+	"devDependencies": {
+		"prisma": "^3.14.0",
+		"zod-prisma": "^0.5.4"
+	}
+}

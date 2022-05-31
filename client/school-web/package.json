@@ -16,7 +16,6 @@
 		"@mantine/modals": "^4.2.1",
 		"@mantine/notifications": "^3.6.9",
 		"@mat-master/client": "workspace:^",
-		"@mat-master/user_api": "workspace:^",
 		"@stripe/react-stripe-js": "^1.8.0",
 		"@stripe/stripe-js": "^1.29.0",
 		"@trpc/client": "^9.23.6",

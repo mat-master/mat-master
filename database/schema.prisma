@@ -1,10 +1,17 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://api:vLc%5E%3F%2AQvP%3F0~F%5ES%3Ef%22r%2C2m%3F%60DC%5C%5B4Txo%3FBAII8%2Bt%22%3AJ~%2F@dev-db.cwmhht230lam.us-west-1.rds.amazonaws.com:5432/dev"
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = "postgresql://api:vLc%5E%3F%2AQvP%3F0~F%5ES%3Ef%22r%2C2m%3F%60DC%5C%5B4Txo%3FBAII8%2Bt%22%3AJ~%2F@dev-db.cwmhht230lam.us-west-1.rds.amazonaws.com:5432/dev"
+generator zod {
+  provider    = "zod-prisma"
+  output      = "./src/generated/models"
+  modelCase   = "camelCase"
+  modelSuffix = "RowSchema"
 }
 
 enum UserPrivilege {
@@ -17,12 +24,12 @@ model User {
   id        BigInt  @id
   firstName String  @map("first_name") @db.VarChar(50)
   lastName  String  @map("last_name") @db.VarChar(50)
-  email     String  @db.VarChar(150)
+  email     String  @unique @db.VarChar(150)
   password  String  @db.VarChar(200)
   avatar    BigInt?
 
-  privilege          UserPrivilege
-  stripe_customer_id String?       @db.VarChar(50)
+  privilege        UserPrivilege
+  stripeCustomerId String?       @map("stripe_customer_id") @db.VarChar(50)
 
   schools  School[]
   students Student[]
@@ -35,11 +42,11 @@ enum SchoolTier {
 }
 
 model School {
-  id                     BigInt @id
-  name                   String @db.VarChar(100)
-  tier                   Int    @db.SmallInt
-  stripe_account_id      String @db.VarChar(50)
-  stripe_subscription_id String @db.VarChar(50)
+  id                   BigInt @id
+  name                 String @db.VarChar(100)
+  tier                 Int    @db.SmallInt
+  stripe_account_id    String @db.VarChar(50)
+  stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(50)
 
   address Address?
 
@@ -54,12 +61,12 @@ model School {
 }
 
 model Address {
-  id          BigInt  @id
-  state       String  @db.VarChar(2)
-  city        String  @db.VarChar(50)
-  postal_code String  @db.VarChar(50)
-  line1       String  @map("line_1") @db.VarChar(100)
-  line2       String? @map("line_2") @db.VarChar(100)
+  id         BigInt  @id
+  state      String  @db.VarChar(2)
+  city       String  @db.VarChar(50)
+  postalCode String  @map("postal_code") @db.VarChar(50)
+  line1      String  @map("line_1") @db.VarChar(100)
+  line2      String? @map("line_2") @db.VarChar(100)
 
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @unique @map("school_id")
@@ -78,9 +85,9 @@ model Class {
 }
 
 model Membership {
-  id              BigInt @id
-  name            String @db.VarChar(100)
-  stripe_price_id String @db.VarChar(50)
+  id            BigInt @id
+  name          String @db.VarChar(100)
+  stripePriceId String @map("stripe_price_id") @db.VarChar(50)
 
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
@@ -96,7 +103,7 @@ model StudentMembership {
   membership   Membership @relation(fields: [membershipId], references: [id])
   membershipId BigInt     @map("membership_id")
 
-  stripe_subscription_id String @db.VarChar(150)
+  stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(150)
 
   @@id([studentId, membershipId])
 }
@@ -110,7 +117,7 @@ model Student {
   user   User   @relation(fields: [userId], references: [id])
   userId BigInt @map("user_id")
 
-  stripe_customer_id String @db.VarChar(50)
+  stripeCustomerId String @map("stripe_customer_id") @db.VarChar(50)
 
   attendance  Attendance[]
   memberships StudentMembership[]

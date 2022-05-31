@@ -6,13 +6,8 @@
 	"workspaces": [
 		"common",
 		"client/*",
-		"api/*",
-		"matmaster.app"
-	],
-	"devDependencies": {
-		"prisma": "^3.14.0"
-	},
-	"dependencies": {
-		"@prisma/client": "3.14.0"
-	}
+		"api",
+		"marketing/*",
+		"database"
+	]
 }
