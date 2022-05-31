@@ -132,8 +132,9 @@ model Invite {
 }
 
 model Kiosk {
+  id       BigInt @id
   school   School @relation(fields: [schoolId], references: [id])
-  schoolId BigInt @id @map("school_id")
+  schoolId BigInt @map("school_id")
   pin      String @db.VarChar(50)
 }
 
