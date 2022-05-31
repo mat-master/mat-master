@@ -13,10 +13,12 @@
 		"@mat-master/common": "workspace:^",
 		"@mat-master/database": "workspace:^",
 		"@prisma/client": "^3.14.0",
+		"@sendgrid/mail": "^7.7.0",
 		"@trpc/server": "^9.23.6",
 		"bcrypt": "^5.0.1",
 		"express": "^4.18.1",
 		"jsonwebtoken": "^8.5.1",
+		"stripe": "^9.5.0",
 		"zod": "^3.17.3"
 	},
 	"devDependencies": {

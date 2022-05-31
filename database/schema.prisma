@@ -28,7 +28,7 @@ model User {
   password  String  @db.VarChar(200)
   avatar    BigInt?
 
-  privilege        UserPrivilege
+  privilege        UserPrivilege @default(Unverified)
   stripeCustomerId String?       @map("stripe_customer_id") @db.VarChar(50)
 
   schools  School[]
