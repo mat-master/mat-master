@@ -1715,7 +1715,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mat-master/api@workspace:api":
+"@mat-master/api@workspace:^, @mat-master/api@workspace:api":
   version: 0.0.0-use.local
   resolution: "@mat-master/api@workspace:api"
   dependencies:
@@ -1738,6 +1738,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mat-master/client@workspace:client/common"
   dependencies:
+    "@mat-master/api": "workspace:^"
     "@trpc/client": ^9.23.6
     "@trpc/react": ^9.23.6
     "@trpc/server": ^9.23.6
@@ -1773,6 +1774,7 @@ __metadata:
     "@mantine/hooks": ^4.2.4
     "@mantine/modals": ^4.2.1
     "@mantine/notifications": ^3.6.9
+    "@mat-master/api": "workspace:^"
     "@mat-master/client": "workspace:^"
     "@stripe/react-stripe-js": ^1.8.0
     "@stripe/stripe-js": ^1.29.0

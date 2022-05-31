@@ -9,6 +9,7 @@
 		"dev": "tsc -w"
 	},
 	"dependencies": {
+		"@mat-master/api": "workspace:^",
 		"@trpc/client": "^9.23.6",
 		"@trpc/react": "^9.23.6",
 		"@trpc/server": "^9.23.6",

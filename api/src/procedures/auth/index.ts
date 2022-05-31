@@ -1,11 +1,9 @@
 import { router } from '@trpc/server'
-import login, { authLoginParamsSchema } from './login'
+import { authLoginParamsSchema, login } from './login'
 
-const authRouter = router().query('login', {
+export const authRouter = router().query('login', {
 	input: authLoginParamsSchema,
 	resolve: login,
 })
 
 export * from './login'
-
-export default authRouter

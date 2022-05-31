@@ -17,7 +17,7 @@ export const authLoginResultSchema = z.object({
 export type AuthLoginParams = z.infer<typeof authLoginParamsSchema>
 export type AuthLoginResult = z.infer<typeof authLoginResultSchema>
 
-const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
+export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 	input: { email, password },
 }) => {
 	try {
@@ -39,5 +39,3 @@ const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 		return { error }
 	}
 }
-
-export default login

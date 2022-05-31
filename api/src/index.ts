@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import express from 'express'
-import router from './procedures'
+import { router } from './procedures'
 
 export const db = new PrismaClient()
 
@@ -20,3 +20,7 @@ const main = async () => {
 }
 
 main()
+
+export * from './models'
+export { router } from './procedures'
+
