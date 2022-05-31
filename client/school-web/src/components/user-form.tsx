@@ -1,5 +1,3 @@
-import type { UserPatchBody } from '@common/types'
-import { validator } from '@common/util'
 import { Center, TextInput } from '@mantine/core'
 import type React from 'react'
 import { getUser, updateUser } from '../data/user'
@@ -46,7 +44,10 @@ export type RemoteUserFormProps = RemoteFormWrapperProps<UserPatchBody> & {
 	id: string
 }
 
-export const RemoteUserForm: React.FC<RemoteUserFormProps> = ({ id = 'me', ...props }) => (
+export const RemoteUserForm: React.FC<RemoteUserFormProps> = ({
+	id = 'me',
+	...props
+}) => (
 	<RemoteForm<UserPatchBody>
 		{...props}
 		queryKey={['users', { id }]}
