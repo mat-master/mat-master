@@ -45,7 +45,7 @@ model School {
   id                   BigInt @id
   name                 String @db.VarChar(100)
   tier                 Int    @db.SmallInt
-  stripe_account_id    String @db.VarChar(50)
+  stripeAccountId      String @map("stripe_account_id") @db.VarChar(50)
   stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(50)
 
   address Address?

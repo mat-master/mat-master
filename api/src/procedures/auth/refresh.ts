@@ -5,5 +5,5 @@ export interface AuthRefreshResult {
 }
 
 export const refresh: Procedure<void, AuthRefreshResult> = () => {
-	return { error: 'To Do' }
+	throw 'To do'
 }

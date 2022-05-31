@@ -22,15 +22,14 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 			jwt.verify(token, process.env.JWT_SECRET as string)
 		)
 	} catch (err) {
-		if (err instanceof jwt.TokenExpiredError)
-			return { error: 'Verification token expired' }
-		if (err instanceof z.ZodError) return { error: 'Invalid verification token' }
-		return { error: 'an unknown error ocurred' }
+		if (err instanceof jwt.TokenExpiredError) throw 'Verification token expired'
+		if (err instanceof z.ZodError) throw 'Invalid verification token'
+		throw 'an unknown error ocurred'
 	}
 
 	const user = await db.user.findUnique({ where: { id: payload.id } })
 	if (!user) return { error: 'Invalid verification token' }
-	if (user.privilege === 'Verified') return { data: {} }
+	if (user.privilege === 'Verified') return {}
 
 	const stripeCustomer = await stripe.customers.create({
 		name: `${user.firstName} ${user.lastName}`,
@@ -50,5 +49,5 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 		stripeCustomerId: stripeCustomer.id,
 	}
 
-	return { data: { jwt: jwt.sign(newPayload, process.env.JWT_SECRET as string) } }
+	return { jwt: jwt.sign(newPayload, process.env.JWT_SECRET as string) }
 }

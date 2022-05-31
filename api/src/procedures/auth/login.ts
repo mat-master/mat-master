@@ -19,10 +19,10 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 	input: { email, password },
 }) => {
 	const user = await db.user.findUnique({ where: { email } })
-	if (!user) return { error: 'incorrect email' }
+	if (!user) throw 'incorrect email'
 
 	const matches = await compare(password, user.password)
-	if (!matches) return { error: 'incorrect password' }
+	if (!matches) throw 'incorrect password'
 
 	const payload: Payload = {
 		id: user.id,
@@ -31,5 +31,5 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 		stripeCustomerId: user.stripeCustomerId,
 	}
 
-	return { data: { jwt: sign(payload, process.env.JWT_SECRET as string) } }
+	return { jwt: sign(payload, process.env.JWT_SECRET as string) }
 }

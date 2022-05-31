@@ -3,17 +3,19 @@ import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/procedure'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
+import { userRouter } from './user'
 
 export type Context = Awaited<ReturnType<typeof createContext>>
-export type Result<T = undefined> = { data: T } | { error: any }
-export type Procedure<TParams = void, TResult = undefined> = ProcedureResolver<
+export type Procedure<TParams = void, TResult = void> = ProcedureResolver<
 	Context,
 	TParams,
-	InferLast<Result<TResult>>
+	InferLast<TResult>
 >
 
 export const createContext = ({ req }: CreateExpressContextOptions) => ({
 	payload: parseAuthHeader(req.headers.authorization),
 })
 
-export const router = trpcRouter<Context>().merge('auth.', authRouter)
+export const router = trpcRouter<Context>()
+	.merge('auth.', authRouter)
+	.merge('user.', userRouter)

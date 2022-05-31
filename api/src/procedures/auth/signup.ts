@@ -22,11 +22,11 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	input: { firstName, lastName, email, password },
 }) => {
 	const userExists = !!(await db.user.findUnique({ where: { email } }))
-	if (userExists) return { error: 'Account already registered with email' }
+	if (userExists) throw 'Account already registered with email'
 
 	const hashedPassword = await hash(password, 5)
 	const id = generateSnowflake()
-	if (!id) return { error: 'An unknown error ocurred' }
+	if (!id) throw 'An unknown error ocurred'
 
 	await db.user.create({
 		data: {
@@ -39,5 +39,5 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	})
 
 	await sendVerificationEmail(id, email, firstName, lastName)
-	return { data: { id } }
+	return { id }
 }
