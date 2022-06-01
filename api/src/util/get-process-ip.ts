@@ -1,7 +1,7 @@
-import { networkInterfaces } from 'os'
+import os from 'os'
 
 export const getProcessIp = () => {
-	const interfaces = networkInterfaces()
+	const interfaces = os.networkInterfaces()
 	for (const iface of Object.values(interfaces)) {
 		if (!iface) continue
 		for (const addr of iface) {

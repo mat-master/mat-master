@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db, stripe } from '../..'

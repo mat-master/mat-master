@@ -1,4 +1,4 @@
-import type { School } from '@prisma/client'
+import { School } from '@prisma/client'
 import sgmail from '@sendgrid/mail'
 
 export const sendInvite = (email: string, school: School) =>

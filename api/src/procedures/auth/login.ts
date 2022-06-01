@@ -1,5 +1,5 @@
 import { compare } from 'bcrypt'
-import { sign } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db } from '../..'
@@ -31,5 +31,5 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 		stripeCustomerId: user.stripeCustomerId,
 	}
 
-	return { jwt: sign(payload, process.env.JWT_SECRET as string) }
+	return { jwt: jwt.sign(payload, process.env.JWT_SECRET as string) }
 }

@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db } from '../..'
@@ -19,16 +19,12 @@ export const login: Procedure<KioskLoginParams, KioskLoginResult> = async ({
 	input: { schoolId, pin },
 }) => {
 	const result = await db.kiosk.findFirst({ where: { schoolId, pin } })
-	if (!result) return { error: 'School or pin is incorrect' }
+	if (!result) throw 'School or pin is incorrect'
 
 	const payload: KioskPayload = {
 		id: result.id,
 		schoolId,
 	}
 
-	return {
-		data: {
-			jwt: sign(payload, process.env.JWT_SECRET as string),
-		},
-	}
+	return { jwt: jwt.sign(payload, process.env.JWT_SECRET as string) }
 }

@@ -1,15 +1,17 @@
 {
 	"name": "@mat-master/database",
 	"packageManager": "yarn@3.2.0",
-	"type": "module",
 	"main": "./build/index.js",
+	"module": "./build/indej.mjs",
 	"types": "./build/index.d.ts",
 	"scripts": {
-		"build": "prisma format && prisma generate && tsc",
-		"dev": "prisma generate --watch & tsc -w"
+		"build": "prisma format && prisma generate && tsup",
+		"dev": "prisma generate --watch & tsup --watch",
+		"deploy": "yarn build && prisma migrate dev"
 	},
 	"devDependencies": {
 		"prisma": "^3.14.0",
+		"tsup": "^6.0.1",
 		"zod-prisma": "^0.5.4"
 	}
 }

@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto'
+import crypto from 'crypto'
 import { Snowflake } from '../models/snowflake'
 import { getProcessIp } from './get-process-ip'
 
@@ -17,7 +17,7 @@ export const generateSnowflake = (): Snowflake | null => {
 	const parts = ip.split('.')
 	// Takes the lower 16 bits of the ipv4 address and converts it to a number
 	const lower16 = (parseInt(ip[2]) << 8) | parseInt(ip[3])
-	const randomId = randomBytes(8).readBigInt64BE() & BigInt(0x3ff)
+	const randomId = crypto.randomBytes(8).readBigInt64BE() & BigInt(0x3ff)
 	// Forms snowflake from the timestamp, worker id, and random number
 	return (
 		(BigInt(Date.now() - EPOCH) << BigInt(WORKER_ID_BITS + SEQUENCE_BITS)) |

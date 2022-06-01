@@ -12,7 +12,6 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const main = async () => {
 	try {
 		await db.$connect()
-
 		const app = express()
 		app.use('/', createExpressMiddleware({ router, createContext }))
 		app.listen(8080, () => console.log('User api listening on port 8080'))

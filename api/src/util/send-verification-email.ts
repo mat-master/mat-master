@@ -1,5 +1,5 @@
 import sgmail from '@sendgrid/mail'
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 export const sendVerificationEmail = async (
 	id: bigint,
