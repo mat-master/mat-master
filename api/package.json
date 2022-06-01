@@ -7,6 +7,7 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --platform=node --bundle --minify --outfile='build.js'",
 		"build:prod": "yarn build && docker build -t mat-master-api .",
+		"build:dev": "tsup",
 		"dev": "tsup --watch --onSuccess \"node build/index.js\""
 	},
 	"dependencies": {

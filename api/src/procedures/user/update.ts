@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { userIdParamSchema } from '.'
 import { Procedure } from '..'
 import { db } from '../..'
+import { useAuthentication } from '../../util/use-authentication'
 
 export const userUpdateParamsSchema = z.object({
 	id: userIdParamSchema,
@@ -18,7 +19,8 @@ export const userUpdateParamsSchema = z.object({
 export type UserUpdateParams = z.infer<typeof userUpdateParamsSchema>
 
 export const updateUser: Procedure<UserUpdateParams> = async ({ ctx, input }) => {
-	const uid = input.id === 'me' ? ctx.payload?.id : input.id
-	if (!uid) throw 'Invalid user id'
+	const payload = useAuthentication(ctx)
+	const uid = input.id === 'me' ? payload.id : input.id
+	if (uid !== payload.id) throw "You don't have permission to access this resource"
 	await db.user.update({ where: { id: uid }, data: input.data })
 }

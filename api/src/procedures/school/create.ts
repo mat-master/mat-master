@@ -4,6 +4,7 @@ import { Procedure } from '..'
 import { db, stripe } from '../..'
 import { Snowflake } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
+import { useAuthentication } from '../../util/use-authentication'
 
 export const createSchoolParamsSchema = z.object({
 	name: z.string().min(1),
@@ -13,11 +14,11 @@ export const createSchoolParamsSchema = z.object({
 export type CreateSchoolParams = z.infer<typeof createSchoolParamsSchema>
 export type CreateSchoolResult = { id: Snowflake }
 
-export const createSchool: Procedure<
-	CreateSchoolParams,
-	CreateSchoolResult
-> = async ({ ctx: { payload }, input: { name, address } }) => {
-	if (!payload) throw 'Missing or invalid authorization'
+export const createSchool: Procedure<CreateSchoolParams, CreateSchoolResult> = async ({
+	ctx,
+	input: { name, address },
+}) => {
+	const payload = useAuthentication(ctx)
 	if (payload.privilege === 'Unverified')
 		throw 'You need to verify your email before you can create a school'
 

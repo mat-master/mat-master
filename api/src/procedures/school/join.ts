@@ -4,6 +4,7 @@ import { Procedure } from '..'
 import { db, stripe } from '../..'
 import { Snowflake, snowflakeSchema } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
+import { useAuthentication } from '../../util/use-authentication'
 
 export const joinSchoolParamsSchema = z.object({ id: snowflakeSchema })
 
@@ -11,10 +12,10 @@ export type JoinSchoolParams = z.infer<typeof joinSchoolParamsSchema>
 export type JoinSchoolResult = { id: Snowflake }
 
 export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async ({
-	ctx: { payload },
+	ctx,
 	input: { id: schoolId },
 }) => {
-	if (!payload) throw 'Missing or invalid authorization'
+	const payload = useAuthentication(ctx)
 	if (payload.privilege === 'Unverified')
 		throw 'You need to verify your email before you can join a school'
 
