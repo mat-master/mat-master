@@ -3,6 +3,7 @@ import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/procedure'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
+import { schoolRouter } from './school'
 import { userRouter } from './user'
 
 export type Context = Awaited<ReturnType<typeof createContext>>
@@ -19,6 +20,7 @@ export const createContext = ({ req }: CreateExpressContextOptions) => ({
 export const router = trpcRouter<Context>()
 	.merge('auth.', authRouter)
 	.merge('user.', userRouter)
+	.merge('school.', schoolRouter)
 
 export * from './auth'
 export * from './kiosk'

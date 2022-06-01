@@ -44,7 +44,7 @@ enum SchoolTier {
 model School {
   id                   BigInt @id
   name                 String @db.VarChar(100)
-  tier                 Int    @db.SmallInt
+  tier                 SchoolTier   @default(Trial)
   stripeAccountId      String @map("stripe_account_id") @db.VarChar(50)
   stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(50)
 
@@ -97,15 +97,13 @@ model Membership {
 }
 
 model StudentMembership {
+  stripeSubscriptionId String @id @map("stripe_subscription_id") @db.VarChar(150)
+
   student   Student @relation(fields: [studentId], references: [id])
   studentId BigInt  @map("student_id")
 
   membership   Membership @relation(fields: [membershipId], references: [id])
   membershipId BigInt     @map("membership_id")
-
-  stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(150)
-
-  @@id([studentId, membershipId])
 }
 
 model Student {
