@@ -17,7 +17,7 @@ export const userUpdateParamsSchema = z.object({
 
 export type UserUpdateParams = z.infer<typeof userUpdateParamsSchema>
 
-export const update: Procedure<UserUpdateParams> = async ({ ctx, input }) => {
+export const updateUser: Procedure<UserUpdateParams> = async ({ ctx, input }) => {
 	const uid = input.id === 'me' ? ctx.payload?.id : input.id
 	if (!uid) throw 'Invalid user id'
 	await db.user.update({ where: { id: uid }, data: input.data })

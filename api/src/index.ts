@@ -25,5 +25,5 @@ const main = async () => {
 main()
 
 export * from './models'
-export { router } from './procedures'
+export * from './procedures'
 

@@ -16,7 +16,7 @@ export const userGetResultSchema = userRowSchema.omit({
 export type UserGetParms = z.infer<typeof userGetParamsSchema>
 export type UserGetResult = z.infer<typeof userGetResultSchema>
 
-export const get: Procedure<UserGetParms, UserGetResult> = async ({
+export const getUser: Procedure<UserGetParms, UserGetResult> = async ({
 	ctx,
 	input,
 }) => {

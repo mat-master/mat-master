@@ -4,7 +4,7 @@ import { db } from '../../..'
 
 export type UserInvitesGetResult = Invite[]
 
-export const get: Procedure<void, UserInvitesGetResult> = async ({
+export const getUserInvites: Procedure<void, UserInvitesGetResult> = async ({
 	ctx: { payload },
 }) => {
 	if (!payload) throw 'Missing or invalid authorization header'

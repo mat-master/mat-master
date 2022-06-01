@@ -1,9 +1,11 @@
 import { router } from '@trpc/server'
 import { z } from 'zod'
 import { Context } from '../..'
-import { get } from './get'
+import { getUserSchools } from './get'
 
 export const userSchoolsRouter = router<Context>().query('get', {
 	input: z.void(),
-	resolve: get,
+	resolve: getUserSchools,
 })
+
+export * from './get'

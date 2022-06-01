@@ -1,8 +1,8 @@
 import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
-import { userApi, userTrpcClient } from '@mat-master/client'
-import { loadStripe } from '@stripe/stripe-js'
+import { router } from '@mat-master/api'
+import { createReactQueryHooks } from '@trpc/react'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -15,13 +15,14 @@ const queryClient = new QueryClient({
 	},
 })
 
-const stripePromise = loadStripe(
-	'pk_test_51JetjJGsHxGKM7KBPLMtSBtvx9DrWf1We61NLq9Jxq15a8L0zixNQAG72uyTA8EYEawIwEuJfNeacAd3SbUDgGwi00JC8U6MAI'
-)
+export const trpc = createReactQueryHooks<typeof router>()
+const trpcClient = trpc.createClient({
+	url: 'http://localhost:8080',
+})
 
 ReactDOM.render(
 	<React.StrictMode>
-		<userApi.Provider client={userTrpcClient} queryClient={queryClient}>
+		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
 				<MantineProvider
 					theme={{
@@ -48,7 +49,7 @@ ReactDOM.render(
 					</NotificationsProvider>
 				</MantineProvider>
 			</QueryClientProvider>
-		</userApi.Provider>
+		</trpc.Provider>
 	</React.StrictMode>,
 	document.getElementById('root')
 )

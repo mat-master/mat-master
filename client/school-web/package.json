@@ -32,7 +32,7 @@
 		"react-router": "^6.2.1",
 		"react-router-dom": "^6.2.1",
 		"tabler-icons-react": "^1.37.0",
-		"yup": "^0.32.11"
+		"zod": "^3.17.3"
 	},
 	"devDependencies": {
 		"@types/react": "^17.0.33",

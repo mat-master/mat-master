@@ -14,7 +14,7 @@ export interface UserSchoolsGetResult {
 	owner: SchoolResult[]
 }
 
-export const get: Procedure<void, UserSchoolsGetResult> = async ({
+export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({
 	ctx: { payload },
 }) => {
 	if (!payload) throw 'Missing or invalid authorization header'

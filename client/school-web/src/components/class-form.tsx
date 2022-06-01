@@ -1,5 +1,3 @@
-import type { SchoolClassesPostBody } from '@common/types'
-import { validator } from '@common/util'
 import { TextInput } from '@mantine/core'
 import type React from 'react'
 import { Controller } from 'react-hook-form'
@@ -47,7 +45,10 @@ export type RemoteClassFormProps = RemoteFormWrapperProps<SchoolClassesPostBody>
 	id?: string
 }
 
-export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({ id, ...props }) => (
+export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
+	id,
+	...props
+}) => (
 	<RemoteForm<SchoolClassesPostBody>
 		{...props}
 		queryKey={['classes', { id }]}

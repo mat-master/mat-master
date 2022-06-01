@@ -19,3 +19,8 @@ export const createContext = ({ req }: CreateExpressContextOptions) => ({
 export const router = trpcRouter<Context>()
 	.merge('auth.', authRouter)
 	.merge('user.', userRouter)
+
+export * from './auth'
+export * from './kiosk'
+export * from './user'
+
