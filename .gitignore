@@ -10,6 +10,7 @@ cache
 
 .next
 build
+build.js
 generated
 
 .DS_Store

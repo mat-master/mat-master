@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db } from '../..'
@@ -24,7 +24,7 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	const userExists = !!(await db.user.findUnique({ where: { email } }))
 	if (userExists) throw 'Account already registered with email'
 
-	const hashedPassword = await bcrypt.hash(password, 5)
+	const hashedPassword = await hash(password, 5)
 	const id = generateSnowflake()
 	if (!id) throw 'An unknown error ocurred'
 

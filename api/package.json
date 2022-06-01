@@ -5,7 +5,7 @@
 	"module": "build/index.mjs",
 	"types": "build/index.d.ts",
 	"scripts": {
-		"build": "esbuild src/index.ts --platform=node --bundle --outfile='build.js'",
+		"build": "esbuild src/index.ts --platform=node --bundle --minify --outfile='build.js'",
 		"build:prod": "yarn build && docker build -t mat-master-api .",
 		"dev": "tsup --watch --onSuccess \"node build/index.js\""
 	},
@@ -15,18 +15,17 @@
 		"@prisma/client": "^3.14.0",
 		"@sendgrid/mail": "^7.7.0",
 		"@trpc/server": "^9.23.6",
-		"bcrypt": "^5.0.1",
+		"bcryptjs": "^2.4.3",
 		"express": "^4.18.1",
 		"jsonwebtoken": "^8.5.1",
 		"stripe": "^9.5.0",
 		"zod": "^3.17.3"
 	},
 	"devDependencies": {
-		"@types/bcrypt": "^5",
+		"@types/bcryptjs": "^2",
 		"@types/express": "^4",
 		"@types/jsonwebtoken": "^8",
 		"esbuild": "^0.14.42",
-		"ts-node-dev": "^2.0.0",
 		"tsup": "^6.0.1"
 	}
 }
