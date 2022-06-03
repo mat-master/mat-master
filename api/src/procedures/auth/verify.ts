@@ -3,17 +3,19 @@ import { z } from 'zod'
 import { Procedure } from '..'
 import { db, stripe } from '../..'
 import { Payload, payloadSchema } from '../../models'
+import { privateErrors } from '../../util/private-errors'
 
 export const authVerifyParamsSchema = z.object({
 	token: z.string(),
 })
 
 export type AuthVerifyParams = z.infer<typeof authVerifyParamsSchema>
-export interface AuthVerifyResult {
+export type AuthVerifyResult = {
 	jwt?: string
-}
+} | void
 
 export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
+	ctx,
 	input: { token },
 }) => {
 	let payload: Payload
@@ -24,30 +26,39 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 	} catch (err) {
 		if (err instanceof jwt.TokenExpiredError) throw 'Verification token expired'
 		if (err instanceof z.ZodError) throw 'Invalid verification token'
-		throw 'an unknown error ocurred'
+		throw 'An unknown error ocurred'
 	}
 
-	const user = await db.user.findUnique({ where: { id: payload.id } })
+	const user = await privateErrors(() =>
+		db.user.findUnique({ where: { id: payload.id } })
+	)
 	if (!user) return { error: 'Invalid verification token' }
-	if (user.privilege === 'Verified') return {}
+	if (user.emailVerified) return
 
-	const stripeCustomer = await stripe.customers.create({
-		name: `${user.firstName} ${user.lastName}`,
-		email: user.email,
-		metadata: { id: user.id.toString() },
-	})
+	const stripeCustomer = await privateErrors(() =>
+		stripe.customers.create({
+			name: `${user.firstName} ${user.lastName}`,
+			email: user.email,
+			metadata: { id: user.id.toString() },
+		})
+	)
 
-	await db.user.update({
-		where: { id: user.id },
-		data: { privilege: 'Verified', stripeCustomerId: stripeCustomer.id },
-	})
+	await privateErrors(() =>
+		db.user.update({
+			where: { id: user.id },
+			data: {
+				emailVerified: true,
+				stripeCustomerId: stripeCustomer.id,
+			},
+		})
+	)
 
 	const newPayload: Payload = {
 		id: user.id,
 		email: user.email,
-		privilege: 'Verified',
+		emailVerified: true,
 		stripeCustomerId: stripeCustomer.id,
 	}
 
-	return { jwt: jwt.sign(newPayload, process.env.JWT_SECRET as string) }
+	return { jwt: jwt.sign(newPayload, ctx.env.JWT_SECRET) }
 }

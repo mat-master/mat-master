@@ -1,11 +1,10 @@
 import { z } from 'zod'
-import { privilegeSchema } from './privilege'
 import { snowflakeSchema } from './snowflake'
 
 export const payloadSchema = z.object({
 	id: snowflakeSchema,
 	email: z.string().email(),
-	privilege: privilegeSchema,
+	emailVerified: z.boolean(),
 	stripeCustomerId: z.string().nullable(),
 })
 

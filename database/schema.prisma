@@ -14,22 +14,16 @@ generator zod {
   modelSuffix = "RowSchema"
 }
 
-enum UserPrivilege {
-  Unverified
-  Verified
-  Admin
-}
-
 model User {
-  id        BigInt  @id
-  firstName String  @map("first_name") @db.VarChar(50)
-  lastName  String  @map("last_name") @db.VarChar(50)
-  email     String  @unique @db.VarChar(150)
-  password  String  @db.VarChar(200)
-  avatar    BigInt?
+  id            BigInt  @id
+  firstName     String  @map("first_name") @db.VarChar(50)
+  lastName      String  @map("last_name") @db.VarChar(50)
+  email         String  @unique @db.VarChar(150)
+  emailVerified Boolean @default(false) @map("email_verified")
+  password      String  @db.VarChar(200)
+  avatar        BigInt?
 
-  privilege        UserPrivilege @default(Unverified)
-  stripeCustomerId String?       @map("stripe_customer_id") @db.VarChar(50)
+  stripeCustomerId String? @map("stripe_customer_id") @db.VarChar(50)
 
   schools  School[]
   students Student[]
@@ -42,11 +36,11 @@ enum SchoolTier {
 }
 
 model School {
-  id                   BigInt @id
-  name                 String @db.VarChar(100)
-  tier                 SchoolTier   @default(Trial)
-  stripeAccountId      String @map("stripe_account_id") @db.VarChar(50)
-  stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(50)
+  id                   BigInt     @id
+  name                 String     @db.VarChar(100)
+  tier                 SchoolTier @default(Trial)
+  stripeAccountId      String     @map("stripe_account_id") @db.VarChar(50)
+  stripeSubscriptionId String     @map("stripe_subscription_id") @db.VarChar(50)
 
   address Address?
 

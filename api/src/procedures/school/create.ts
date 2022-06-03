@@ -4,6 +4,7 @@ import { Procedure } from '..'
 import { db, stripe } from '../..'
 import { Snowflake } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
+import { privateErrors } from '../../util/private-errors'
 import { useAuthentication } from '../../util/use-authentication'
 
 export const createSchoolParamsSchema = z.object({
@@ -14,20 +15,17 @@ export const createSchoolParamsSchema = z.object({
 export type CreateSchoolParams = z.infer<typeof createSchoolParamsSchema>
 export type CreateSchoolResult = { id: Snowflake }
 
-export const createSchool: Procedure<CreateSchoolParams, CreateSchoolResult> = async ({
-	ctx,
-	input: { name, address },
-}) => {
+export const createSchool: Procedure<
+	CreateSchoolParams,
+	CreateSchoolResult
+> = async ({ ctx, input: { name, address } }) => {
 	const payload = useAuthentication(ctx)
-	if (payload.privilege === 'Unverified')
+	if (!payload.emailVerified)
 		throw 'You need to verify your email before you can create a school'
 
 	const schoolId = generateSnowflake()
-	const addressId = generateSnowflake()
-	if (!schoolId || !addressId) throw 'An unknown error occurred'
-
-	try {
-		const [account, subscription] = await Promise.all([
+	const [account, subscription] = await privateErrors(() =>
+		Promise.all([
 			stripe.accounts.create({
 				type: 'standard',
 				country: 'US',
@@ -52,21 +50,20 @@ export const createSchool: Procedure<CreateSchoolParams, CreateSchoolResult> = a
 				metadata: { id: schoolId.toString() },
 			}),
 		])
+	)
 
-		const school = await db.school.create({
+	await privateErrors(() =>
+		db.school.create({
 			data: {
 				id: schoolId,
 				name,
 				stripeAccountId: account.id,
 				stripeSubscriptionId: subscription.id,
 				owner: { connect: { id: payload.id } },
-				address: { create: { id: addressId, ...address } },
+				address: { create: { id: generateSnowflake(), ...address } },
 			},
 		})
+	)
 
-		return { id: school.id }
-	} catch (error) {
-		console.error(`internal server error: ${error}`)
-		throw 'An unknown error occurred'
-	}
+	return { id: schoolId }
 }

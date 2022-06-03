@@ -1,9 +1,9 @@
-import Stripe from 'stripe'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db, stripe } from '../..'
 import { Snowflake, snowflakeSchema } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
+import { privateErrors } from '../../util/private-errors'
 import { useAuthentication } from '../../util/use-authentication'
 
 export const joinSchoolParamsSchema = z.object({ id: snowflakeSchema })
@@ -16,46 +16,40 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 	input: { id: schoolId },
 }) => {
 	const payload = useAuthentication(ctx)
-	if (payload.privilege === 'Unverified')
+	if (!payload.emailVerified)
 		throw 'You need to verify your email before you can join a school'
 
-	let inviteDeleteCount: number
-	try {
-		inviteDeleteCount = (
-			await db.invite.deleteMany({
-				where: { schoolId, email: payload.email },
-			})
-		).count
-	} catch (error) {
-		console.error(`internal server errror: ${error}`)
-		throw 'An unknown error ocurred'
-	}
+	const inviteCount = await privateErrors(() =>
+		db.invite.deleteMany({
+			where: { schoolId, email: payload.email },
+		})
+	)
+	if (!inviteCount) throw "You haven't been invited to that school"
 
-	if (!inviteDeleteCount) throw "You haven't been invited to that school"
-
-	let paymentMethods: Stripe.PaymentMethod[]
-	try {
-		paymentMethods = (
-			await stripe.customers.listPaymentMethods(payload.id.toString(), {
+	const paymentMethods = (
+		await privateErrors(() =>
+			stripe.customers.listPaymentMethods(payload.id.toString(), {
 				type: 'card',
 			})
-		).data
-	} catch (error) {
-		console.error(`internal server error: ${error}`)
-		throw 'An unknown error occurred'
-	}
-
+		)
+	).data
 	if (!paymentMethods.length) throw 'Missing payment method'
 
-	try {
-		const [school, user] = await Promise.all([
-			db.school.findUnique({ where: { id: schoolId } }),
-			db.user.findUnique({ where: { id: payload.id } }),
+	const [school, user] = await privateErrors(() =>
+		Promise.all([
+			db.school.findUnique({
+				where: { id: schoolId },
+				select: { stripeAccountId: true },
+			}),
+			db.user.findUnique({
+				where: { id: payload.id },
+				rejectOnNotFound: true,
+			}),
 		])
+	)
 
-		if (!school) throw 'school not found'
-		if (!user) throw 'user not found'
-
+	if (!school) throw 'school not found'
+	const student = await privateErrors(async () => {
 		const token = await stripe.tokens.create(
 			{ customer: payload.stripeCustomerId! },
 			{ stripeAccount: school.stripeAccountId }
@@ -70,21 +64,15 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 			{ stripeAccount: school.stripeAccountId }
 		)
 
-		const id = generateSnowflake()
-		if (!id) throw 'error generating snowflake'
-
-		await db.student.create({
+		return await db.student.create({
 			data: {
-				id,
+				id: generateSnowflake(),
 				user: { connect: { id: user.id } },
 				school: { connect: { id: schoolId } },
 				stripeCustomerId: customer.id,
 			},
 		})
+	})
 
-		return { id }
-	} catch (error) {
-		console.error(`internal server error: ${error}`)
-		throw 'An unknown error occurred'
-	}
+	return { id: student.id }
 }

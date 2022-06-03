@@ -21,23 +21,21 @@ export interface AuthSignupResult {
 export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	input: { firstName, lastName, email, password },
 }) => {
-	const userExists = !!(await db.user.findUnique({ where: { email } }))
-	if (userExists) throw 'Account already registered with email'
+	const userExists = !!(
+		await db.user.findUnique({ where: { email }, select: { _count: true } })
+	)?._count
+	if (userExists) throw "There's already an account registered with that email"
 
-	const hashedPassword = await hash(password, 5)
-	const id = generateSnowflake()
-	if (!id) throw 'An unknown error ocurred'
-
-	await db.user.create({
+	const user = await db.user.create({
 		data: {
-			id,
+			id: generateSnowflake(),
 			firstName,
 			lastName,
 			email,
-			password: hashedPassword,
+			password: await hash(password, 5),
 		},
 	})
 
-	await sendVerificationEmail(id, email, firstName, lastName)
-	return { id }
+	await sendVerificationEmail(user.id, email, `${firstName} ${lastName}`)
+	return { id: user.id }
 }

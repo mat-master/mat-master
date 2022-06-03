@@ -2,6 +2,7 @@ import { schoolRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { db } from '../../..'
+import { useAuthentication } from '../../../util/use-authentication'
 
 const schoolResultSchema = schoolRowSchema.omit({
 	stripeAccountId: true,
@@ -14,11 +15,9 @@ export interface UserSchoolsGetResult {
 	owner: SchoolResult[]
 }
 
-export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({
-	ctx: { payload },
-}) => {
-	if (!payload) throw 'Missing or invalid authorization header'
-	const [studentSchools, ownerSchools] = await Promise.all([
+export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({ ctx }) => {
+	const payload = useAuthentication(ctx)
+	const [ownerSchools, studentSchools] = await Promise.all([
 		db.school.findMany({ where: { students: { some: { id: payload.id } } } }),
 		db.school.findMany({ where: { ownerId: payload.id } }),
 	])

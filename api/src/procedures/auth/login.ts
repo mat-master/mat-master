@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { Procedure } from '..'
 import { db } from '../..'
 import { Payload } from '../../models/payload'
+import { privateErrors } from '../../util/private-errors'
 
 export const authLoginParamsSchema = z.object({
 	email: z.string().email(),
@@ -16,20 +17,21 @@ export interface AuthLoginResult {
 }
 
 export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
+	ctx,
 	input: { email, password },
 }) => {
-	const user = await db.user.findUnique({ where: { email } })
+	const user = await privateErrors(() => db.user.findUnique({ where: { email } }))
 	if (!user) throw 'incorrect email'
 
-	const matches = await compare(password, user.password)
+	const matches = await privateErrors(() => compare(password, user.password))
 	if (!matches) throw 'incorrect password'
 
 	const payload: Payload = {
 		id: user.id,
 		email: user.email,
-		privilege: user.privilege,
+		emailVerified: user.emailVerified,
 		stripeCustomerId: user.stripeCustomerId,
 	}
 
-	return { jwt: jwt.sign(payload, process.env.JWT_SECRET as string) }
+	return { jwt: jwt.sign(payload, ctx.env.JWT_SECRET) }
 }

@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import { Snowflake } from '../models/snowflake'
 import { getProcessIp } from './get-process-ip'
 
 /** Number of bits allocated towards the timestamp portion */
@@ -11,10 +10,10 @@ const SEQUENCE_BITS = 12
 /** The epoch to start timestamps from */
 const EPOCH = Date.UTC(2022, 0, 1)
 
-export const generateSnowflake = (): Snowflake | null => {
+export const generateSnowflake = () => {
 	const ip = getProcessIp()
-	if (!ip) return null
-	const parts = ip.split('.')
+	if (!ip) throw 'An unknown error ocurred'
+
 	// Takes the lower 16 bits of the ipv4 address and converts it to a number
 	const lower16 = (parseInt(ip[2]) << 8) | parseInt(ip[3])
 	const randomId = crypto.randomBytes(8).readBigInt64BE() & BigInt(0x3ff)
