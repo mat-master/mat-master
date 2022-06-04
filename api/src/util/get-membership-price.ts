@@ -3,13 +3,19 @@ import { Snowflake } from '../models'
 import { Context } from '../procedures'
 import { privateErrors } from './private-errors'
 
-export const getMembershipPrice = async (ctx: Context, id: Snowflake) => {
-	const membership = await privateErrors(() =>
-		ctx.db.membership.findUnique({
-			where: { id },
-			select: { stripeProductId: true },
-		})
-	)
+export const getMembershipPrice = async (
+	ctx: Context,
+	_membership: Snowflake | { stripeProductId: string }
+) => {
+	const membership =
+		typeof _membership === 'bigint'
+			? await privateErrors(() =>
+					ctx.db.membership.findUnique({
+						where: { id: _membership },
+						select: { stripeProductId: true },
+					})
+			  )
+			: _membership
 	if (!membership) throw 'Membership not found'
 
 	return await privateErrors(async () => {
