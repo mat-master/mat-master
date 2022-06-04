@@ -10,3 +10,5 @@ export const userInvitesRouter = router<Context>()
 	.query('getAll', { resolve: getAllMeInvites })
 
 export * from './get'
+export * from './get-all'
+

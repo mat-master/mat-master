@@ -5,17 +5,17 @@ import { db } from '../..'
 import { snowflakeSchema } from '../../models'
 import { KioskPayload } from '../../models/kiosk-payload'
 
-export const kioskLoginParams = z.object({
+export const loginKioskParams = z.object({
 	schoolId: snowflakeSchema,
 	pin: z.string(),
 })
 
-export type KioskLoginParams = z.infer<typeof kioskLoginParams>
-export interface KioskLoginResult {
+export type LoginKioskParams = z.infer<typeof loginKioskParams>
+export interface LoginKioskResult {
 	jwt: string
 }
 
-export const login: Procedure<KioskLoginParams, KioskLoginResult> = async ({
+export const loginKiosk: Procedure<LoginKioskParams, LoginKioskResult> = async ({
 	input: { schoolId, pin },
 }) => {
 	const result = await db.kiosk.findFirst({ where: { schoolId, pin } })

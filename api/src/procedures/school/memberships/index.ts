@@ -39,3 +39,9 @@ export const schoolMembershipsRouter = router<Context>()
 		input: deleteSchoolMembershipParamsSchema,
 		resolve: deleteSchoolMembership,
 	})
+
+	export * from './create'
+	export * from './delete'
+	export * from './get'
+	export * from './get-all'
+	export * from './update'

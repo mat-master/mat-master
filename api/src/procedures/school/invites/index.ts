@@ -17,3 +17,8 @@ export const schoolInvitesRouter = router<Context>()
 		input: deleteSchoolInviteParamsSchema,
 		resolve: deleteSchoolInvite,
 	})
+
+export * from './create'
+export * from './delete'
+export * from './get-all'
+

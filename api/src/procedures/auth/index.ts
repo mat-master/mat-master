@@ -19,3 +19,8 @@ export const authRouter = router<Context>()
 	})
 
 export * from './login'
+export * from './refresh'
+export * from './resend-verification-email'
+export * from './signup'
+export * from './verify'
+

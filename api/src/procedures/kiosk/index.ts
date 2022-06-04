@@ -1,8 +1,10 @@
 import { router } from '@trpc/server'
 import { Context } from '..'
-import { kioskLoginParams, login } from './login'
+import { loginKiosk, loginKioskParams } from './login'
 
 export const kioskRouter = router<Context>().query('login', {
-	input: kioskLoginParams,
-	resolve: login,
+	input: loginKioskParams,
+	resolve: loginKiosk,
 })
+
+export * from './login'

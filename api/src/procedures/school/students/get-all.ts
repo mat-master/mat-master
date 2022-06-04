@@ -2,12 +2,18 @@ import { User } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { Snowflake, snowflakeSchema } from '../../../models'
+import {
+	paginationParamsSchema,
+	prismaPagination,
+} from '../../../util/prisma-pagination'
 import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
-export const getAllSchoolStudentsParamsSchema = z.object({
-	schoolId: snowflakeSchema,
-})
+export const getAllSchoolStudentsParamsSchema = z
+	.object({
+		schoolId: snowflakeSchema,
+	})
+	.merge(paginationParamsSchema)
 
 export type GetAllSchoolStudentsParams = z.infer<
 	typeof getAllSchoolStudentsParamsSchema
@@ -22,10 +28,11 @@ export type GetAllSchoolStudentsResult = {
 export const getAllSchoolStudents: Procedure<
 	GetAllSchoolStudentsParams,
 	GetAllSchoolStudentsResult
-> = async ({ ctx, input: { schoolId } }) => {
+> = async ({ ctx, input: { schoolId, pagination } }) => {
 	await useSchoolAuthentication(ctx, schoolId)
 	const students = await privateErrors(() =>
 		ctx.db.student.findMany({
+			...prismaPagination(pagination),
 			where: { schoolId },
 			select: {
 				id: true,

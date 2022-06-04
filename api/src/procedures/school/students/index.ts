@@ -12,3 +12,7 @@ export const studentsRouter = router<Context>()
 		input: getAllSchoolStudentsParamsSchema,
 		resolve: getAllSchoolStudents,
 	})
+
+export * from './get'
+export * from './get-all'
+
