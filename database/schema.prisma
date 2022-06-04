@@ -79,9 +79,9 @@ model Class {
 }
 
 model Membership {
-  id            BigInt @id
-  name          String @db.VarChar(100)
-  stripePriceId String @map("stripe_price_id") @db.VarChar(50)
+  id              BigInt @id
+  name            String @db.VarChar(100)
+  stripeProductId String @map("stripe_product_id") @db.VarChar(100)
 
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
