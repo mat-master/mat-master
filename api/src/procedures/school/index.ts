@@ -6,6 +6,7 @@ import { getSchool, getSchoolParamsSchema } from './get'
 import { schoolInvitesRouter } from './invites'
 import { joinSchool, joinSchoolParamsSchema } from './join'
 import { schoolMembershipsRouter } from './memberships'
+import { studentsRouter } from './students'
 
 export const schoolRouter = router<Context>()
 	.query('get', { input: getSchoolParamsSchema, resolve: getSchool })
@@ -14,3 +15,4 @@ export const schoolRouter = router<Context>()
 	.merge('classes.', schoolClassesRouter)
 	.merge('invites.', schoolInvitesRouter)
 	.merge('memberships.', schoolMembershipsRouter)
+	.merge('students.', studentsRouter)
