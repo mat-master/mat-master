@@ -19,13 +19,6 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 	if (!payload.emailVerified)
 		throw 'You need to verify your email before you can join a school'
 
-	const inviteCount = await privateErrors(() =>
-		db.invite.deleteMany({
-			where: { schoolId, email: payload.email },
-		})
-	)
-	if (!inviteCount) throw "You haven't been invited to that school"
-
 	const paymentMethods = (
 		await privateErrors(() =>
 			stripe.customers.listPaymentMethods(payload.id.toString(), {
@@ -34,6 +27,13 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 		)
 	).data
 	if (!paymentMethods.length) throw 'Missing payment method'
+
+	const inviteCount = await privateErrors(() =>
+		db.invite.deleteMany({
+			where: { schoolId, email: payload.email },
+		})
+	)
+	if (!inviteCount) throw "You haven't been invited to that school"
 
 	const [school, user] = await privateErrors(() =>
 		Promise.all([
@@ -48,7 +48,7 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 		])
 	)
 
-	if (!school) throw 'school not found'
+	if (!school) throw 'School not found'
 	const student = await privateErrors(async () => {
 		const token = await stripe.tokens.create(
 			{ customer: payload.stripeCustomerId! },
