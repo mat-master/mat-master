@@ -7,8 +7,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import App from './app'
+import { getAuthHeader } from './utils/auth'
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: { refetchOnWindowFocus: false, retry: false, refetchOnMount: false },
 		mutations: { retry: false },
@@ -16,8 +17,9 @@ const queryClient = new QueryClient({
 })
 
 export const trpc = createReactQueryHooks<typeof router>()
-const trpcClient = trpc.createClient({
+export const trpcClient = trpc.createClient({
 	url: 'http://localhost:8080',
+	headers: () => ({ Authorization: getAuthHeader() }),
 })
 
 ReactDOM.render(

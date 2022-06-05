@@ -1,20 +1,17 @@
 import { Center, Loader, Text } from '@mantine/core'
-import type {
-	DeepPartial,
-	FieldValues,
-	SubmitHandler,
-	UnpackNestedValue,
-} from 'react-hook-form'
+import type { FieldValues, SubmitHandler, UnpackNestedValue } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import filterUpdated from '../utils/filter-updated'
 import getErrorMessage from '../utils/get-error-message'
 import type { FormWrapperProps } from './form'
 
+export type DeepPartial<T> = T extends {} ? { [K in keyof T]?: DeepPartial<T> } : T
+
 export type RemoteFormProps<T extends FieldValues> = FormWrapperProps<T> & {
 	queryKey: [string, Record<string, any>]
 	getResource?: () => Promise<T>
 	createResource?: SubmitHandler<T>
-	updateResource?: SubmitHandler<DeepPartial<T>>
+	updateResource?: SubmitHandler<Partial<T>>
 	child: React.FC<FormWrapperProps<T>>
 }
 
@@ -56,7 +53,7 @@ const RemoteForm = <T extends FieldValues>({
 			createResource && (await createResource(data))
 			updateResource &&
 				(await updateResource(
-					filterUpdated(remoteData ?? {}, data) as UnpackNestedValue<DeepPartial<T>>
+					filterUpdated(remoteData ?? {}, data) as UnpackNestedValue<Partial<T>>
 				))
 		},
 		{ onSuccess: () => queryClient.invalidateQueries(queryKey) }

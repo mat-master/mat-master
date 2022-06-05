@@ -1,18 +1,21 @@
-import type { SchoolPostBody } from '@common/types'
-import { validator } from '@common/util'
 import { TextInput } from '@mantine/core'
+import { createSchoolParamsSchema } from '@mat-master/api'
 import type React from 'react'
-import { createSchool } from '../data/schools'
+import { z } from 'zod'
+import { trpcClient } from '..'
 import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export type SchoolFormProps = FormWrapperProps<SchoolPostBody>
+export const schoolFormDataSchema = createSchoolParamsSchema
+
+export type SchoolFormData = z.infer<typeof schoolFormDataSchema>
+export type SchoolFormProps = FormWrapperProps<SchoolFormData>
 
 export const SchoolForm: React.FC<SchoolFormProps> = (props) => (
-	<Form
+	<Form<SchoolFormData>
 		{...props}
-		schema={validator.api.schoolPostSchema}
+		schema={schoolFormDataSchema}
 		child={({ form }) => {
 			return (
 				<>
@@ -52,15 +55,13 @@ export const SchoolForm: React.FC<SchoolFormProps> = (props) => (
 	/>
 )
 
-export type RemoteSchoolFormProps = RemoteFormWrapperProps<SchoolPostBody>
+export type RemoteSchoolFormProps = RemoteFormWrapperProps<SchoolFormData>
 
-const RemoteSchoolForm: React.FC<RemoteSchoolFormProps> = (props) => (
-	<RemoteForm<SchoolPostBody>
+export const RemoteSchoolForm: React.FC<RemoteSchoolFormProps> = (props) => (
+	<RemoteForm<SchoolFormData>
 		{...props}
 		queryKey={['schools', { id: 'new' }]}
-		createResource={createSchool}
+		createResource={(data) => trpcClient.mutation('school.create', data)}
 		child={SchoolForm}
 	/>
 )
-
-export default RemoteSchoolForm

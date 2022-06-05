@@ -5,13 +5,16 @@ import { db } from '../..'
 import { privateErrors } from '../../util/private-errors'
 import { useAuthentication } from '../../util/use-authentication'
 
-export const updateMeParamsSchema = userRowSchema.omit({
-	id: true,
-	password: true,
-	privilege: true,
-	stripeCustomerId: true,
-	avatar: true, // Temporary
-})
+export const updateMeParamsSchema = userRowSchema
+	.omit({
+		id: true,
+		password: true,
+		stripeCustomerId: true,
+		emailVerified: true,
+		avatar: true, // Temporary
+		email: true,
+	})
+	.partial()
 
 export type UpdateMeParams = z.infer<typeof updateMeParamsSchema>
 

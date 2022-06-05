@@ -1,4 +1,3 @@
-import type { ClassTime } from '@common/types'
 import { WEEKDAYS } from '../components/class-time-input'
 
 const isConsecutive = (src: number[], step: number = 1) => {
@@ -10,7 +9,7 @@ const isConsecutive = (src: number[], step: number = 1) => {
 	return true
 }
 
-const getReadableSchedule = (schedule: ClassTime[]) => {
+const getReadableSchedule = (schedule: { schedule: string }[]) => {
 	if (schedule.length === 0) return 'No scheduled classes'
 
 	const dayIndexes = schedule

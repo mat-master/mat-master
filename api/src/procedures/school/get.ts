@@ -8,6 +8,7 @@ import { useAuthentication } from '../../util/use-authentication'
 
 export const getSchoolParamsSchema = z.object({ id: snowflakeSchema })
 export const getSchoolResultSchema = schoolRowSchema.omit({
+	tier: true,
 	stripeAccountId: true,
 	stripeSubscriptionId: true,
 })

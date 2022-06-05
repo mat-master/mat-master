@@ -1,16 +1,11 @@
 import { router } from '@trpc/server'
-import { z } from 'zod'
 import { Context } from '../..'
-import { getAllMeInvites } from '../invites/get-all'
 import { getUserSchools } from './get'
+import { getAllMeSchools, getAllMeSchoolsParamsSchema } from './get-all'
 
 export const userSchoolsRouter = router<Context>()
-	.query('get', {
-		input: z.void(),
-		resolve: getUserSchools,
-	})
-	.query('getAll', { resolve: getAllMeInvites })
+	.query('get', { resolve: getUserSchools })
+	.query('getAll', { input: getAllMeSchoolsParamsSchema, resolve: getAllMeSchools })
 
 export * from './get'
 export * from './get-all'
-

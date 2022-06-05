@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
 import { useState } from 'react'
@@ -9,14 +9,14 @@ import {
 	useForm,
 	UseFormReturn,
 } from 'react-hook-form'
-import type * as yup from 'yup'
+import { z } from 'zod'
 import getErrorMessage from '../utils/get-error-message'
 
 export type FormProps<T extends FieldValues = FieldValues> = Omit<
 	JSX.IntrinsicElements['form'],
-	'onSubmit'
+	'onSubmit' | 'id'
 > & {
-	schema: yup.SchemaOf<T>
+	schema: z.ZodTypeAny
 	onSubmit?: SubmitHandler<T>
 	child: React.FC<{ form: UseFormReturn<T> }>
 	error?: string
@@ -39,7 +39,7 @@ const Form = <T extends FieldValues>({
 	...props
 }: FormProps<T>) => {
 	const form = useForm<T>({
-		resolver: yupResolver(schema),
+		resolver: zodResolver(schema),
 		defaultValues: defaultValues as DefaultValues<T>,
 	})
 

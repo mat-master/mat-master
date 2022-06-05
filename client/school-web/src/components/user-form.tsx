@@ -1,17 +1,22 @@
 import { Center, TextInput } from '@mantine/core'
+import { getMeResultSchema } from '@mat-master/api'
 import type React from 'react'
-import { getUser, updateUser } from '../data/user'
+import { z } from 'zod'
+import { trpcClient } from '..'
 import AvatarInput from './avatar-input'
 import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export type UserFormProps = FormWrapperProps<UserPatchBody>
+export const userFormDataSchema = getMeResultSchema.omit({ id: true })
+
+export type UserFormData = z.infer<typeof userFormDataSchema>
+export type UserFormProps = FormWrapperProps<UserFormData>
 
 export const UserForm: React.FC<UserFormProps> = (props) => (
 	<Form
 		{...props}
-		schema={validator.api.userPatchSchema}
+		schema={userFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
 
@@ -20,7 +25,7 @@ export const UserForm: React.FC<UserFormProps> = (props) => (
 					<Center>
 						<AvatarInput
 							{...form.register('avatar')}
-							onChange={(img) => form.setValue('avatar', '')}
+							onChange={(img) => form.setValue('avatar', BigInt(''))}
 						/>
 					</Center>
 
@@ -40,19 +45,19 @@ export const UserForm: React.FC<UserFormProps> = (props) => (
 	/>
 )
 
-export type RemoteUserFormProps = RemoteFormWrapperProps<UserPatchBody> & {
-	id: string
-}
+export type RemoteUserFormProps = RemoteFormWrapperProps<UserFormData>
 
-export const RemoteUserForm: React.FC<RemoteUserFormProps> = ({
-	id = 'me',
-	...props
-}) => (
-	<RemoteForm<UserPatchBody>
+export const RemoteUserForm: React.FC<RemoteUserFormProps> = (props) => (
+	<RemoteForm<UserFormData>
 		{...props}
-		queryKey={['users', { id }]}
-		getResource={() => getUser(id) as Promise<UserPatchBody>}
-		updateResource={(data) => updateUser(id, data)}
+		queryKey={['me', {}]}
+		getResource={() => trpcClient.query('me.get')}
+		updateResource={(data) =>
+			trpcClient.mutation('me.update', {
+				firstName: data.firstName,
+				lastName: data.lastName,
+			})
+		}
 		child={UserForm}
 	/>
 )

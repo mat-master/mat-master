@@ -1,9 +1,9 @@
 import { Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
-import { useMemo } from 'react'
-import { useQuery } from 'react-query'
+import { useContext, useMemo } from 'react'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
+import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import ItemMenu from '../../components/item-menu'
 import { RemoteMembershipForm } from '../../components/membership-form'
@@ -11,7 +11,7 @@ import PageHeader from '../../components/page-header'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
-import { getMemberships } from '../../data/memberships'
+import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
@@ -20,12 +20,13 @@ const MembershipsPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const modals = useModals()
 
+	const { id: schoolId } = useContext(schoolContext)
 	const {
 		data: memberships,
 		isLoading,
 		isError,
 		refetch,
-	} = useQuery('memberships', getMemberships)
+	} = trpc.useQuery(['school.memberships.getAll', { schoolId }])
 	const filteredMemberships = useMemo(() => {
 		if (!memberships) return []
 		return memberships.filter(({ name }) =>
@@ -65,11 +66,7 @@ const MembershipsPage: React.FC = () => {
 						menu: (
 							<ItemMenu
 								onEdit={() =>
-									openFormModal(
-										modals,
-										name,
-										<RemoteMembershipForm id={id.toString()} />
-									)
+									openFormModal(modals, name, <RemoteMembershipForm id={id} />)
 								}
 								onDelete={() =>
 									modals.openConfirmModal({

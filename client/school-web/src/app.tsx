@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import { SchoolProvider } from './data/school-provider'
 import AcceptInvitePage from './pages/accept-invite'
 import AccountPage from './pages/account'
 import BillingPage from './pages/school/billing'
@@ -24,11 +25,13 @@ const App: React.FC = () => (
 			<Route path='schools'>
 				<Route index element={<SchoolsPage />} />
 				<Route path=':school'>
-					<Route index element={<DashboardPage />} />
-					<Route path='students' element={<StudentsPage />} />
-					<Route path='classes' element={<ClassesPage />} />
-					<Route path='memberships' element={<MembershipsPage />} />
-					<Route path='billing' element={<BillingPage />} />
+					<SchoolProvider>
+						<Route index element={<DashboardPage />} />
+						<Route path='students' element={<StudentsPage />} />
+						<Route path='classes' element={<ClassesPage />} />
+						<Route path='memberships' element={<MembershipsPage />} />
+						<Route path='billing' element={<BillingPage />} />
+					</SchoolProvider>
 				</Route>
 			</Route>
 

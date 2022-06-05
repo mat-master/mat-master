@@ -1,9 +1,9 @@
 import { Avatar, Badge, Text, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
-import { useMemo } from 'react'
-import { useQuery } from 'react-query'
+import { useContext, useMemo } from 'react'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
+import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import { RemoteInviteForm } from '../../components/invite-form'
 import ItemMenu from '../../components/item-menu'
@@ -12,7 +12,7 @@ import SideBar from '../../components/side-bar'
 import { RemoteStudentForm } from '../../components/student-form'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
-import { getStudents } from '../../data/students'
+import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
@@ -21,12 +21,13 @@ const StudentsPage: React.FC = () => {
 	const modals = useModals()
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 
+	const { id: schoolId } = useContext(schoolContext)
 	const {
 		data: students,
 		isLoading,
 		isError,
 		refetch,
-	} = useQuery('students', getStudents)
+	} = trpc.useQuery(['school.students.getAll', { schoolId }])
 	const filteredStudents = useMemo(() => {
 		if (!students) return []
 		return students.filter(({ user: { firstName, lastName } }) =>
@@ -77,7 +78,7 @@ const StudentsPage: React.FC = () => {
 									openFormModal(
 										modals,
 										`${student.user.firstName} ${student.user.lastName}`,
-										<RemoteStudentForm id={student.id.toString()} />
+										<RemoteStudentForm id={student.id} />
 									)
 								}
 								onDelete={() =>

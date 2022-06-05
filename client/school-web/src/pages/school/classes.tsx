@@ -1,9 +1,9 @@
 import { Text } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
-import { useMemo } from 'react'
-import { useQuery } from 'react-query'
+import { useContext, useMemo } from 'react'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
+import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import { RemoteClassForm } from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
@@ -12,7 +12,7 @@ import ScheduleDisplay from '../../components/schedule-display'
 import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import TableState from '../../components/table-state'
-import { getClasses } from '../../data/classes'
+import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
@@ -21,12 +21,13 @@ const ClassesPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 	const modals = useModals()
 
+	const { id: schoolId } = useContext(schoolContext)
 	const {
 		data: classes,
 		isLoading,
 		isError,
 		refetch,
-	} = useQuery('classes', getClasses)
+	} = trpc.useQuery(['school.classes.getAll', { schoolId }])
 	const filteredClasses = useMemo(() => {
 		if (!classes) return []
 		return classes.filter(({ name }) =>

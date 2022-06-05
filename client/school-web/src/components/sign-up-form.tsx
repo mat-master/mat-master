@@ -1,20 +1,23 @@
-import type { SignupPostBody } from '@common/types'
-import { validator } from '@common/util'
 import { PasswordInput, TextInput } from '@mantine/core'
+import { authSignupParamsSchema } from '@mat-master/api'
 import type React from 'react'
-import { signup } from '../data/auth'
+import { z } from 'zod'
+import { signup } from '../utils/auth'
 import type { FormWrapperProps } from './form'
 import Form from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export type SignUpFormProps = FormWrapperProps<SignupPostBody>
+export const signUpFormDataSchema = authSignupParamsSchema
+
+export type SignUpFormData = z.infer<typeof signUpFormDataSchema>
+export type SignUpFormProps = FormWrapperProps<SignUpFormData>
 
 export const SignUpForm: React.FC<SignUpFormProps> = (props) => (
-	<Form
+	<Form<SignUpFormData>
 		submitLabel='Sign Up'
 		{...props}
-		schema={validator.api.signupPostSchema}
+		schema={signUpFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
 
@@ -46,10 +49,10 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => (
 	/>
 )
 
-export type RemoteSignUpFormProps = RemoteFormWrapperProps<SignupPostBody>
+export type RemoteSignUpFormProps = RemoteFormWrapperProps<SignUpFormData>
 
 export const RemoteSignUpForm: React.FC<RemoteSignUpFormProps> = (props) => (
-	<RemoteForm<SignupPostBody>
+	<RemoteForm<SignUpFormData>
 		{...props}
 		queryKey={['users', { id: 'new' }]}
 		createResource={signup}

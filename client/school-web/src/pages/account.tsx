@@ -11,7 +11,7 @@ const AccountPage: React.FC = () => {
 			<SimpleGrid cols={2} spacing='sm'>
 				<Paper shadow='sm' p='lg'>
 					<Title>Account</Title>
-					<RemoteUserForm id='me' />
+					<RemoteUserForm />
 				</Paper>
 				<Paper shadow='sm' p='lg'>
 					<Title>Billing Information</Title>

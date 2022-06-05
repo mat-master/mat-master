@@ -8,12 +8,13 @@ import {
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
-import { useQuery, useQueryClient } from 'react-query'
+import { useContext } from 'react'
+import { useQueryClient } from 'react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { Logout as LogoutIcon, User as AccountIcon } from 'tabler-icons-react'
-import { signout } from '../data/auth'
-import { getCurrentSchool } from '../data/schools'
-import { getUser } from '../data/user'
+import { trpc } from '..'
+import { schoolContext } from '../data/school-provider'
+import { signout } from '../utils/auth'
 import getInitials from '../utils/get-initials'
 
 const AppHeader: React.FC = () => {
@@ -21,8 +22,12 @@ const AppHeader: React.FC = () => {
 	const navigate = useNavigate()
 	const queryClient = useQueryClient()
 
-	const { data: user } = useQuery(['users', { id: 'me' }], () => getUser('me'))
-	const { data: school, isLoading } = useQuery('school', getCurrentSchool)
+	const { data: user } = trpc.useQuery(['me.get'])
+	const { id: schoolId } = useContext(schoolContext)
+	const { data: school, isLoading } = trpc.useQuery([
+		'school.get',
+		{ id: schoolId },
+	])
 
 	return (
 		<Box
@@ -56,10 +61,7 @@ const AppHeader: React.FC = () => {
 					>
 						Account
 					</Menu.Item>
-					<Menu.Item
-						icon={<LogoutIcon size={16} />}
-						onClick={() => signout({ navigate, queryClient })}
-					>
+					<Menu.Item icon={<LogoutIcon size={16} />} onClick={signout}>
 						Log Out
 					</Menu.Item>
 				</Menu>

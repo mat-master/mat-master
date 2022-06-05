@@ -17,6 +17,7 @@
 		"@mantine/notifications": "^3.6.9",
 		"@mat-master/api": "workspace:^",
 		"@mat-master/client": "workspace:^",
+		"@mat-master/database": "workspace:^",
 		"@stripe/react-stripe-js": "^1.8.0",
 		"@stripe/stripe-js": "^1.29.0",
 		"@trpc/client": "^9.23.6",

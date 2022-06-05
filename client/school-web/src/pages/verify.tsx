@@ -1,11 +1,10 @@
 import { Button, Center, Group, Loader, Text, Title } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
-import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import { Refresh as RetryIcon } from 'tabler-icons-react'
-import { verifyEmail } from '../data/auth'
+import { trpc } from '..'
 import Page from '../page'
 import getErrorMessage from '../utils/get-error-message'
 
@@ -14,11 +13,7 @@ const VerifyPage: React.FC = () => {
 	const [query] = useSearchParams()
 	const token = query.get('token')
 
-	const { mutate, isLoading, isError, error } = useMutation(
-		'verify email',
-		verifyEmail,
-		{ onSuccess: () => navigate('/') }
-	)
+	const { mutate, isLoading, isError, error } = trpc.useMutation('auth.verify')
 
 	useEffect(() => {
 		if (!token) return navigate('/')

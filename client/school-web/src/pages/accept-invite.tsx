@@ -7,8 +7,7 @@ import {
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
-import { useEffect, useState } from 'react'
-import { useMutation } from 'react-query'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import {
@@ -18,10 +17,11 @@ import {
 	ShieldLock as VerifyIcon,
 	User as UserIcon,
 } from 'tabler-icons-react'
+import { trpc } from '..'
 import BillingForm from '../components/billing-form'
 import EmailVerifier from '../components/email-verifier'
 import SignUpLoginForm from '../components/sign-up-login-form'
-import { joinSchool } from '../data/schools'
+import { schoolContext } from '../data/school-provider'
 import { getPrimaryColor } from '../utils/get-colors'
 
 type AuthIntent = 'Sign up' | 'Sign in'
@@ -30,22 +30,17 @@ export interface AcceptInvitePageProps {}
 
 const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 	const [queryParams] = useSearchParams()
-	const {
-		school: schoolId,
-		payment_intent,
-		payment_intent_client_secret,
-	} = Object.fromEntries(queryParams.entries())
-	const navigate = useNavigate()
-	const { mutate: join, mutateAsync: joinAsync } = useMutation(
-		['school', { id: schoolId }],
-		async () => {
-			if (!schoolId) return navigate('/')
-			await joinSchool(schoolId)
-			navigate('/')
-		}
+	const { payment_intent, payment_intent_client_secret } = Object.fromEntries(
+		queryParams.entries()
 	)
 
-	useEffect(join, [schoolId])
+	const navigate = useNavigate()
+	const { id } = useContext(schoolContext)
+	const { mutate: join, mutateAsync: joinAsync } = trpc.useMutation('school.join', {
+		onSuccess: () => navigate('/'),
+	})
+
+	useEffect(() => join({ id }), [id])
 
 	const [currentStep, setCurrentStep] = useState(0)
 	const step = () => setCurrentStep(currentStep + 1)
@@ -96,7 +91,10 @@ const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 					</Stepper.Step>
 
 					<Stepper.Step {...stepProps(2, 'Billing Details', CreditCardIcon)}>
-						<BillingForm redirect={window.location.href} onSubmit={joinAsync} />
+						<BillingForm
+							redirect={window.location.href}
+							onSubmit={() => joinAsync({ id })}
+						/>
 					</Stepper.Step>
 				</Stepper>
 			</Paper>

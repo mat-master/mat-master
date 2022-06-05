@@ -1,18 +1,25 @@
-import type { SchoolInvitesPostBody } from '@common/types'
-import { validator } from '@common/util'
 import { TextInput } from '@mantine/core'
+import { createSchoolInviteParamsSchema } from '@mat-master/api'
 import type React from 'react'
-import { createInvite, getInvite } from '../data/invites'
+import { useContext } from 'react'
+import { z } from 'zod'
+import { trpcClient } from '..'
+import { schoolContext } from '../data/school-provider'
 import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export type InviteFormProps = FormWrapperProps<SchoolInvitesPostBody>
+export const inviteFormDataSchema = createSchoolInviteParamsSchema.omit({
+	schoolId: true,
+})
+
+export type InviteFormData = z.infer<typeof inviteFormDataSchema>
+export type InviteFormProps = FormWrapperProps<InviteFormData>
 
 const InviteForm: React.FC<InviteFormProps> = (props) => (
-	<Form<SchoolInvitesPostBody>
+	<Form<InviteFormData>
 		{...props}
-		schema={validator.api.schoolInvitesPostSchema}
+		schema={inviteFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
 
@@ -27,18 +34,19 @@ const InviteForm: React.FC<InviteFormProps> = (props) => (
 	/>
 )
 
-export type RemoteInviteFormProps =
-	RemoteFormWrapperProps<SchoolInvitesPostBody> & {
-		id?: string
-	}
+export type RemoteInviteFormProps = RemoteFormWrapperProps<InviteFormData>
 
-export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = ({ id, ...props }) => (
-	<RemoteForm<SchoolInvitesPostBody>
-		submitLabel='Send'
-		{...props}
-		queryKey={['invites', { id }]}
-		getResource={id ? () => getInvite(id) : undefined}
-		createResource={id ? undefined : createInvite}
-		child={InviteForm}
-	/>
-)
+export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = (props) => {
+	const { id: schoolId } = useContext(schoolContext)
+	return (
+		<RemoteForm<InviteFormData>
+			submitLabel='Send'
+			{...props}
+			queryKey={['invites', {}]}
+			createResource={({ email }) =>
+				trpcClient.mutation('school.invites.create', { schoolId, email })
+			}
+			child={InviteForm}
+		/>
+	)
+}

@@ -2,7 +2,7 @@
 	"name": "@mat-master/database",
 	"packageManager": "yarn@3.2.0",
 	"main": "./build/index.js",
-	"module": "./build/indej.mjs",
+	"module": "./build/index.mjs",
 	"types": "./build/index.d.ts",
 	"scripts": {
 		"build": "prisma format && prisma generate && tsup",

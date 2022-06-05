@@ -1,24 +1,31 @@
-import type { MembershipInterval, SchoolMembershipsPostBody } from '@common/types'
-import { validator } from '@common/util'
 import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
+import { createSchoolMembershipParamsSchema, Snowflake } from '@mat-master/api'
 import type React from 'react'
+import { useContext } from 'react'
 import { Controller } from 'react-hook-form'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
-import { createMembership, getMembership } from '../data/memberships'
+import { z } from 'zod'
+import { trpcClient } from '..'
+import { schoolContext } from '../data/school-provider'
 import ClassesSelect from './classes-select'
 import type { FormWrapperProps } from './form'
 import Form from './form'
-import type { RemoteFormWrapperProps } from './remote-form'
+import type { DeepPartial, RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export type MembershipFormProps = FormWrapperProps<SchoolMembershipsPostBody>
+export const membershipFormDataSchema = createSchoolMembershipParamsSchema.omit({
+	schoolId: true,
+})
 
-const INTERVALS: MembershipInterval[] = ['day', 'week', 'month', 'year']
+export type MembershipFormData = z.infer<typeof membershipFormDataSchema>
+export type MembershipFormProps = FormWrapperProps<MembershipFormData>
+
+const INTERVALS = ['day', 'week', 'month', 'year']
 
 export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
-	<Form<SchoolMembershipsPostBody>
+	<Form<MembershipFormData>
 		{...props}
-		schema={validator.api.schoolMembershipsPostSchema}
+		schema={membershipFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
 
@@ -78,21 +85,46 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 	/>
 )
 
-export type RemoteMembershipFormProps =
-	RemoteFormWrapperProps<SchoolMembershipsPostBody> & {
-		id?: string
-	}
+export type RemoteMembershipFormProps = RemoteFormWrapperProps<MembershipFormData> & {
+	id?: Snowflake
+}
+
+type x = DeepPartial<MembershipFormData>
 
 export const RemoteMembershipForm: React.FC<RemoteMembershipFormProps> = ({
 	id,
 	...props
-}) => (
-	<RemoteForm<SchoolMembershipsPostBody>
-		{...props}
-		queryKey={['memberships', { id }]}
-		getResource={id ? () => getMembership(id) : undefined}
-		createResource={id ? undefined : createMembership}
-		updateResource={id ? () => {} : undefined}
-		child={MembershipForm}
-	/>
-)
+}) => {
+	const { id: schoolId } = useContext(schoolContext)
+	return (
+		<RemoteForm<MembershipFormData>
+			{...props}
+			queryKey={['memberships', { id }]}
+			getResource={
+				id
+					? () => trpcClient.query('school.memberships.get', { id, schoolId })
+					: undefined
+			}
+			createResource={
+				id
+					? undefined
+					: (data) =>
+							trpcClient.mutation('school.memberships.create', {
+								schoolId,
+								...data,
+							})
+			}
+			updateResource={
+				id
+					? (data) =>
+							trpcClient.mutation('school.memberships.update', {
+								id,
+								schoolId,
+								...data,
+							})
+					: undefined
+			}
+			child={MembershipForm}
+		/>
+	)
+}

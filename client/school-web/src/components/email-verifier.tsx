@@ -1,8 +1,7 @@
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
-import { useMutation, useQuery } from 'react-query'
-import { checkEmailVerification, sendVerificationEmail } from '../data/auth'
+import { trpc } from '..'
 
 export interface EmailVerificationFormProps {
 	email: string
@@ -16,21 +15,18 @@ const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
 	onSent,
 }) => {
 	const {
-		data: verified,
-		isLoading: verifying,
-		refetch: checkVerification,
-	} = useQuery('email verified', checkEmailVerification)
+		data: me,
+		isLoading: meLoading,
+		refetch: refetchMe,
+	} = trpc.useQuery(['me.get'])
 
 	useEffect(() => {
-		if (verified && onVerified) onVerified()
-	}, [verified])
+		if (me?.emailVerified && onVerified) onVerified()
+	}, [me?.emailVerified])
 
-	const { isLoading: sendingEmail, mutateAsync: sendEmail } = useMutation(
-		'send verification email',
-		async () => {
-			await sendVerificationEmail()
-			onSent && (await onSent())
-		}
+	const { isLoading: sendingEmail, mutate: sendEmail } = trpc.useMutation(
+		['auth.resendVerificationEmail'],
+		{ onSuccess: onSent }
 	)
 
 	return (
@@ -42,16 +38,13 @@ const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
 			<Group position='right' spacing='lg'>
 				<Button
 					variant='outline'
-					onClick={async () => {
-						await sendEmail()
-						onSent && onSent()
-					}}
+					onClick={() => sendEmail()}
 					loading={sendingEmail}
 				>
 					Resend Email
 				</Button>
 
-				<Button onClick={() => checkVerification()} loading={verifying}>
+				<Button onClick={() => refetchMe()} loading={meLoading}>
 					Check Verification
 				</Button>
 			</Group>

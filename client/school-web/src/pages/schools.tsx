@@ -1,18 +1,17 @@
 import { SimpleGrid, Skeleton, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import type React from 'react'
-import { useQuery } from 'react-query'
 import { Apps as NewSchoolIcon } from 'tabler-icons-react'
+import { trpc } from '..'
 import AppHeader from '../components/app-header'
 import PageHeader from '../components/page-header'
 import SchoolCard from '../components/school-card'
-import RemoteSchoolForm from '../components/school-form'
-import { getSchools } from '../data/schools'
+import { RemoteSchoolForm } from '../components/school-form'
 import Page from '../page'
 
 const SchoolsPage: React.FC = () => {
 	const modals = useModals()
-	const { data: schools, isLoading } = useQuery('schools', getSchools)
+	const { data: schools, isLoading } = trpc.useQuery(['me.schools.getAll', {}])
 
 	return (
 		<Page authorized header={<AppHeader />}>
@@ -46,7 +45,7 @@ const SchoolsPage: React.FC = () => {
 							</Skeleton>
 						))}
 
-				{schools?.adminSchools.map((school) => (
+				{schools?.map((school) => (
 					<Skeleton key={school.id.toString()} visible={isLoading}>
 						<SchoolCard
 							name={school.name}

@@ -1,5 +1,3 @@
-import type { ClassTime } from '@common/types'
-import { classTimeSchema } from '@common/util/src/validator'
 import { createStyles, InputWrapper, Select, Text } from '@mantine/core'
 import { TimeInput } from '@mantine/dates'
 import { useUncontrolled } from '@mantine/hooks'
@@ -54,8 +52,11 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 	const value = _value ?? defaultClassTime
 	const schedule = parseExpression(value.schedule)
 	const day =
-		schedule.fields.dayOfWeek.length === 1 ? WEEKDAYS[schedule.fields.dayOfWeek[0]] : null
-	const start = schedule.fields.minute.length === 1 ? schedule.next().toDate() : null
+		schedule.fields.dayOfWeek.length === 1
+			? WEEKDAYS[schedule.fields.dayOfWeek[0]]
+			: null
+	const start =
+		schedule.fields.minute.length === 1 ? schedule.next().toDate() : null
 	const end = start ? dayjs(start).add(value.duration, 'minute').toDate() : null
 
 	const handleDayChange = (day: string) => {
@@ -79,7 +80,9 @@ const ClassTimeInput: React.FC<ClassTimeInputProps> = ({
 	const handleEndChange = (end: Date) => {
 		if (!start) return setValue(value)
 		const duration = Math.max(
-			(end.getHours() - start.getHours()) * 60 + end.getMinutes() - start.getMinutes(),
+			(end.getHours() - start.getHours()) * 60 +
+				end.getMinutes() -
+				start.getMinutes(),
 			0
 		)
 		setValue({ ...value, duration })
