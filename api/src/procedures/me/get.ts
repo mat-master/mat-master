@@ -13,7 +13,7 @@ export const getMeResultSchema = userRowSchema.omit({
 export type GetMeResult = z.infer<typeof getMeResultSchema>
 
 export const getMe: Procedure<void, GetMeResult> = async ({ ctx, input }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	const user = await privateErrors(() =>
 		db.user.findUnique({ where: { id: payload.id }, rejectOnNotFound: true })
 	)

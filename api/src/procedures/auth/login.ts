@@ -20,7 +20,19 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 	ctx,
 	input: { email, password },
 }) => {
-	const user = await privateErrors(() => db.user.findUnique({ where: { email } }))
+	const user = await privateErrors(() =>
+		db.user.findUnique({
+			where: { email },
+			select: {
+				id: true,
+				emailVerified: true,
+				password: true,
+				stripeCustomerId: true,
+				schools: { select: { id: true } },
+				students: { select: { id: true } },
+			},
+		})
+	)
 	if (!user) throw 'incorrect email'
 
 	const matches = await privateErrors(() => compare(password, user.password))
@@ -28,8 +40,10 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 
 	const payload: Payload = {
 		id: user.id,
-		email: user.email,
+		email,
 		emailVerified: user.emailVerified,
+		schools: user.schools.map(({ id }) => id),
+		students: user.students.map(({ id }) => id),
 		stripeCustomerId: user.stripeCustomerId,
 	}
 

@@ -1,6 +1,6 @@
-import { Context } from '../procedures'
+import { Payload } from '../models'
 
-export const useAuthentication = (ctx: Context) => {
-	if (!ctx.payload) throw 'Unauthenticated'
-	return ctx.payload
+export const useAuthentication = (payload?: Payload) => {
+	if (!payload) throw 'Unauthenticated'
+	return payload
 }

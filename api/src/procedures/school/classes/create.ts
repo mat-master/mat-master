@@ -15,16 +15,15 @@ export const createSchoolClass: Procedure<
 	CreateSchoolClassParams,
 	CreateSchoolClassResult
 > = async ({ ctx, input: { schoolId, ...data } }) => {
-	await useSchoolAuthentication(ctx, schoolId)
-	const _class = await privateErrors(() =>
+	useSchoolAuthentication(ctx.payload, schoolId)
+	return await privateErrors(() =>
 		ctx.db.class.create({
 			data: {
 				id: generateSnowflake(),
 				school: { connect: { id: schoolId } },
 				...data,
 			},
+			select: { id: true },
 		})
 	)
-
-	return { id: _class.id }
 }

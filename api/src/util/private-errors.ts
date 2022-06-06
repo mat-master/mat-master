@@ -1,4 +1,4 @@
-export const privateErrors = async <T>(fn: () => Promise<T>) => {
+export const privateErrors = async <T>(fn: () => T) => {
 	try {
 		return await fn()
 	} catch (error) {

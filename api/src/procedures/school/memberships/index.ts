@@ -4,10 +4,6 @@ import {
 	createSchoolMembership,
 	createSchoolMembershipParamsSchema,
 } from './create'
-import {
-	deleteSchoolMembership,
-	deleteSchoolMembershipParamsSchema,
-} from './delete'
 import { getSchoolMembership, getSchoolMembershipParamsSchema } from './get'
 import {
 	getAllSchoolMemberships,
@@ -35,13 +31,9 @@ export const schoolMembershipsRouter = router<Context>()
 		input: updateSchoolMembershipParamsSchema,
 		resolve: updateSchoolMembership,
 	})
-	.mutation('delete', {
-		input: deleteSchoolMembershipParamsSchema,
-		resolve: deleteSchoolMembership,
-	})
+
 
 export * from './create'
-export * from './delete'
 export * from './get'
 export * from './get-all'
 export * from './update'

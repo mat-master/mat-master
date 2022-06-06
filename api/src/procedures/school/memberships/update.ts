@@ -23,24 +23,30 @@ export type UpdateSchoolMembershipParams = z.infer<
 export const updateSchoolMembership: Procedure<
 	UpdateSchoolMembershipParams
 > = async ({ ctx, input: { id, schoolId, ...data } }) => {
-	const { school } = await useSchoolAuthentication(ctx, schoolId)
-	const membership = await privateErrors(() =>
-		ctx.db.membership.findFirst({
-			where: { id, schoolId },
-			select: { _count: true, stripeProductId: true },
-		})
+	useSchoolAuthentication(ctx.payload, schoolId)
+	const [membership, school] = await privateErrors(() =>
+		Promise.all([
+			ctx.db.membership.findFirst({
+				where: { id, schoolId },
+				select: { stripeProductId: true },
+			}),
+			ctx.db.school.findUnique({
+				where: { id: schoolId },
+				select: { stripeAccountId: true },
+				rejectOnNotFound: true,
+			}),
+		])
 	)
 
 	if (!membership) throw 'Membership not found'
-
-	let price = await getMembershipPrice(ctx, id)
+	let price = await getMembershipPrice(membership)
 	if (data.price || data.interval || data.intervalCount) {
-		privateErrors(async () => {
-			price = await stripe.prices.create(
+		price = await privateErrors(() =>
+			stripe.prices.create(
 				{
 					product: membership.stripeProductId,
 					currency: 'USD',
-					unit_amount: data.price ?? price.unit_amount ?? undefined,
+					unit_amount: data.price ?? price.unit_amount!,
 					recurring: {
 						interval: data.interval ?? price.recurring!.interval,
 						interval_count: data.intervalCount ?? price.recurring!.interval_count,
@@ -48,7 +54,7 @@ export const updateSchoolMembership: Procedure<
 				},
 				{ stripeAccount: school.stripeAccountId }
 			)
-		})
+		)
 	}
 
 	await privateErrors(() =>

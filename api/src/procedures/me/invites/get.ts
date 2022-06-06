@@ -7,7 +7,7 @@ import { useAuthentication } from '../../../util/use-authentication'
 export type UserInvitesGetResult = Invite[]
 
 export const getUserInvites: Procedure<void, UserInvitesGetResult> = async ({ ctx }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	return await privateErrors(() =>
 		db.invite.findMany({ where: { email: payload.email } })
 	)

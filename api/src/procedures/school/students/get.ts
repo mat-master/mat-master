@@ -27,7 +27,7 @@ export const getSchoolStudent: Procedure<
 	GetSchoolStudentParams,
 	GetSchoolStudentResult
 > = async ({ ctx, input: { id, schoolId } }) => {
-	await useSchoolAuthentication(ctx, schoolId)
+	await useSchoolAuthentication(ctx.payload, schoolId)
 	const student = await privateErrors(() =>
 		ctx.db.student.findFirst({
 			where: { id, schoolId },

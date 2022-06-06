@@ -17,7 +17,7 @@ export const getAllMeInvites: Procedure<
 	GetAllMeInvitesParams,
 	GetAllMeInvitesResult
 > = async ({ ctx, input: { pagination } }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	return await privateErrors(() =>
 		ctx.db.invite.findMany({
 			where: { email: payload.email },

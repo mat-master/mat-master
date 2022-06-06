@@ -26,39 +26,49 @@ export const createSchoolMembership: Procedure<
 	CreateSchoolMembershipParams,
 	CreateSchoolMembershipResult
 > = async ({ ctx, input: { schoolId, ...data } }) => {
-	const { school } = await useSchoolAuthentication(ctx, schoolId)
+	useSchoolAuthentication(ctx.payload, schoolId)
+	const school = await privateErrors(() =>
+		ctx.db.school.findUnique({
+			where: { id: schoolId },
+			select: { stripeAccountId: true },
+			rejectOnNotFound: true,
+		})
+	)
+
 	return await privateErrors(async () => {
 		const product = await stripe.products.create(
 			{ name: `${data.name} Membership` },
 			{ stripeAccount: school.stripeAccountId }
 		)
 
-		await stripe.prices.create(
-			{
-				product: product.id,
-				currency: 'USD',
-				unit_amount: data.price,
-				recurring: {
-					interval: data.interval,
-					interval_count: data.intervalCount,
+		const [classes] = await Promise.all([
+			ctx.db.class.findMany({
+				where: { id: { in: data.classes }, schoolId },
+				select: { id: true },
+			}),
+			stripe.prices.create(
+				{
+					product: product.id,
+					currency: 'USD',
+					unit_amount: data.price,
+					recurring: {
+						interval: data.interval,
+						interval_count: data.intervalCount,
+					},
 				},
-			},
-			{ stripeAccount: school.stripeAccountId }
-		)
+				{ stripeAccount: school.stripeAccountId }
+			),
+		])
 
-		const classes = await Promise.all(
-			data.classes.map((id) => ctx.db.class.findUnique({ where: { id } }))
-		)
-
-		if (!classes.every((_class) => _class?.schoolId === schoolId))
-			throw 'Class not found'
+		if (classes.length !== data.classes.length)
+			throw 'One or more classes not found'
 
 		return await ctx.db.membership.create({
 			data: {
 				...data,
 				id: generateSnowflake(),
 				school: { connect: { id: schoolId } },
-				classes: { connect: data.classes.map((id) => ({ id })) },
+				classes: { connect: classes },
 				stripeProductId: product.id,
 			},
 			select: { id: true },

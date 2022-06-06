@@ -1,26 +1,18 @@
+import { sign } from 'jsonwebtoken'
 import { Procedure } from '..'
-import { db } from '../..'
+import { VerificationPayload } from '../../models/verification-payload'
 import { privateErrors } from '../../util/private-errors'
 import { sendVerificationEmail } from '../../util/send-verification-email'
 import { useAuthentication } from '../../util/use-authentication'
 
 export const reSendVerificationEmail: Procedure = async ({ ctx }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	if (payload.emailVerified) throw 'Already verified'
 
-	const user = await privateErrors(() =>
-		db.user.findUnique({
-			where: { id: payload.id },
-			select: { firstName: true, lastName: true },
-			rejectOnNotFound: true,
-		})
-	)
+	const verificationPayload: VerificationPayload = { id: payload.id }
+	const verificationToken = sign(verificationPayload, ctx.env.JWT_SECRET, {
+		expiresIn: '15m',
+	})
 
-	await privateErrors(() =>
-		sendVerificationEmail(
-			payload.id,
-			payload.email,
-			`${user.firstName} ${user.lastName}`
-		)
-	)
+	await privateErrors(() => sendVerificationEmail(payload.email, verificationToken))
 }

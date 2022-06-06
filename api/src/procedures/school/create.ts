@@ -1,7 +1,7 @@
 import { addressRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { db, stripe } from '../..'
+import { stripe } from '../..'
 import { Snowflake } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
 import { privateErrors } from '../../util/private-errors'
@@ -19,7 +19,7 @@ export const createSchool: Procedure<
 	CreateSchoolParams,
 	CreateSchoolResult
 > = async ({ ctx, input: { name, address } }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	if (!payload.emailVerified)
 		throw 'You need to verify your email before you can create a school'
 
@@ -52,8 +52,8 @@ export const createSchool: Procedure<
 		])
 	)
 
-	await privateErrors(() =>
-		db.school.create({
+	return await privateErrors(() =>
+		ctx.db.school.create({
 			data: {
 				id: schoolId,
 				name,
@@ -62,8 +62,7 @@ export const createSchool: Procedure<
 				owner: { connect: { id: payload.id } },
 				address: { create: { id: generateSnowflake(), ...address } },
 			},
+			select: { id: true },
 		})
 	)
-
-	return { id: schoolId }
 }

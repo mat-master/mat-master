@@ -33,7 +33,7 @@ export const getAllSchoolMemberships: Procedure<
 	GetAllSchoolMembershipsParams,
 	GetAllSchoolMembershipsResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
-	await useSchoolAuthentication(ctx, schoolId)
+	useSchoolAuthentication(ctx.payload, schoolId)
 	const memberships = await privateErrors(() =>
 		ctx.db.membership.findMany({
 			where: { schoolId },

@@ -24,7 +24,7 @@ export const getAllSchoolClasses: Procedure<
 	GetAllSchoolClassesParams,
 	GetAllSchoolClassesResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
-	await useSchoolAuthentication(ctx, schoolId)
+	useSchoolAuthentication(ctx.payload, schoolId)
 	return await privateErrors(() =>
 		ctx.db.class.findMany({
 			where: { schoolId },

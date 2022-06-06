@@ -21,7 +21,7 @@ export const getAllMeSchools: Procedure<
 	GetAllMeSchoolsParams,
 	GetAllMeSchoolsResult
 > = async ({ ctx, input: { pagination } }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	const { schools } = await privateErrors(() =>
 		ctx.db.user.findUnique({
 			where: { id: payload.id },

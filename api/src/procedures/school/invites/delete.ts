@@ -15,10 +15,10 @@ export type DeleteSchoolInviteParams = z.infer<
 
 export const deleteSchoolInvite: Procedure<DeleteSchoolInviteParams> = async ({
 	ctx,
-	input,
+	input: { email, schoolId },
 }) => {
-	await useSchoolAuthentication(ctx, input.schoolId)
+	useSchoolAuthentication(ctx.payload, schoolId)
 	await privateErrors(() =>
-		ctx.db.invite.delete({ where: { schoolId_email: input } })
+		ctx.db.invite.delete({ where: { schoolId_email: { email, schoolId } } })
 	)
 }

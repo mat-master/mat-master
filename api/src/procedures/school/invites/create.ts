@@ -18,15 +18,24 @@ export const createSchoolInvite: Procedure<CreateSchoolInviteParams> = async ({
 	ctx,
 	input: { schoolId, email },
 }) => {
-	const { school } = await useSchoolAuthentication(ctx, schoolId)
-	await privateErrors(async () => {
-		await ctx.db.invite.create({
-			data: {
-				email,
-				school: { connect: { id: schoolId } },
-			},
-		})
+	useSchoolAuthentication(ctx.payload, schoolId)
+	const [{ name: schoolName }] = await privateErrors(() =>
+		Promise.all([
+			ctx.db.school.findUnique({
+				where: { id: schoolId },
+				select: { name: true },
+				rejectOnNotFound: true,
+			}),
+			ctx.db.invite.create({
+				data: {
+					email,
+					school: { connect: { id: schoolId } },
+				},
+			}),
+		])
+	)
 
-		await sendInviteEmail(email, school)
-	})
+	await privateErrors(() =>
+		sendInviteEmail(email, { id: schoolId, name: schoolName })
+	)
 }

@@ -1,7 +1,10 @@
-import { School } from '@prisma/client'
 import sgmail from '@sendgrid/mail'
+import { Snowflake } from '../../build'
 
-export const sendInviteEmail = (email: string, school: School) =>
+export const sendInviteEmail = (
+	email: string,
+	school: { id: Snowflake; name: string }
+) =>
 	sgmail.send({
 		to: email,
 		from: 'nate19522@gmail.com',

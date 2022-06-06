@@ -1,8 +1,10 @@
 import { hash } from 'bcryptjs'
+import { sign } from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { db } from '../..'
 import { Snowflake } from '../../models/snowflake'
+import { VerificationPayload } from '../../models/verification-payload'
 import { generateSnowflake } from '../../util/generate-snowflake'
 import { sendVerificationEmail } from '../../util/send-verification-email'
 
@@ -19,6 +21,7 @@ export interface AuthSignupResult {
 }
 
 export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
+	ctx,
 	input: { firstName, lastName, email, password },
 }) => {
 	const userExists = !!(
@@ -36,6 +39,11 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 		},
 	})
 
-	await sendVerificationEmail(user.id, email, `${firstName} ${lastName}`)
+	const verificationPayload: VerificationPayload = { id: user.id }
+	const verificationToken = sign(verificationPayload, ctx.env.JWT_SECRET, {
+		expiresIn: '15m',
+	})
+
+	await sendVerificationEmail(email, verificationToken)
 	return { id: user.id }
 }

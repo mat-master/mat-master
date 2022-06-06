@@ -1,27 +1,33 @@
-import { stripe } from '..'
+import Stripe from 'stripe'
+import { defaultDb, stripe } from '..'
 import { Snowflake } from '../models'
 import { Context } from '../procedures'
 import { privateErrors } from './private-errors'
 
-export const getMembershipPrice = async (
-	ctx: Context,
-	_membership: Snowflake | { stripeProductId: string }
-) => {
-	const membership =
-		typeof _membership === 'bigint'
+export function getMembershipPrice(membership: Snowflake): Promise<Stripe.Price>
+export function getMembershipPrice(membership: {
+	stripeProductId: string
+}): Promise<Stripe.Price>
+export async function getMembershipPrice(
+	membership: Snowflake | { stripeProductId: string },
+	ctx?: Context
+) {
+	const db = ctx?.db ?? defaultDb
+	const { stripeProductId } =
+		typeof membership === 'bigint'
 			? await privateErrors(() =>
-					ctx.db.membership.findUnique({
-						where: { id: _membership },
+					db.membership.findUnique({
+						where: { id: membership },
 						select: { stripeProductId: true },
+						rejectOnNotFound: true,
 					})
 			  )
-			: _membership
-	if (!membership) throw 'Membership not found'
+			: membership
 
 	return await privateErrors(async () => {
 		const res = await stripe.prices.list({
 			active: true,
-			product: membership.stripeProductId,
+			product: stripeProductId,
 			type: 'recurring',
 			limit: 100,
 		})

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { db, stripe } from '../../..'
 import { snowflakeSchema } from '../../../models'
+import { getMembershipPrice } from '../../../util/get-membership-price'
 import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
@@ -31,12 +31,13 @@ export const getSchoolMembership: Procedure<
 	GetSchoolMembershipParams,
 	GetSchoolMembershipResult
 > = async ({ ctx, input: { id, schoolId } }) => {
-	await useSchoolAuthentication(ctx, schoolId)
-
+	useSchoolAuthentication(ctx.payload, schoolId)
 	const membership = await privateErrors(() =>
-		db.membership.findFirst({
+		ctx.db.membership.findFirst({
 			where: { id, schoolId },
-			include: {
+			select: {
+				name: true,
+				stripeProductId: true,
 				classes: { select: { id: true } },
 				students: { select: { studentId: true } },
 			},
@@ -44,27 +45,13 @@ export const getSchoolMembership: Procedure<
 	)
 	if (!membership) throw 'Membership not found'
 
-	const price = await privateErrors(async () => {
-		const prices = await stripe.prices.list({
-			active: true,
-			product: membership.stripeProductId,
-		})
-
-		const price = prices.data.find(
-			(price) => !!price.recurring && !!price.unit_amount
-		)
-		if (!price) throw "membership doesn't have any prices"
-		return {
-			price: price.unit_amount!,
-			interval: price.recurring!.interval,
-			intervalCount: price.recurring!.interval_count,
-		}
-	})
-
+	const price = await privateErrors(() => getMembershipPrice(membership))
 	return {
 		id,
 		name: membership.name,
-		...price,
+		price: price.unit_amount!,
+		interval: price.recurring!.interval,
+		intervalCount: price.recurring!.interval_count,
 		classes: membership.classes.map(({ id }) => id),
 		students: membership.students.map(({ studentId }) => studentId),
 	}

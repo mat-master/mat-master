@@ -1,15 +1,11 @@
-import { db } from '..'
-import { Snowflake } from '../models'
-import { Context } from '../procedures'
-import { privateErrors } from './private-errors'
+import { Payload, Snowflake } from '../models'
 import { useAuthentication } from './use-authentication'
 
-export const useSchoolAuthentication = async (ctx: Context, id: Snowflake) => {
-	const payload = useAuthentication(ctx)
-	const school = await privateErrors(() => db.school.findUnique({ where: { id } }))
-
-	if (!school) throw 'School not found'
-	if (payload.id !== school.ownerId) throw "You aren't the owner of this school"
-
-	return { payload, school }
+export const useSchoolAuthentication = (
+	_payload: Payload | undefined,
+	id: Snowflake
+) => {
+	const payload = useAuthentication(_payload)
+	if (!payload.schools.includes(id)) throw "You aren't the owner of this school"
+	return payload
 }

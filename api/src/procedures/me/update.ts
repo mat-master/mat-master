@@ -19,7 +19,7 @@ export const updateMeParamsSchema = userRowSchema
 export type UpdateMeParams = z.infer<typeof updateMeParamsSchema>
 
 export const updateMe: Procedure<UpdateMeParams> = async ({ ctx, input }) => {
-	const payload = useAuthentication(ctx)
+	const payload = useAuthentication(ctx.payload)
 	await privateErrors(() =>
 		db.user.update({ where: { id: payload.id }, data: input })
 	)

@@ -18,7 +18,7 @@ export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 	ctx,
 	input: { id, schoolId },
 }) => {
-	await useSchoolAuthentication(ctx, schoolId)
+	useSchoolAuthentication(ctx.payload, schoolId)
 	return await privateErrors(async () =>
 		db.class.findUnique({
 			where: { id },
