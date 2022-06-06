@@ -5,9 +5,9 @@
 	"module": "build/index.mjs",
 	"types": "build/index.d.ts",
 	"scripts": {
-		"build": "esbuild src/index.ts --platform=node --bundle --minify --outfile='build.js'",
-		"build:prod": "yarn build && docker build -t mat-master-api .",
+		"build:prod": "esbuild src/index.ts --platform=node --bundle --minify --outfile='build.js' && docker build -t mat-master-api .",
 		"build:dev": "tsup",
+		"build": "yarn build:dev  && yarn build:prod",
 		"dev": "tsup --watch --onSuccess \"node build/index.js\""
 	},
 	"dependencies": {

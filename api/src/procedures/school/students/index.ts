@@ -8,7 +8,7 @@ export const studentsRouter = router<Context>()
 		input: getSchoolStudentParamsSchema,
 		resolve: getSchoolStudent,
 	})
-	.query('getAll', {
+	.query('all.get', {
 		input: getAllSchoolStudentsParamsSchema,
 		resolve: getAllSchoolStudents,
 	})

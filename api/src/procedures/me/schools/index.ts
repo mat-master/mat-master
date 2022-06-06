@@ -5,7 +5,11 @@ import { getAllMeSchools, getAllMeSchoolsParamsSchema } from './get-all'
 
 export const userSchoolsRouter = router<Context>()
 	.query('get', { resolve: getUserSchools })
-	.query('getAll', { input: getAllMeSchoolsParamsSchema, resolve: getAllMeSchools })
+	.query('all.get', {
+		input: getAllMeSchoolsParamsSchema,
+		resolve: getAllMeSchools,
+	})
 
 export * from './get'
 export * from './get-all'
+

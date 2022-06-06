@@ -67,15 +67,34 @@ model Address {
 }
 
 model Class {
-  id         BigInt       @id
-  name       String       @db.VarChar(50)
-  schedule   Json[]       @db.Json
-  attendance Attendance[]
+  id   BigInt @id
+  name String @db.VarChar(50)
 
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
 
   memberships Membership[]
+  schedule    ClassTime[]
+}
+
+model ClassTime {
+  id BigInt @id
+
+  scheduleStart DateTime  @default(now()) @map("schedule_start")
+  scheduleEnd   DateTime? @map("schedule_end")
+
+  repeatMonth Int? @map("repeat_month")
+  repeatWeek  Int? @map("repeat_week")
+  repeatDay   Int? @map("repeat_day")
+  repeatDate  Int? @map("repeat_date")
+
+  startTime DateTime @map("start_time") @db.Timetz()
+  duration  Int
+
+  class   Class  @relation(fields: [classId], references: [id])
+  classId BigInt @map("class_id")
+
+  attendances Attendance[]
 }
 
 model Membership {
@@ -118,27 +137,28 @@ model Student {
 model Invite {
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
-  email    String @db.VarChar(150)
+
+  email String @db.VarChar(150)
 
   @@id([schoolId, email])
 }
 
 model Kiosk {
-  id       BigInt @id
+  id  BigInt @id
+  pin String @db.VarChar(50)
+
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
-  pin      String @db.VarChar(50)
 }
 
 model Attendance {
   student   Student @relation(fields: [studentId], references: [id])
   studentId BigInt  @map("student_id")
 
-  class   Class  @relation(fields: [classId], references: [id])
-  classId BigInt @map("class_id")
+  classTime   ClassTime @relation(fields: [classTimeId], references: [id], map: "class_time")
+  classTimeId BigInt    @map("class_id")
 
-  date     DateTime @default(now()) @db.Date
-  metadata Json     @db.Json
+  date DateTime @default(now())
 
-  @@id([studentId, classId, date])
+  @@id([studentId, classTimeId, date])
 }

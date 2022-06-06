@@ -23,7 +23,7 @@ export const schoolMembershipsRouter = router<Context>()
 		input: getSchoolMembershipParamsSchema,
 		resolve: getSchoolMembership,
 	})
-	.query('getAll', {
+	.query('all.get', {
 		input: getAllSchoolMembershipsParamsSchema,
 		resolve: getAllSchoolMemberships,
 	})
@@ -40,8 +40,9 @@ export const schoolMembershipsRouter = router<Context>()
 		resolve: deleteSchoolMembership,
 	})
 
-	export * from './create'
-	export * from './delete'
-	export * from './get'
-	export * from './get-all'
-	export * from './update'
+export * from './create'
+export * from './delete'
+export * from './get'
+export * from './get-all'
+export * from './update'
+

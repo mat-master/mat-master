@@ -7,7 +7,7 @@ export const userInvitesRouter = router<Context>()
 	.query('get', {
 		resolve: getUserInvites,
 	})
-	.query('getAll', {
+	.query('all.get', {
 		input: getAllMeInvitesParamsSchema,
 		resolve: getAllMeInvites,
 	})

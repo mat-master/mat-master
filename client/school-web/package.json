@@ -22,10 +22,10 @@
 		"@stripe/stripe-js": "^1.29.0",
 		"@trpc/client": "^9.23.6",
 		"@trpc/react": "^9.23.6",
-		"@trpc/server": "^9.23.6",
 		"axios": "^0.26.0",
 		"cron-parser": "^4.2.1",
 		"dayjs": "^1.10.7",
+		"events": "^3.3.0",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-hook-form": "^7.27.1",
@@ -33,9 +33,11 @@
 		"react-router": "^6.2.1",
 		"react-router-dom": "^6.2.1",
 		"tabler-icons-react": "^1.37.0",
+		"url": "^0.11.0",
 		"zod": "^3.17.3"
 	},
 	"devDependencies": {
+		"@types/events": "^3",
 		"@types/react": "^17.0.33",
 		"@types/react-dom": "^17.0.10",
 		"@vitejs/plugin-react": "^1.0.7",

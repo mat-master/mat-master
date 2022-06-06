@@ -1,4 +1,4 @@
-import { Class } from '@prisma/client'
+import { Class, ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { db } from '../../..'
@@ -12,6 +12,7 @@ export const getSchoolClassParamsSchema = z.object({
 })
 
 export type GetSchoolClassParams = z.infer<typeof getSchoolClassParamsSchema>
+export type GetSchoolClassResult = Class & { schedule: ClassTime[] }
 
 export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 	ctx,
@@ -19,6 +20,10 @@ export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 }) => {
 	await useSchoolAuthentication(ctx, schoolId)
 	return await privateErrors(async () =>
-		db.class.findUnique({ where: { id }, rejectOnNotFound: true })
+		db.class.findUnique({
+			where: { id },
+			include: { schedule: true },
+			rejectOnNotFound: true,
+		})
 	)
 }

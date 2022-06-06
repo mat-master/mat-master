@@ -5,7 +5,7 @@ import { deleteSchoolInvite, deleteSchoolInviteParamsSchema } from './delete'
 import { getAllSchoolInvitesParamsSchema, getSchoolInvites } from './get-all'
 
 export const schoolInvitesRouter = router<Context>()
-	.query('getAll', {
+	.query('all.get', {
 		input: getAllSchoolInvitesParamsSchema,
 		resolve: getSchoolInvites,
 	})

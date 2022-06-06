@@ -11,7 +11,7 @@ export const schoolClassesRouter = router<Context>()
 		input: getSchoolClassParamsSchema,
 		resolve: getSchoolClass,
 	})
-	.query('getAll', {
+	.query('all.get', {
 		input: getAllSchoolClassesParamsSchema,
 		resolve: getAllSchoolClasses,
 	})
