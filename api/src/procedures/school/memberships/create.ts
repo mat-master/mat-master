@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { stripe } from '../../..'
 import { Snowflake, snowflakeSchema } from '../../../models'
 import { generateSnowflake } from '../../../util/generate-snowflake'
 import { privateErrors } from '../../../util/private-errors'
@@ -36,7 +35,7 @@ export const createSchoolMembership: Procedure<
 	)
 
 	return await privateErrors(async () => {
-		const product = await stripe.products.create(
+		const product = await ctx.stripe.products.create(
 			{ name: `${data.name} Membership` },
 			{ stripeAccount: school.stripeAccountId }
 		)
@@ -46,7 +45,7 @@ export const createSchoolMembership: Procedure<
 				where: { id: { in: data.classes }, schoolId },
 				select: { id: true },
 			}),
-			stripe.prices.create(
+			ctx.stripe.prices.create(
 				{
 					product: product.id,
 					currency: 'USD',

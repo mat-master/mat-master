@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { db, stripe } from '../..'
 import { Payload } from '../../models'
 import { verificationPayloadSchema } from '../../models/verification-payload'
 import { privateErrors } from '../../util/private-errors'
@@ -30,7 +29,7 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 	})
 
 	const user = await privateErrors(() =>
-		db.user.findUnique({
+		ctx.db.user.findUnique({
 			where: { id: payload.id },
 			include: {
 				schools: { select: { id: true } },
@@ -41,7 +40,7 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 	if (!user) throw 'Invalid verification token'
 
 	const stripeCustomer = await privateErrors(() =>
-		stripe.customers.create({
+		ctx.stripe.customers.create({
 			name: `${user.firstName} ${user.lastName}`,
 			email: user.email,
 			metadata: { id: payload.id.toString() },
@@ -49,7 +48,7 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 	)
 
 	await privateErrors(() =>
-		db.user.update({
+		ctx.db.user.update({
 			where: { id: payload.id },
 			data: {
 				emailVerified: true,

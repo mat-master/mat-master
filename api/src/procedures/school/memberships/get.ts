@@ -45,7 +45,7 @@ export const getSchoolMembership: Procedure<
 	)
 	if (!membership) throw 'Membership not found'
 
-	const price = await privateErrors(() => getMembershipPrice(membership))
+	const price = await privateErrors(() => getMembershipPrice(ctx, membership))
 	return {
 		id,
 		name: membership.name,

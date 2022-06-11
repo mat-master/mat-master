@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { db } from '../..'
 import { snowflakeSchema } from '../../models'
 import { KioskPayload } from '../../models/kiosk-payload'
 
@@ -16,9 +15,10 @@ export interface LoginKioskResult {
 }
 
 export const loginKiosk: Procedure<LoginKioskParams, LoginKioskResult> = async ({
+	ctx,
 	input: { schoolId, pin },
 }) => {
-	const result = await db.kiosk.findFirst({ where: { schoolId, pin } })
+	const result = await ctx.db.kiosk.findFirst({ where: { schoolId, pin } })
 	if (!result) throw 'School or pin is incorrect'
 
 	const payload: KioskPayload = {

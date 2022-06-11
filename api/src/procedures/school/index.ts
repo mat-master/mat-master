@@ -1,5 +1,5 @@
 import { router } from '@trpc/server'
-import { Context } from '../..'
+import { Context } from '..'
 import { schoolClassesRouter } from './classes'
 import { createSchool, createSchoolParamsSchema } from './create'
 import { getSchool, getSchoolParamsSchema } from './get'

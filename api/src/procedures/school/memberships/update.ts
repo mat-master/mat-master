@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { snowflakeSchema, stripe } from '../../..'
+import { snowflakeSchema } from '../../..'
 import { getMembershipPrice } from '../../../util/get-membership-price'
 import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
@@ -39,10 +39,10 @@ export const updateSchoolMembership: Procedure<
 	)
 
 	if (!membership) throw 'Membership not found'
-	let price = await getMembershipPrice(membership)
+	let price = await getMembershipPrice(ctx, membership)
 	if (data.price || data.interval || data.intervalCount) {
 		price = await privateErrors(() =>
-			stripe.prices.create(
+			ctx.stripe.prices.create(
 				{
 					product: membership.stripeProductId,
 					currency: 'USD',

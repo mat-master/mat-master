@@ -1,5 +1,4 @@
 import { TextInput } from '@mantine/core'
-import { createSchoolParamsSchema } from '@mat-master/api'
 import type React from 'react'
 import { z } from 'zod'
 import { trpcClient } from '..'
@@ -7,7 +6,16 @@ import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export const schoolFormDataSchema = createSchoolParamsSchema
+export const schoolFormDataSchema = z.object({
+	name: z.string(),
+	address: z.object({
+		city: z.string(),
+		state: z.string().length(2),
+		line1: z.string(),
+		line2: z.string(),
+		postalCode: z.string().length(5),
+	}),
+})
 
 export type SchoolFormData = z.infer<typeof schoolFormDataSchema>
 export type SchoolFormProps = FormWrapperProps<SchoolFormData>

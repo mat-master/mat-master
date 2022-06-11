@@ -1,5 +1,4 @@
 import { TextInput } from '@mantine/core'
-import { createSchoolInviteParamsSchema } from '@mat-master/api'
 import type React from 'react'
 import { useContext } from 'react'
 import { z } from 'zod'
@@ -9,8 +8,8 @@ import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export const inviteFormDataSchema = createSchoolInviteParamsSchema.omit({
-	schoolId: true,
+export const inviteFormDataSchema = z.object({
+	email: z.string().email(),
 })
 
 export type InviteFormData = z.infer<typeof inviteFormDataSchema>

@@ -2,7 +2,6 @@ import { hash } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { db } from '../..'
 import { Snowflake } from '../../models/snowflake'
 import { VerificationPayload } from '../../models/verification-payload'
 import { generateSnowflake } from '../../util/generate-snowflake'
@@ -25,11 +24,11 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	input: { firstName, lastName, email, password },
 }) => {
 	const userExists = !!(
-		await db.user.findUnique({ where: { email }, select: { _count: true } })
+		await ctx.db.user.findUnique({ where: { email }, select: { _count: true } })
 	)?._count
 	if (userExists) throw "There's already an account registered with that email"
 
-	const user = await db.user.create({
+	const user = await ctx.db.user.create({
 		data: {
 			id: generateSnowflake(),
 			firstName,

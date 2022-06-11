@@ -1,5 +1,4 @@
 import { Center, TextInput } from '@mantine/core'
-import { getMeResultSchema } from '@mat-master/api'
 import type React from 'react'
 import { z } from 'zod'
 import { trpcClient } from '..'
@@ -8,7 +7,10 @@ import Form, { FormWrapperProps } from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export const userFormDataSchema = getMeResultSchema.omit({ id: true })
+export const userFormDataSchema = z.object({
+	firstName: z.string(),
+	lastName: z.string(),
+})
 
 export type UserFormData = z.infer<typeof userFormDataSchema>
 export type UserFormProps = FormWrapperProps<UserFormData>
@@ -24,8 +26,8 @@ export const UserForm: React.FC<UserFormProps> = (props) => (
 				<>
 					<Center>
 						<AvatarInput
-							{...form.register('avatar')}
-							onChange={(img) => form.setValue('avatar', BigInt(''))}
+							// {...form.register('avatar')}
+							onChange={(img) => {}}
 						/>
 					</Center>
 

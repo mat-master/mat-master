@@ -1,5 +1,5 @@
 import sgmail from '@sendgrid/mail'
-import { Snowflake } from '../../build'
+import { Snowflake } from '../models'
 
 export const sendInviteEmail = (
 	email: string,

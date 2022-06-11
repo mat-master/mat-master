@@ -1,7 +1,6 @@
 import { schoolRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { db } from '../../..'
 import { useAuthentication } from '../../../util/use-authentication'
 
 const schoolResultSchema = schoolRowSchema.omit({
@@ -15,11 +14,13 @@ export interface UserSchoolsGetResult {
 	owner: SchoolResult[]
 }
 
-export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({ ctx }) => {
+export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({
+	ctx,
+}) => {
 	const payload = useAuthentication(ctx.payload)
 	const [ownerSchools, studentSchools] = await Promise.all([
-		db.school.findMany({ where: { students: { some: { id: payload.id } } } }),
-		db.school.findMany({ where: { ownerId: payload.id } }),
+		ctx.db.school.findMany({ where: { students: { some: { id: payload.id } } } }),
+		ctx.db.school.findMany({ where: { ownerId: payload.id } }),
 	])
 
 	return {

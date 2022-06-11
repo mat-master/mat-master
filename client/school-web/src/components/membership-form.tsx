@@ -1,5 +1,5 @@
 import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
-import { createSchoolMembershipParamsSchema, Snowflake } from '@mat-master/api'
+import { Snowflake, snowflakeSchema } from '@mat-master/api'
 import type React from 'react'
 import { useContext } from 'react'
 import { Controller } from 'react-hook-form'
@@ -13,14 +13,18 @@ import Form from './form'
 import type { DeepPartial, RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export const membershipFormDataSchema = createSchoolMembershipParamsSchema.omit({
-	schoolId: true,
+const INTERVALS = ['day', 'week', 'month', 'year'] as const
+
+export const membershipFormDataSchema = z.object({
+	name: z.string(),
+	price: z.number().int(),
+	interval: z.enum(INTERVALS),
+	intervalCount: z.number().int(),
+	classes: z.array(snowflakeSchema),
 })
 
 export type MembershipFormData = z.infer<typeof membershipFormDataSchema>
 export type MembershipFormProps = FormWrapperProps<MembershipFormData>
-
-const INTERVALS = ['day', 'week', 'month', 'year']
 
 export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 	<Form<MembershipFormData>
@@ -74,7 +78,9 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 								<Controller
 									name='interval'
 									control={form.control}
-									render={({ field }) => <Select data={INTERVALS} {...field} />}
+									render={({ field }) => (
+										<Select data={[...INTERVALS]} {...field} />
+									)}
 								/>
 							</Grid.Col>
 						</Grid>

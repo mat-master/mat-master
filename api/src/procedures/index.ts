@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { InferLast, ProcedureType, router as trpcRouter } from '@trpc/server'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/procedure'
+import Stripe from 'stripe'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
 import { meRouter } from './me'
@@ -9,6 +10,7 @@ import { schoolRouter } from './school'
 
 export interface BaseContext {
 	db: PrismaClient
+	stripe: Stripe
 	env: {
 		JWT_SECRET: string
 	}
@@ -34,7 +36,7 @@ export type ProcedureData<P> = {
 	type: ProcedureType
 }
 
-export const router = trpcRouter<Context>()
+const router = trpcRouter<Context>()
 	.merge('auth.', authRouter)
 	.merge('me.', meRouter)
 	.merge('school.', schoolRouter)
@@ -43,3 +45,5 @@ export * from './auth'
 export * from './kiosk'
 export * from './me'
 export * from './school'
+
+export default router

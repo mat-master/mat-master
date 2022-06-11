@@ -1,18 +1,24 @@
 import { TextInput } from '@mantine/core'
+import { Snowflake } from '@mat-master/api'
 import type React from 'react'
-import { Controller } from 'react-hook-form'
-import { createClass, getClass } from '../data/classes'
-import ClassScheduleInput from './class-schedule-input'
-import { defaultClassTime } from './class-time-input'
+import { useContext } from 'react'
+import { z } from 'zod'
+import { trpcClient } from '..'
+import { schoolContext } from '../data/school-provider'
 import Form, { FormWrapperProps } from './form'
 import RemoteForm, { RemoteFormWrapperProps } from './remote-form'
 
-export type ClassFormProps = FormWrapperProps<SchoolClassesPostBody>
+export const classFormDataSchema = z.object({
+	name: z.string(),
+})
+
+export type ClassFormData = z.infer<typeof classFormDataSchema>
+export type ClassFormProps = FormWrapperProps<ClassFormData>
 
 export const ClassForm: React.FC<ClassFormProps> = (props) => (
-	<Form
+	<Form<ClassFormData>
 		{...props}
-		schema={validator.api.schoolClassesPostSchema}
+		schema={classFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
 
@@ -23,7 +29,7 @@ export const ClassForm: React.FC<ClassFormProps> = (props) => (
 						{...form.register('name')}
 						error={errors.name?.message}
 					/>
-					<Controller
+					{/* <Controller
 						name='schedule'
 						control={form.control}
 						defaultValue={[defaultClassTime]}
@@ -34,27 +40,48 @@ export const ClassForm: React.FC<ClassFormProps> = (props) => (
 								{...field}
 							/>
 						)}
-					/>
+					/> */}
 				</>
 			)
 		}}
 	/>
 )
 
-export type RemoteClassFormProps = RemoteFormWrapperProps<SchoolClassesPostBody> & {
-	id?: string
+export type RemoteClassFormProps = RemoteFormWrapperProps<ClassFormData> & {
+	id?: Snowflake
 }
 
 export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
 	id,
 	...props
-}) => (
-	<RemoteForm<SchoolClassesPostBody>
-		{...props}
-		queryKey={['classes', { id }]}
-		getResource={id ? () => getClass(id) : undefined}
-		createResource={id ? undefined : createClass}
-		updateResource={id ? () => {} : undefined}
-		child={ClassForm}
-	/>
-)
+}) => {
+	const { id: schoolId } = useContext(schoolContext)
+	return (
+		<RemoteForm<ClassFormData>
+			{...props}
+			queryKey={['classes', { id }]}
+			getResource={
+				id
+					? () => trpcClient.query('school.classes.get', { id, schoolId })
+					: undefined
+			}
+			createResource={
+				id
+					? undefined
+					: (data) =>
+							trpcClient.mutation('school.classes.create', { schoolId, ...data })
+			}
+			updateResource={
+				id
+					? (data) =>
+							trpcClient.mutation('school.classes.update', {
+								id,
+								schoolId,
+								...data,
+							})
+					: undefined
+			}
+			child={ClassForm}
+		/>
+	)
+}

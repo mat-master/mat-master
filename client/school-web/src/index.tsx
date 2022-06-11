@@ -1,7 +1,7 @@
 import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
-import { router } from '@mat-master/api'
+import type { Router } from '@mat-master/api'
 import { createReactQueryHooks } from '@trpc/react'
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -16,7 +16,7 @@ export const queryClient = new QueryClient({
 	},
 })
 
-export const trpc = createReactQueryHooks<typeof router>()
+export const trpc = createReactQueryHooks<Router>()
 export const trpcClient = trpc.createClient({
 	url: 'http://localhost:8080',
 	headers: () => ({ Authorization: getAuthHeader() }),
@@ -55,7 +55,3 @@ ReactDOM.render(
 	</React.StrictMode>,
 	document.getElementById('root')
 )
-
-// Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
-// Learn more: https://snowpack.dev/concepts/hot-module-replacement
-import.meta.hot?.accept();

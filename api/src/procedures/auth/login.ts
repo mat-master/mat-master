@@ -2,7 +2,6 @@ import { compare } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { db } from '../..'
 import { Payload } from '../../models/payload'
 import { privateErrors } from '../../util/private-errors'
 
@@ -21,7 +20,7 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 	input: { email, password },
 }) => {
 	const user = await privateErrors(() =>
-		db.user.findUnique({
+		ctx.db.user.findUnique({
 			where: { email },
 			select: {
 				id: true,

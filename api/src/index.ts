@@ -1,42 +1,31 @@
-import { PrismaClient } from '@prisma/client'
-import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import express from 'express'
-import Stripe from 'stripe'
-import { createContextConstructor, router } from './procedures'
-
-export const defaultDb = new PrismaClient()
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-	apiVersion: '2020-08-27',
-})
+import router from './procedures'
 
 const main = async () => {
+	const [{ default: express }, { default: Stripe }, { PrismaClient }] =
+		await Promise.all([
+			import('express'),
+			import('stripe'),
+			import('@prisma/client'),
+		])
+
+	const db = new PrismaClient()
+	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+		apiVersion: '2020-08-27',
+	})
+
 	try {
-		await defaultDb.$connect()
-
 		const app = express()
-		app.use(
-			'/',
-			createExpressMiddleware({
-				router,
-				createContext: createContextConstructor({
-					db: defaultDb,
-					env: {
-						JWT_SECRET: process.env.JWT_SECRET as string,
-					},
-				}),
-			})
-		)
 
+		await db.$connect()
 		app.listen(8080, () => console.log('User api listening on port 8080'))
 	} catch (error) {
 		console.error(error)
 	}
 
-	defaultDb.$disconnect()
+	db.$disconnect()
 }
 
-main()
+if (typeof process !== 'undefined') main()
 
 export * from './models'
-export * from './procedures'
-
+export type Router = typeof router

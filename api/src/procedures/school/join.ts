@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { Procedure } from '..'
-import { stripe } from '../..'
 import { Snowflake, snowflakeSchema } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
 import { privateErrors } from '../../util/private-errors'
@@ -21,7 +20,7 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 
 	const paymentMethods = (
 		await privateErrors(() =>
-			stripe.customers.listPaymentMethods(payload.id.toString(), {
+			ctx.stripe.customers.listPaymentMethods(payload.id.toString(), {
 				type: 'card',
 			})
 		)
@@ -51,12 +50,12 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 	)
 
 	return await privateErrors(async () => {
-		const token = await stripe.tokens.create(
+		const token = await ctx.stripe.tokens.create(
 			{ customer: payload.stripeCustomerId! },
 			{ stripeAccount: school.stripeAccountId }
 		)
 
-		const customer = await stripe.customers.create(
+		const customer = await ctx.stripe.customers.create(
 			{
 				name: `${user.firstName} ${user.lastName}`,
 				email: payload.email,

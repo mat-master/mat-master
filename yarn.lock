@@ -1742,7 +1742,6 @@ __metadata:
     "@mantine/notifications": ^3.6.9
     "@mat-master/api": "workspace:^"
     "@mat-master/client": "workspace:^"
-    "@mat-master/database": "workspace:^"
     "@stripe/react-stripe-js": ^1.8.0
     "@stripe/stripe-js": ^1.29.0
     "@trpc/client": ^9.23.6
@@ -1752,8 +1751,6 @@ __metadata:
     "@types/react-dom": ^17.0.10
     "@vitejs/plugin-react": ^1.0.7
     axios: ^0.26.0
-    cron-parser: ^4.2.1
-    dayjs: ^1.10.7
     events: ^3.3.0
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -4682,15 +4679,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron-parser@npm:^4.2.1":
-  version: 4.4.0
-  resolution: "cron-parser@npm:4.4.0"
-  dependencies:
-    luxon: ^1.28.0
-  checksum: 4fd4d1bd46ae49c277bf5f0bc522187211a47c08371d7245a10c331d3254c40bb7a95f52e231f40fcf2b5aa687043cde4f480f4e973975b3edc1053f76e521c1
-  languageName: node
-  linkType: hard
-
 "cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
@@ -4779,7 +4767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.10.7, dayjs@npm:^1.8.15":
+"dayjs@npm:^1.8.15":
   version: 1.11.2
   resolution: "dayjs@npm:1.11.2"
   checksum: 78f8bd04a9e5f5554aa06eacda65a7d59e162d39f621a46fd34fb3b51367c3662426d86b4e2f4ac535f81e0c4d5af3e8a83b37e672412eb556267d726c61f8f3
@@ -8695,13 +8683,6 @@ __metadata:
   version: 7.10.1
   resolution: "lru-cache@npm:7.10.1"
   checksum: e8b190d71ed0fcd7b29c71a3e9b01f851c92d1ef8865ff06b5581ca991db1e5e006920ed4da8b56da1910664ed51abfd76c46fb55e82ac252ff6c970ff910d72
-  languageName: node
-  linkType: hard
-
-"luxon@npm:^1.28.0":
-  version: 1.28.0
-  resolution: "luxon@npm:1.28.0"
-  checksum: 5250cb9f138b6048eeb0b3a9044a4ac994d0058f680c72a0da4b6aeaec8612460385639cba2b1052ef6d5564879e9ed144d686f26d9d97b38ab920d82e18281c
   languageName: node
   linkType: hard
 

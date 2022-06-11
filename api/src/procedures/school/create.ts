@@ -1,7 +1,6 @@
 import { addressRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { stripe } from '../..'
 import { Snowflake } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
 import { privateErrors } from '../../util/private-errors'
@@ -26,7 +25,7 @@ export const createSchool: Procedure<
 	const schoolId = generateSnowflake()
 	const [account, subscription] = await privateErrors(() =>
 		Promise.all([
-			stripe.accounts.create({
+			ctx.stripe.accounts.create({
 				type: 'standard',
 				country: 'US',
 				business_type: 'company',
@@ -43,7 +42,7 @@ export const createSchool: Procedure<
 					id: schoolId.toString(),
 				},
 			}),
-			stripe.subscriptions.create({
+			ctx.stripe.subscriptions.create({
 				customer: payload.stripeCustomerId!,
 				items: [{ price: 'price_1KW88vGsHxGKM7KBG946ldmZ' }],
 				trial_end: Math.floor(Date.now() / 1000 + 7890000),

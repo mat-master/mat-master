@@ -1,5 +1,4 @@
 import { PasswordInput, TextInput } from '@mantine/core'
-import { authLoginParamsSchema } from '@mat-master/api'
 import type React from 'react'
 import { z } from 'zod'
 import { signin } from '../utils/auth'
@@ -8,7 +7,10 @@ import Form from './form'
 import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
-export const signInFormDataSchema = authLoginParamsSchema
+export const signInFormDataSchema = z.object({
+	email: z.string().email(),
+	password: z.string().min(6),
+})
 
 export type SignInFormData = z.infer<typeof signInFormDataSchema>
 export type SignInFormProps = FormWrapperProps<SignInFormData>

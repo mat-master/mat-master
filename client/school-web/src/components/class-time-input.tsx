@@ -1,7 +1,6 @@
 import { createStyles, InputWrapper, Select, Text } from '@mantine/core'
 import { TimeInput } from '@mantine/dates'
 import { useUncontrolled } from '@mantine/hooks'
-import { parseExpression } from 'cron-parser'
 import dayjs from 'dayjs'
 import weekdayPlugin from 'dayjs/plugin/weekday'
 import type React from 'react'
