@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { snowflakeSchema } from '../../..'
+import { snowflakeSchema } from '../../../models'
 import { getMembershipPrice } from '../../../util/get-membership-price'
 import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'

@@ -1,13 +1,8 @@
-import router from './procedures'
+import { PrismaClient } from '@prisma/client'
+import express from 'express'
+import Stripe from 'stripe'
 
 const main = async () => {
-	const [{ default: express }, { default: Stripe }, { PrismaClient }] =
-		await Promise.all([
-			import('express'),
-			import('stripe'),
-			import('@prisma/client'),
-		])
-
 	const db = new PrismaClient()
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 		apiVersion: '2020-08-27',
@@ -25,7 +20,5 @@ const main = async () => {
 	db.$disconnect()
 }
 
-if (typeof process !== 'undefined') main()
-
-export * from './models'
-export type Router = typeof router
+console.log('running server side code')
+main()

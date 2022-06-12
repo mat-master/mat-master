@@ -1694,7 +1694,6 @@ __metadata:
     express: ^4.18.1
     jsonwebtoken: ^8.5.1
     stripe: ^9.5.0
-    tsup: ^6.0.1
     zod: ^3.17.3
   languageName: unknown
   linkType: soft
