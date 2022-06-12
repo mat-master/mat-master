@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { snowflakeSchema } from '../../../models'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const deleteSchoolInviteParamsSchema = z.object({
@@ -18,7 +17,5 @@ export const deleteSchoolInvite: Procedure<DeleteSchoolInviteParams> = async ({
 	input: { email, schoolId },
 }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	await privateErrors(() =>
-		ctx.db.invite.delete({ where: { schoolId_email: { email, schoolId } } })
-	)
+	await ctx.db.invite.delete({ where: { schoolId_email: { email, schoolId } } })
 }

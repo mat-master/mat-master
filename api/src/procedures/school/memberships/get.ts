@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { Procedure } from '../..'
 import { snowflakeSchema } from '../../../models'
 import { getMembershipPrice } from '../../../util/get-membership-price'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolMembershipParamsSchema = z.object({
@@ -32,20 +31,19 @@ export const getSchoolMembership: Procedure<
 	GetSchoolMembershipResult
 > = async ({ ctx, input: { id, schoolId } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	const membership = await privateErrors(() =>
-		ctx.db.membership.findFirst({
-			where: { id, schoolId },
-			select: {
-				name: true,
-				stripeProductId: true,
-				classes: { select: { id: true } },
-				students: { select: { studentId: true } },
-			},
-		})
-	)
+	const membership = await ctx.db.membership.findFirst({
+		where: { id, schoolId },
+		select: {
+			name: true,
+			stripeProductId: true,
+			classes: { select: { id: true } },
+			students: { select: { studentId: true } },
+		},
+	})
 	if (!membership) throw 'Membership not found'
 
-	const price = await privateErrors(() => getMembershipPrice(ctx, membership))
+	const price = await getMembershipPrice(ctx, membership)
+
 	return {
 		id,
 		name: membership.name,

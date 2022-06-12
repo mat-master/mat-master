@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { Procedure } from '../..'
 import { snowflakeSchema } from '../../../models'
 import { getMembershipPrice } from '../../../util/get-membership-price'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const updateSchoolMembershipParamsSchema = z.object({
@@ -24,49 +23,43 @@ export const updateSchoolMembership: Procedure<
 	UpdateSchoolMembershipParams
 > = async ({ ctx, input: { id, schoolId, ...data } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	const [membership, school] = await privateErrors(() =>
-		Promise.all([
-			ctx.db.membership.findFirst({
-				where: { id, schoolId },
-				select: { stripeProductId: true },
-			}),
-			ctx.db.school.findUnique({
-				where: { id: schoolId },
-				select: { stripeAccountId: true },
-				rejectOnNotFound: true,
-			}),
-		])
-	)
+	const [membership, school] = await Promise.all([
+		ctx.db.membership.findFirst({
+			where: { id, schoolId },
+			select: { stripeProductId: true },
+		}),
+		ctx.db.school.findUnique({
+			where: { id: schoolId },
+			select: { stripeAccountId: true },
+			rejectOnNotFound: true,
+		}),
+	])
 
 	if (!membership) throw 'Membership not found'
 	let price = await getMembershipPrice(ctx, membership)
 	if (data.price || data.interval || data.intervalCount) {
-		price = await privateErrors(() =>
-			ctx.stripe.prices.create(
-				{
-					product: membership.stripeProductId,
-					currency: 'USD',
-					unit_amount: data.price ?? price.unit_amount!,
-					recurring: {
-						interval: data.interval ?? price.recurring!.interval,
-						interval_count: data.intervalCount ?? price.recurring!.interval_count,
-					},
+		price = await ctx.stripe.prices.create(
+			{
+				product: membership.stripeProductId,
+				currency: 'USD',
+				unit_amount: data.price ?? price.unit_amount!,
+				recurring: {
+					interval: data.interval ?? price.recurring!.interval,
+					interval_count: data.intervalCount ?? price.recurring!.interval_count,
 				},
-				{ stripeAccount: school.stripeAccountId }
-			)
+			},
+			{ stripeAccount: school.stripeAccountId }
 		)
 	}
 
-	await privateErrors(() =>
-		ctx.db.membership.update({
-			where: { id },
-			data: {
-				name: data.name,
-				stripeProductId: price.id,
-				classes: data.classes
-					? { connect: data.classes?.map((id) => ({ id })) }
-					: undefined,
-			},
-		})
-	)
+	await ctx.db.membership.update({
+		where: { id },
+		data: {
+			name: data.name,
+			stripeProductId: price.id,
+			classes: data.classes
+				? { connect: data.classes?.map((id) => ({ id })) }
+				: undefined,
+		},
+	})
 }

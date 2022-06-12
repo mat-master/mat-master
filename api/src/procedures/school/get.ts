@@ -2,7 +2,6 @@ import { schoolRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { snowflakeSchema } from '../../models'
-import { privateErrors } from '../../util/private-errors'
 import { useAuthentication } from '../../util/use-authentication'
 
 export const getSchoolParamsSchema = z.object({ id: snowflakeSchema })
@@ -20,9 +19,7 @@ export const getSchool: Procedure<GetSchoolParams, GetSchoolResult> = async ({
 	input: { id },
 }) => {
 	const payload = useAuthentication(ctx.payload)
-	const school = await privateErrors(() =>
-		ctx.db.school.findUnique({ where: { id } })
-	)
+	const school = await ctx.db.school.findUnique({ where: { id } })
 
 	if (!school) throw 'School not found'
 	if (school.ownerId !== payload.id) throw "You aren't the owner of that school"

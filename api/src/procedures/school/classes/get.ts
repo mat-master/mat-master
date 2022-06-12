@@ -2,7 +2,6 @@ import { Class, ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { snowflakeSchema } from '../../../models'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolClassParamsSchema = z.object({
@@ -18,11 +17,9 @@ export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 	input: { id, schoolId },
 }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	return await privateErrors(async () =>
-		ctx.db.class.findUnique({
-			where: { id },
-			include: { schedule: true },
-			rejectOnNotFound: true,
-		})
-	)
+	return await ctx.db.class.findUnique({
+		where: { id },
+		include: { schedule: true },
+		rejectOnNotFound: true,
+	})
 }

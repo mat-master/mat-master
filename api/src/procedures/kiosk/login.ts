@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
@@ -19,12 +20,16 @@ export const loginKiosk: Procedure<LoginKioskParams, LoginKioskResult> = async (
 	input: { schoolId, pin },
 }) => {
 	const result = await ctx.db.kiosk.findFirst({ where: { schoolId, pin } })
-	if (!result) throw 'School or pin is incorrect'
+	if (!result)
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'incorrect pin',
+		})
 
 	const payload: KioskPayload = {
 		id: result.id,
 		schoolId,
 	}
 
-	return { jwt: jwt.sign(payload, process.env.JWT_SECRET as string) }
+	return { jwt: jwt.sign(payload, ctx.env.JWT_SECRET) }
 }

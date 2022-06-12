@@ -17,11 +17,3 @@ export const schoolRouter = router<Context>()
 	.merge('memberships.', schoolMembershipsRouter)
 	.merge('students.', studentsRouter)
 
-export * from './classes'
-export * from './create'
-export * from './get'
-export * from './invites'
-export * from './join'
-export * from './memberships'
-export * from './students'
-

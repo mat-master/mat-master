@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { Snowflake, snowflakeSchema } from '../../../models'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolStudentParamsSchema = z.object({
@@ -28,27 +27,25 @@ export const getSchoolStudent: Procedure<
 	GetSchoolStudentResult
 > = async ({ ctx, input: { id, schoolId } }) => {
 	await useSchoolAuthentication(ctx.payload, schoolId)
-	const student = await privateErrors(() =>
-		ctx.db.student.findFirst({
-			where: { id, schoolId },
-			select: {
-				id: true,
-				schoolId: true,
-				user: {
-					select: {
-						id: true,
-						email: true,
-						firstName: true,
-						lastName: true,
-						avatar: true,
-					},
-				},
-				memberships: {
-					select: { membershipId: true },
+	const student = await ctx.db.student.findFirst({
+		where: { id, schoolId },
+		select: {
+			id: true,
+			schoolId: true,
+			user: {
+				select: {
+					id: true,
+					email: true,
+					firstName: true,
+					lastName: true,
+					avatar: true,
 				},
 			},
-		})
-	)
+			memberships: {
+				select: { membershipId: true },
+			},
+		},
+	})
 
 	if (!student) throw 'Student not found'
 	return {

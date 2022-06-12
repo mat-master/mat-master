@@ -1,7 +1,7 @@
 import { schoolRowSchema } from '@mat-master/database'
 import { z } from 'zod'
-import { Procedure } from '../..'
-import { useAuthentication } from '../../../util/use-authentication'
+import { Procedure } from '..'
+import { useAuthentication } from '../../util/use-authentication'
 
 const schoolResultSchema = schoolRowSchema.omit({
 	stripeAccountId: true,

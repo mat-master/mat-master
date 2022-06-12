@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
+import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import express from 'express'
 import Stripe from 'stripe'
+import { createContextConstructor, router } from './procedures'
 
 const main = async () => {
 	const db = new PrismaClient()
@@ -8,17 +10,27 @@ const main = async () => {
 		apiVersion: '2020-08-27',
 	})
 
-	try {
-		const app = express()
+	await db.$connect()
 
-		await db.$connect()
-		app.listen(8080, () => console.log('User api listening on port 8080'))
-	} catch (error) {
-		console.error(error)
-	}
+	const app = express()
+	const trpcMiddleware = createExpressMiddleware({
+		router,
+		createContext: createContextConstructor({
+			db,
+			stripe,
+			env: {
+				JWT_SECRET: process.env.JWT_SECRET!,
+			},
+		}),
+		onError({ error }) {
+			console.log(error)
+		},
+	})
 
-	db.$disconnect()
+	app.use('/', trpcMiddleware)
+	app.listen(8080, () => console.log('User api listening on port 8080'))
+
+	await db.$disconnect()
 }
 
-console.log('running server side code')
 main()

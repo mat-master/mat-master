@@ -1,10 +1,9 @@
 import { userRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { privateErrors } from '../../util/private-errors'
 import { useAuthentication } from '../../util/use-authentication'
 
-export const updateMeParamsSchema = userRowSchema
+export const updateUserParamsSchema = userRowSchema
 	.omit({
 		id: true,
 		password: true,
@@ -15,11 +14,9 @@ export const updateMeParamsSchema = userRowSchema
 	})
 	.partial()
 
-export type UpdateMeParams = z.infer<typeof updateMeParamsSchema>
+export type UpdateUserParams = z.infer<typeof updateUserParamsSchema>
 
-export const updateMe: Procedure<UpdateMeParams> = async ({ ctx, input }) => {
+export const updateUser: Procedure<UpdateUserParams> = async ({ ctx, input }) => {
 	const payload = useAuthentication(ctx.payload)
-	await privateErrors(() =>
-		ctx.db.user.update({ where: { id: payload.id }, data: input })
-	)
+	await ctx.db.user.update({ where: { id: payload.id }, data: input })
 }

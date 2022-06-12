@@ -5,8 +5,8 @@ import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/
 import Stripe from 'stripe'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
-import { meRouter } from './me'
 import { schoolRouter } from './school'
+import { userRouter } from './user'
 
 export interface BaseContext {
 	db: PrismaClient
@@ -36,14 +36,7 @@ export type ProcedureData<P> = {
 	type: ProcedureType
 }
 
-const router = trpcRouter<Context>()
+export const router = trpcRouter<Context>()
 	.merge('auth.', authRouter)
-	.merge('me.', meRouter)
+	.merge('user.', userRouter)
 	.merge('school.', schoolRouter)
-
-export * from './auth'
-export * from './kiosk'
-export * from './me'
-export * from './school'
-
-export default router

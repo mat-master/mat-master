@@ -1,9 +1,9 @@
+import { TRPCError } from '@trpc/server'
 import { compare } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { Payload } from '../../models/payload'
-import { privateErrors } from '../../util/private-errors'
 
 export const authLoginParamsSchema = z.object({
 	email: z.string().email(),
@@ -19,23 +19,30 @@ export const login: Procedure<AuthLoginParams, AuthLoginResult> = async ({
 	ctx,
 	input: { email, password },
 }) => {
-	const user = await privateErrors(() =>
-		ctx.db.user.findUnique({
-			where: { email },
-			select: {
-				id: true,
-				emailVerified: true,
-				password: true,
-				stripeCustomerId: true,
-				schools: { select: { id: true } },
-				students: { select: { id: true } },
-			},
-		})
-	)
-	if (!user) throw 'incorrect email'
+	const user = await ctx.db.user.findUnique({
+		where: { email },
+		select: {
+			id: true,
+			emailVerified: true,
+			password: true,
+			stripeCustomerId: true,
+			schools: { select: { id: true } },
+			students: { select: { id: true } },
+		},
+	})
 
-	const matches = await privateErrors(() => compare(password, user.password))
-	if (!matches) throw 'incorrect password'
+	if (!user)
+		throw new TRPCError({
+			code: 'NOT_FOUND',
+			message: 'incorrect email',
+		})
+
+	const matches = await compare(password, user.password)
+	if (!matches)
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'incorrect password',
+		})
 
 	const payload: Payload = {
 		id: user.id,

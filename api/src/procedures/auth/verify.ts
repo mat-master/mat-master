@@ -1,9 +1,8 @@
+import { TRPCError } from '@trpc/server'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { Payload } from '../../models'
-import { verificationPayloadSchema } from '../../models/verification-payload'
-import { privateErrors } from '../../util/private-errors'
+import { Payload, Snowflake, verificationPayloadSchema } from '../../models'
 
 export const authVerifyParamsSchema = z.object({
 	token: z.string(),
@@ -18,47 +17,48 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 	ctx,
 	input: { token },
 }) => {
-	const payload = await privateErrors(() => {
-		try {
-			return verificationPayloadSchema.parse(jwt.verify(token, ctx.env.JWT_SECRET))
-		} catch (err) {
-			if (err instanceof jwt.TokenExpiredError) throw 'Verification token expired'
-			if (err instanceof z.ZodError) throw 'Invalid verification token'
-			throw 'An unknown error ocurred'
-		}
+	let userId: Snowflake
+	try {
+		const payload = verificationPayloadSchema.parse(
+			jwt.verify(token, ctx.env.JWT_SECRET)
+		)
+		userId = payload.id
+	} catch (err) {
+		if (err instanceof jwt.TokenExpiredError)
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'verification token expired',
+				cause: err,
+			})
+
+		throw undefined
+	}
+
+	const user = await ctx.db.user.findUnique({
+		where: { id: userId },
+		include: {
+			schools: { select: { id: true } },
+			students: { select: { id: true } },
+		},
+		rejectOnNotFound: true,
 	})
 
-	const user = await privateErrors(() =>
-		ctx.db.user.findUnique({
-			where: { id: payload.id },
-			include: {
-				schools: { select: { id: true } },
-				students: { select: { id: true } },
-			},
-		})
-	)
-	if (!user) throw 'Invalid verification token'
+	const stripeCustomer = await ctx.stripe.customers.create({
+		name: `${user.firstName} ${user.lastName}`,
+		email: user.email,
+		metadata: { id: user.id.toString() },
+	})
 
-	const stripeCustomer = await privateErrors(() =>
-		ctx.stripe.customers.create({
-			name: `${user.firstName} ${user.lastName}`,
-			email: user.email,
-			metadata: { id: payload.id.toString() },
-		})
-	)
+	await ctx.db.user.update({
+		where: { id: user.id },
+		data: {
+			emailVerified: true,
+			stripeCustomerId: stripeCustomer.id,
+		},
+	})
 
-	await privateErrors(() =>
-		ctx.db.user.update({
-			where: { id: payload.id },
-			data: {
-				emailVerified: true,
-				stripeCustomerId: stripeCustomer.id,
-			},
-		})
-	)
-
-	const newPayload: Payload = {
-		id: payload.id,
+	const payload: Payload = {
+		id: user.id,
 		email: user.email,
 		emailVerified: true,
 		stripeCustomerId: stripeCustomer.id,
@@ -66,5 +66,5 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 		students: user.students.map(({ id }) => id),
 	}
 
-	return { jwt: jwt.sign(newPayload, ctx.env.JWT_SECRET) }
+	return { jwt: jwt.sign(payload, ctx.env.JWT_SECRET) }
 }

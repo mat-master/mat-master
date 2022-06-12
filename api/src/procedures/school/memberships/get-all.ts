@@ -6,7 +6,6 @@ import {
 	paginationParamsSchema,
 	prismaPagination,
 } from '../../../util/prisma-pagination'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getAllSchoolMembershipsParamsSchema = z
@@ -34,26 +33,22 @@ export const getAllSchoolMemberships: Procedure<
 	GetAllSchoolMembershipsResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	const memberships = await privateErrors(() =>
-		ctx.db.membership.findMany({
-			where: { schoolId },
-			select: {
-				id: true,
-				name: true,
-				schoolId: true,
-				stripeProductId: true,
-				classes: { select: { id: true } },
-				students: { select: { studentId: true } },
-			},
-			...prismaPagination(pagination),
-		})
-	)
+	const memberships = await ctx.db.membership.findMany({
+		where: { schoolId },
+		select: {
+			id: true,
+			name: true,
+			schoolId: true,
+			stripeProductId: true,
+			classes: { select: { id: true } },
+			students: { select: { studentId: true } },
+		},
+		...prismaPagination(pagination),
+	})
 
-	const prices = await privateErrors(() =>
-		Promise.all(
-			memberships.map(({ stripeProductId }) =>
-				getMembershipPrice(ctx, { stripeProductId })
-			)
+	const prices = await Promise.all(
+		memberships.map(({ stripeProductId }) =>
+			getMembershipPrice(ctx, { stripeProductId })
 		)
 	)
 

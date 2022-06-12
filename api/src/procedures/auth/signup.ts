@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server'
 import { hash } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { z } from 'zod'
@@ -23,10 +24,16 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	ctx,
 	input: { firstName, lastName, email, password },
 }) => {
-	const userExists = !!(
-		await ctx.db.user.findUnique({ where: { email }, select: { _count: true } })
-	)?._count
-	if (userExists) throw "There's already an account registered with that email"
+	const existingUsers = await ctx.db.user.findUnique({
+		where: { email },
+		select: { _count: true },
+	})
+
+	if (!existingUsers?._count)
+		throw new TRPCError({
+			code: 'CONFLICT',
+			message: "There's already an account registered with that email",
+		})
 
 	const user = await ctx.db.user.create({
 		data: {

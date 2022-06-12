@@ -2,11 +2,11 @@ import { router } from '@trpc/server'
 import { Context } from '../..'
 import { createSchoolInvite, createSchoolInviteParamsSchema } from './create'
 import { deleteSchoolInvite, deleteSchoolInviteParamsSchema } from './delete'
-import { getAllSchoolInvitesParamsSchema, getSchoolInvites } from './get-all'
+import { getSchoolInvites, getSchoolInvitesParamsSchema } from './get'
 
 export const schoolInvitesRouter = router<Context>()
 	.query('all.get', {
-		input: getAllSchoolInvitesParamsSchema,
+		input: getSchoolInvitesParamsSchema,
 		resolve: getSchoolInvites,
 	})
 	.mutation('create', {
@@ -20,5 +20,5 @@ export const schoolInvitesRouter = router<Context>()
 
 export * from './create'
 export * from './delete'
-export * from './get-all'
+export * from './get'
 

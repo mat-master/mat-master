@@ -6,7 +6,6 @@ import {
 	paginationParamsSchema,
 	prismaPagination,
 } from '../../../util/prisma-pagination'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getAllSchoolClassesParamsSchema = z
@@ -25,10 +24,8 @@ export const getAllSchoolClasses: Procedure<
 	GetAllSchoolClassesResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	return await privateErrors(() =>
-		ctx.db.class.findMany({
-			where: { schoolId },
-			...prismaPagination(pagination),
-		})
-	)
+	return await ctx.db.class.findMany({
+		where: { schoolId },
+		...prismaPagination(pagination),
+	})
 }

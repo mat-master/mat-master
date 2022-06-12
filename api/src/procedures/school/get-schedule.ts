@@ -2,7 +2,6 @@ import { ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { snowflakeSchema } from '../../models'
-import { privateErrors } from '../../util/private-errors'
 import { useSchoolAuthentication } from '../../util/use-school-authentication'
 
 export const getSchoolScheduleParamsSchema = z.object({
@@ -19,12 +18,10 @@ export const getSchoolSchedule: Procedure<
 	GetSchoolScheduleResult
 > = async ({ ctx, input: { schoolId, reference = new Date(), scope } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	return await privateErrors(() =>
-		ctx.db.classTime.findMany({
-			where: {
-				class: { schoolId },
-				scheduleStart: { gte: reference },
-			},
-		})
-	)
+	return await ctx.db.classTime.findMany({
+		where: {
+			class: { schoolId },
+			scheduleStart: { gte: reference },
+		},
+	})
 }

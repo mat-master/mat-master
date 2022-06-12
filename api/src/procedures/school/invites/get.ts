@@ -6,29 +6,24 @@ import {
 	paginationParamsSchema,
 	prismaPagination,
 } from '../../../util/prisma-pagination'
-import { privateErrors } from '../../../util/private-errors'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
-export const getAllSchoolInvitesParamsSchema = z
+export const getSchoolInvitesParamsSchema = z
 	.object({
 		schoolId: snowflakeSchema,
 	})
 	.merge(paginationParamsSchema)
 
-export type GetAllSchoolInvitesParams = z.infer<
-	typeof getAllSchoolInvitesParamsSchema
->
-export type GetAllSchoolInvitesResult = Invite[]
+export type GetSchoolInvitesParams = z.infer<typeof getSchoolInvitesParamsSchema>
+export type GetSchoolInvitesResult = Invite[]
 
 export const getSchoolInvites: Procedure<
-	GetAllSchoolInvitesParams,
-	GetAllSchoolInvitesResult
+	GetSchoolInvitesParams,
+	GetSchoolInvitesResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
 	useSchoolAuthentication(ctx.payload, schoolId)
-	return await privateErrors(() =>
-		ctx.db.invite.findMany({
-			where: { schoolId },
-			...prismaPagination(pagination),
-		})
-	)
+	return await ctx.db.invite.findMany({
+		where: { schoolId },
+		...prismaPagination(pagination),
+	})
 }
