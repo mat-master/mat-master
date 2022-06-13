@@ -17,12 +17,12 @@ import {
 	ShieldLock as VerifyIcon,
 	User as UserIcon,
 } from 'tabler-icons-react'
-import { trpc } from '..'
 import BillingForm from '../components/billing-form'
 import EmailVerifier from '../components/email-verifier'
 import SignUpLoginForm from '../components/sign-up-login-form'
 import { schoolContext } from '../data/school-provider'
 import { getPrimaryColor } from '../utils/get-colors'
+import { trpc } from '../utils/trpc'
 
 type AuthIntent = 'Sign up' | 'Sign in'
 

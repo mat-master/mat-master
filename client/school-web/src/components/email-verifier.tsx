@@ -1,7 +1,7 @@
 import { Button, Group, Text } from '@mantine/core'
 import type React from 'react'
 import { useEffect } from 'react'
-import { trpc } from '..'
+import { trpc } from '../utils/trpc'
 
 export interface EmailVerificationFormProps {
 	email: string
@@ -18,7 +18,7 @@ const EmailVerifier: React.FC<EmailVerificationFormProps> = ({
 		data: me,
 		isLoading: meLoading,
 		refetch: refetchMe,
-	} = trpc.useQuery(['me.get'])
+	} = trpc.useQuery(['user.get'])
 
 	useEffect(() => {
 		if (me?.emailVerified && onVerified) onVerified()

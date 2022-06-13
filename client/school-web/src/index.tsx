@@ -1,13 +1,13 @@
 import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
-import type { Router } from '@mat-master/api'
-import { createReactQueryHooks } from '@trpc/react'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import superjson from 'superjson'
 import App from './app'
 import { getAuthHeader } from './utils/auth'
+import { trpc } from './utils/trpc'
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
@@ -16,9 +16,9 @@ export const queryClient = new QueryClient({
 	},
 })
 
-export const trpc = createReactQueryHooks<Router>()
 export const trpcClient = trpc.createClient({
 	url: 'http://localhost:8080',
+	transformer: superjson,
 	headers: () => ({ Authorization: getAuthHeader() }),
 })
 

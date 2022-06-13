@@ -9,20 +9,17 @@ import {
 } from '@mantine/core'
 import type React from 'react'
 import { useContext } from 'react'
-import { useQueryClient } from 'react-query'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Logout as LogoutIcon, User as AccountIcon } from 'tabler-icons-react'
-import { trpc } from '..'
 import { schoolContext } from '../data/school-provider'
 import { signout } from '../utils/auth'
 import getInitials from '../utils/get-initials'
+import { trpc } from '../utils/trpc'
 
 const AppHeader: React.FC = () => {
 	const theme = useMantineTheme()
-	const navigate = useNavigate()
-	const queryClient = useQueryClient()
 
-	const { data: user } = trpc.useQuery(['me.get'])
+	const { data: user } = trpc.useQuery(['user.get'])
 	const { id: schoolId } = useContext(schoolContext)
 	const { data: school, isLoading } = trpc.useQuery([
 		'school.get',

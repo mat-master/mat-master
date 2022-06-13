@@ -3,7 +3,6 @@ import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
-import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import { RemoteInviteForm } from '../../components/invite-form'
 import ItemMenu from '../../components/item-menu'
@@ -16,6 +15,7 @@ import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
+import { trpc } from '../../utils/trpc'
 
 const StudentsPage: React.FC = () => {
 	const modals = useModals()
@@ -27,7 +27,7 @@ const StudentsPage: React.FC = () => {
 		isLoading,
 		isError,
 		refetch,
-	} = trpc.useQuery(['school.students.getAll', { schoolId }])
+	} = trpc.useQuery(['school.students.all.get', { schoolId }])
 	const filteredStudents = useMemo(() => {
 		if (!students) return []
 		return students.filter(({ user: { firstName, lastName } }) =>

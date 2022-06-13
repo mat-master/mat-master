@@ -53,9 +53,9 @@ export const RemoteUserForm: React.FC<RemoteUserFormProps> = (props) => (
 	<RemoteForm<UserFormData>
 		{...props}
 		queryKey={['me', {}]}
-		getResource={() => trpcClient.query('me.get')}
+		getResource={() => trpcClient.query('user.get')}
 		updateResource={(data) =>
-			trpcClient.mutation('me.update', {
+			trpcClient.mutation('user.update', {
 				firstName: data.firstName,
 				lastName: data.lastName,
 			})

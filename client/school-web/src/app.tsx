@@ -24,14 +24,12 @@ const App: React.FC = () => (
 
 			<Route path='schools'>
 				<Route index element={<SchoolsPage />} />
-				<Route path=':school'>
-					<SchoolProvider>
-						<Route index element={<DashboardPage />} />
-						<Route path='students' element={<StudentsPage />} />
-						<Route path='classes' element={<ClassesPage />} />
-						<Route path='memberships' element={<MembershipsPage />} />
-						<Route path='billing' element={<BillingPage />} />
-					</SchoolProvider>
+				<Route path=':school' element={<SchoolProvider />}>
+					<Route index element={<DashboardPage />} />
+					<Route path='students' element={<StudentsPage />} />
+					<Route path='classes' element={<ClassesPage />} />
+					<Route path='memberships' element={<MembershipsPage />} />
+					<Route path='billing' element={<BillingPage />} />
 				</Route>
 			</Route>
 

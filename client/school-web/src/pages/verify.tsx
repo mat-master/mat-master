@@ -4,9 +4,9 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import { Refresh as RetryIcon } from 'tabler-icons-react'
-import { trpc } from '..'
 import Page from '../page'
 import getErrorMessage from '../utils/get-error-message'
+import { trpc } from '../utils/trpc'
 
 const VerifyPage: React.FC = () => {
 	const navigate = useNavigate()

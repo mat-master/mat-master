@@ -3,7 +3,6 @@ import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
-import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import { RemoteClassForm } from '../../components/class-form'
 import ItemMenu from '../../components/item-menu'
@@ -16,6 +15,7 @@ import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
+import { trpc } from '../../utils/trpc'
 
 const ClassesPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
@@ -27,7 +27,7 @@ const ClassesPage: React.FC = () => {
 		isLoading,
 		isError,
 		refetch,
-	} = trpc.useQuery(['school.classes.getAll', { schoolId }])
+	} = trpc.useQuery(['school.classes.all.get', { schoolId }])
 	const filteredClasses = useMemo(() => {
 		if (!classes) return []
 		return classes.filter(({ name }) =>
@@ -57,22 +57,19 @@ const ClassesPage: React.FC = () => {
 					{ key: 'schedule', name: 'Schedule', width: 3 },
 					{ key: 'menu', name: '', width: 0.5 },
 				]}
-				items={filteredClasses.map(({ id, name, schedule }) => ({
+				items={filteredClasses.map(({ id, name }) => ({
 					data: {
 						name: <Text weight={700}>{name}</Text>,
 						studentAvatars: 'TODO',
 						memberships: 'TODO',
-						schedule: <ScheduleDisplay schedule={schedule} />,
+						schedule: <ScheduleDisplay schedule={[]} />,
 						menu: (
 							<ItemMenu
 								onEdit={() =>
 									openFormModal(
 										modals,
 										name,
-										<RemoteClassForm
-											id={id.toString()}
-											defaultValues={{ name, schedule }}
-										/>
+										<RemoteClassForm id={id} defaultValues={{ name }} />
 									)
 								}
 								onDelete={() =>

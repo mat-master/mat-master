@@ -3,6 +3,7 @@ import { InferLast, ProcedureType, router as trpcRouter } from '@trpc/server'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/procedure'
 import Stripe from 'stripe'
+import superjson from 'superjson'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
 import { schoolRouter } from './school'
@@ -40,3 +41,4 @@ export const router = trpcRouter<Context>()
 	.merge('auth.', authRouter)
 	.merge('user.', userRouter)
 	.merge('school.', schoolRouter)
+	.transformer(superjson)

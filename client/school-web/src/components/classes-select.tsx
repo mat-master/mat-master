@@ -1,7 +1,7 @@
 import { Center, Loader, MultiSelect, MultiSelectProps, Text } from '@mantine/core'
 import React, { useContext } from 'react'
-import { trpc } from '..'
 import { schoolContext } from '../data/school-provider'
+import { trpc } from '../utils/trpc'
 
 export type ClassesSelectProps = Omit<MultiSelectProps, 'data'>
 
@@ -23,7 +23,7 @@ const ClassesSelect = React.forwardRef<HTMLInputElement, ClassesSelectProps>(
 	(props, ref) => {
 		const { id: schoolId } = useContext(schoolContext)
 		const { data, isLoading, isError } = trpc.useQuery([
-			'school.classes.getAll',
+			'school.classes.all.get',
 			{ schoolId },
 		])
 

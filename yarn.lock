@@ -1685,7 +1685,7 @@ __metadata:
     "@mat-master/database": "workspace:^"
     "@prisma/client": ^3.14.0
     "@sendgrid/mail": ^7.7.0
-    "@trpc/server": ^9.23.6
+    "@trpc/server": ^9.25.0
     "@types/bcryptjs": ^2
     "@types/express": ^4
     "@types/jsonwebtoken": ^8
@@ -1694,6 +1694,7 @@ __metadata:
     express: ^4.18.1
     jsonwebtoken: ^8.5.1
     stripe: ^9.5.0
+    superjson: ^1.9.1
     tsup: ^6.1.2
     zod: ^3.17.3
   languageName: unknown
@@ -1704,9 +1705,9 @@ __metadata:
   resolution: "@mat-master/client@workspace:client/common"
   dependencies:
     "@mat-master/api": "workspace:^"
-    "@trpc/client": ^9.23.6
+    "@trpc/client": ^9.25.0
     "@trpc/react": ^9.23.6
-    "@trpc/server": ^9.23.6
+    "@trpc/server": ^9.25.0
     react-query: ^3.39.1
     zod: ^3.17.3
   languageName: unknown
@@ -1744,8 +1745,9 @@ __metadata:
     "@mat-master/client": "workspace:^"
     "@stripe/react-stripe-js": ^1.8.0
     "@stripe/stripe-js": ^1.29.0
-    "@trpc/client": ^9.23.6
-    "@trpc/react": ^9.23.6
+    "@trpc/client": ^9.25.0
+    "@trpc/react": ^9.25.0
+    "@trpc/server": ^9.25.0
     "@types/events": ^3
     "@types/react": ^17.0.33
     "@types/react-dom": ^17.0.10
@@ -1758,6 +1760,7 @@ __metadata:
     react-query: ^3.39.1
     react-router: ^6.2.1
     react-router-dom: ^6.2.1
+    superjson: ^1.9.1
     tabler-icons-react: ^1.37.0
     typescript: ^4.5.4
     url: ^0.11.0
@@ -2468,14 +2471,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:^9.23.6":
-  version: 9.23.6
-  resolution: "@trpc/client@npm:9.23.6"
+"@trpc/client@npm:^9.25.0":
+  version: 9.25.0
+  resolution: "@trpc/client@npm:9.25.0"
   dependencies:
     "@babel/runtime": ^7.9.0
   peerDependencies:
-    "@trpc/server": 9.23.6
-  checksum: b412f8e58150e817a068dd10a011246d45750ed1aa99fd68cd0e64091d1427f9cad503d0e03c5db77779a714b2a06b6c1618b1909c42505c8045679049a4e0b6
+    "@trpc/server": 9.25.0
+  checksum: ff35142d8db05d2f9fcc9d01161e21356b2daa4d301889b5a6719f7f15e236362153c3049e914b0a28d96629727187548ad395dd24b28f7baa0d518a6bdcc190
   languageName: node
   linkType: hard
 
@@ -2494,10 +2497,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^9.23.6":
-  version: 9.23.6
-  resolution: "@trpc/server@npm:9.23.6"
-  checksum: 72e13e30bdd8dcd709c5123ad630e2e4085be5bb7a417a1833f45988d096ff2e1c3d5a75981de6c18b52811ba4a2ceb11a45ec5eada64e6ff1eeb8c2a4a2673d
+"@trpc/react@npm:^9.25.0":
+  version: 9.25.0
+  resolution: "@trpc/react@npm:9.25.0"
+  dependencies:
+    "@babel/runtime": ^7.9.0
+  peerDependencies:
+    "@trpc/client": 9.25.0
+    "@trpc/server": 9.25.0
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+    react-query: ^3.37.0 || ^4.0.0-alpha.4
+  checksum: f18491376f3bc269f08ba202dd215a15d1c0c70f211b75c434efe01c8a7c030fa81dab71735c16d62bc264bb63039ebf951395a898384dffa36fee7842226105
+  languageName: node
+  linkType: hard
+
+"@trpc/server@npm:^9.25.0":
+  version: 9.25.0
+  resolution: "@trpc/server@npm:9.25.0"
+  checksum: 761b0c5d8667cd0f14bb642c31ed9a2900b53713e90ca633865b1f0ec87eb8e5e81c37af45fa0c900a029208dd9fda6691d83714e75c24423e54c4c6c23d6856
   languageName: node
   linkType: hard
 
@@ -4633,6 +4651,15 @@ __metadata:
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: 1f4bd2ca5765f8c9689a7e8954183f5332139eb72b6ff783d8947032ec1fdf43109852c178e21a953a30c0dd42257828185be01b49d1eb1a67fd054ca588a180
+  languageName: node
+  linkType: hard
+
+"copy-anything@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "copy-anything@npm:3.0.2"
+  dependencies:
+    is-what: ^4.1.6
+  checksum: 394491d62ab0c77c81616668bce51b91cf4e7b539bd530bb5b22c226151b0bc6122c01de21ffe46d5ec273f504fb34f6569f349ffb823fa814dddb8b27a4750c
   languageName: node
   linkType: hard
 
@@ -7460,6 +7487,13 @@ __metadata:
   dependencies:
     call-bind: ^1.0.2
   checksum: 95bd9a57cdcb58c63b1c401c60a474b0f45b94719c30f548c891860f051bc2231575c290a6b420c6bc6e7ed99459d424c652bd5bf9a1d5259505dc35b4bf83de
+  languageName: node
+  linkType: hard
+
+"is-what@npm:^4.1.6":
+  version: 4.1.7
+  resolution: "is-what@npm:4.1.7"
+  checksum: aade39dcc45a209d6cb2f2d5dbcf0e63ed894aadbae37bd5693c64e9876a27632431b43fc9d9332ebf0795eddd2abc11a2d0f3c6fa41c36330616a645660530e
   languageName: node
   linkType: hard
 
@@ -11962,6 +11996,15 @@ __metadata:
   version: 9.2.1
   resolution: "sudo-prompt@npm:9.2.1"
   checksum: 50a29eec2f264f2b78d891452a64112d839a30bffbff4ec065dba4af691a35b23cdb8f9107d413e25c1a9f1925644a19994c00602495cab033d53f585fdfd665
+  languageName: node
+  linkType: hard
+
+"superjson@npm:^1.9.1":
+  version: 1.9.1
+  resolution: "superjson@npm:1.9.1"
+  dependencies:
+    copy-anything: ^3.0.2
+  checksum: b575fe4d18b7263b3d6a617dea7857a0f31ae30e80f8cc0c6fe18dc2e6b8bbd7b3374007ca67fa487e0159fff18cce03cbe0654a0df97f337bec6a8835c0eee3
   languageName: node
   linkType: hard
 

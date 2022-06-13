@@ -3,7 +3,6 @@ import { useModals } from '@mantine/modals'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
-import { trpc } from '../..'
 import AppHeader from '../../components/app-header'
 import ItemMenu from '../../components/item-menu'
 import { RemoteMembershipForm } from '../../components/membership-form'
@@ -15,6 +14,7 @@ import { schoolContext } from '../../data/school-provider'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
 import openFormModal from '../../utils/open-form-modal'
+import { trpc } from '../../utils/trpc'
 
 const MembershipsPage: React.FC = () => {
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
@@ -26,7 +26,7 @@ const MembershipsPage: React.FC = () => {
 		isLoading,
 		isError,
 		refetch,
-	} = trpc.useQuery(['school.memberships.getAll', { schoolId }])
+	} = trpc.useQuery(['school.memberships.all.get', { schoolId }])
 	const filteredMemberships = useMemo(() => {
 		if (!memberships) return []
 		return memberships.filter(({ name }) =>
