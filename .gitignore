@@ -6,11 +6,10 @@ node_modules
 cache
 
 .env
-.env.test
 
 .next
 build
-build.js
+build.*
 generated
 lib
 

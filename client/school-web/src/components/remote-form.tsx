@@ -49,7 +49,6 @@ const RemoteForm = <T extends FieldValues>({
 	} = useMutation(
 		queryKey,
 		async (data: UnpackNestedValue<T>) => {
-			console.log('mutating resource')
 			createResource && (await createResource(data))
 			updateResource &&
 				(await updateResource(

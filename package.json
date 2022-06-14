@@ -4,10 +4,12 @@
 	"repository": "https://github.com/mat-master/mat-master.git",
 	"packageManager": "yarn@3.2.0",
 	"workspaces": [
-		"common",
 		"client/*",
 		"api",
 		"marketing/*",
 		"database"
-	]
+	],
+	"scripts": {
+		"build": "yarn workspaces foreach run build"
+	}
 }

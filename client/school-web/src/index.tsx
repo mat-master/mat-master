@@ -7,17 +7,23 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import superjson from 'superjson'
 import App from './app'
 import { getAuthHeader } from './utils/auth'
+import { hashQueryKey } from './utils/hash-query-key'
 import { trpc } from './utils/trpc'
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
-		queries: { refetchOnWindowFocus: false, retry: false, refetchOnMount: false },
+		queries: {
+			refetchOnWindowFocus: false,
+			retry: false,
+			refetchOnMount: false,
+			queryKeyHashFn: hashQueryKey,
+		},
 		mutations: { retry: false },
 	},
 })
 
 export const trpcClient = trpc.createClient({
-	url: 'http://localhost:8080',
+	url: 'http://localhost:8080/trpc',
 	transformer: superjson,
 	headers: () => ({ Authorization: getAuthHeader() }),
 })

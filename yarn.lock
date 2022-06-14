@@ -1681,42 +1681,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mat-master/api@workspace:api"
   dependencies:
-    "@mat-master/common": "workspace:^"
     "@mat-master/database": "workspace:^"
     "@prisma/client": ^3.14.0
     "@sendgrid/mail": ^7.7.0
     "@trpc/server": ^9.25.0
     "@types/bcryptjs": ^2
+    "@types/cors": ^2
     "@types/express": ^4
     "@types/jsonwebtoken": ^8
     bcryptjs: ^2.4.3
+    cors: ^2.8.5
+    dotenv: ^16.0.1
     esbuild: ^0.14.42
     express: ^4.18.1
     jsonwebtoken: ^8.5.1
     stripe: ^9.5.0
     superjson: ^1.9.1
+    trpc-playground: ^0.1.6
     tsup: ^6.1.2
-    zod: ^3.17.3
-  languageName: unknown
-  linkType: soft
-
-"@mat-master/client@workspace:^, @mat-master/client@workspace:client/common":
-  version: 0.0.0-use.local
-  resolution: "@mat-master/client@workspace:client/common"
-  dependencies:
-    "@mat-master/api": "workspace:^"
-    "@trpc/client": ^9.25.0
-    "@trpc/react": ^9.23.6
-    "@trpc/server": ^9.25.0
-    react-query: ^3.39.1
-    zod: ^3.17.3
-  languageName: unknown
-  linkType: soft
-
-"@mat-master/common@workspace:^, @mat-master/common@workspace:common":
-  version: 0.0.0-use.local
-  resolution: "@mat-master/common@workspace:common"
-  dependencies:
     zod: ^3.17.3
   languageName: unknown
   linkType: soft
@@ -1742,7 +1724,6 @@ __metadata:
     "@mantine/modals": ^4.2.1
     "@mantine/notifications": ^3.6.9
     "@mat-master/api": "workspace:^"
-    "@mat-master/client": "workspace:^"
     "@stripe/react-stripe-js": ^1.8.0
     "@stripe/stripe-js": ^1.29.0
     "@trpc/client": ^9.25.0
@@ -2471,6 +2452,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@trpc-playground/html@npm:0.1.5":
+  version: 0.1.5
+  resolution: "@trpc-playground/html@npm:0.1.5"
+  dependencies:
+    xss: ^1.0.11
+  checksum: 7960e0172febddcc9e6f21cec98a53d150ce68e7ae3dc367aa63e74714f2fbb10537f6174c44e1c9789f9c2d7609ee9ba7f43b6ce751b656af6380db15876335
+  languageName: node
+  linkType: hard
+
+"@trpc-playground/types@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@trpc-playground/types@npm:0.1.1"
+  dependencies:
+    ts-essentials: ^9.1.2
+  peerDependencies:
+    "@trpc/server": ^9
+  checksum: 4e4a06eb8e49d3c97143d7b2608a489a54f29c81ad1dd0716bfaaa62ebc0c704d78e3d6275ae9ef72242cc007da1d753a3c4e2aca10db01de7bed5cd2a3f78bc
+  languageName: node
+  linkType: hard
+
 "@trpc/client@npm:^9.25.0":
   version: 9.25.0
   resolution: "@trpc/client@npm:9.25.0"
@@ -2479,21 +2480,6 @@ __metadata:
   peerDependencies:
     "@trpc/server": 9.25.0
   checksum: ff35142d8db05d2f9fcc9d01161e21356b2daa4d301889b5a6719f7f15e236362153c3049e914b0a28d96629727187548ad395dd24b28f7baa0d518a6bdcc190
-  languageName: node
-  linkType: hard
-
-"@trpc/react@npm:^9.23.6":
-  version: 9.23.6
-  resolution: "@trpc/react@npm:9.23.6"
-  dependencies:
-    "@babel/runtime": ^7.9.0
-  peerDependencies:
-    "@trpc/client": 9.23.6
-    "@trpc/server": 9.23.6
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-    react-query: ^3.37.0 || ^4.0.0-alpha.4
-  checksum: 748eb1a6972ce653aee946b0350cc01c3d24923b51143dc47dab5bd61f3a8516656f581276a4756a5a052f74c611aab5eec698c20120d5dd9625ce6ab637a129
   languageName: node
   linkType: hard
 
@@ -2595,6 +2581,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: fe81351470f2d3165e8b12ce33542eef89ea893e36dd62e8f7d72566dfb7e448376ae962f9f3ea888547ce8b55a40020ca0e01d637fab5d99567673084542641
+  languageName: node
+  linkType: hard
+
+"@types/cors@npm:^2":
+  version: 2.8.12
+  resolution: "@types/cors@npm:2.8.12"
+  checksum: 8c45f112c7d1d2d831b4b266f2e6ed33a1887a35dcbfe2a18b28370751fababb7cd045e745ef84a523c33a25932678097bf79afaa367c6cb3fa0daa7a6438257
   languageName: node
   linkType: hard
 
@@ -4530,7 +4523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^2.19.0":
+"commander@npm:^2.19.0, commander@npm:^2.20.3":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: ab8c07884e42c3a8dbc5dd9592c606176c7eb5c1ca5ff274bcf907039b2c41de3626f684ea75ccf4d361ba004bbaff1f577d5384c155f3871e456bdf27becf9e
@@ -4694,6 +4687,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cors@npm:^2.8.5":
+  version: 2.8.5
+  resolution: "cors@npm:2.8.5"
+  dependencies:
+    object-assign: ^4
+    vary: ^1
+  checksum: ced838404ccd184f61ab4fdc5847035b681c90db7ac17e428f3d81d69e2989d2b680cc254da0e2554f5ed4f8a341820a1ce3d1c16b499f6e2f47a1b9b07b5006
+  languageName: node
+  linkType: hard
+
 "cosmiconfig@npm:^5.0.5, cosmiconfig@npm:^5.1.0":
   version: 5.2.1
   resolution: "cosmiconfig@npm:5.2.1"
@@ -4736,6 +4739,13 @@ __metadata:
   bin:
     cssesc: bin/cssesc
   checksum: f8c4ababffbc5e2ddf2fa9957dda1ee4af6048e22aeda1869d0d00843223c1b13ad3f5d88b51caa46c994225eacb636b764eb807a8883e2fb6f99b4f4e8c48b2
+  languageName: node
+  linkType: hard
+
+"cssfilter@npm:0.0.10":
+  version: 0.0.10
+  resolution: "cssfilter@npm:0.0.10"
+  checksum: bc2c52bbb3426c3f2e4832edb6f8573e6cfa65b40b540932762d1e018f0f0157725e2991b77344bbc8266c6bbf4daa2803b0707cfb1bd0877505bf83a68e4b04
   languageName: node
   linkType: hard
 
@@ -5071,6 +5081,13 @@ __metadata:
   dependencies:
     webidl-conversions: ^5.0.0
   checksum: d638e9cb05c52999f1b2eb87c374b03311ea5b1d69c2f875bc92da73e17db60c12142b45c950228642ff7f845c536b65305483350d080df59003a653da80b691
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.0.1":
+  version: 16.0.1
+  resolution: "dotenv@npm:16.0.1"
+  checksum: f459ffce07b977b7f15d8cc4ee69cdff77d4dd8c5dc8c85d2d485ee84655352c2415f9dd09d42b5b5985ced3be186130871b34e2f3e2569ebc72fbc2e8096792
   languageName: node
   linkType: hard
 
@@ -8654,7 +8671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.10, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.7.0":
+"lodash@npm:^4.17.10, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -9708,7 +9725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
+"object-assign@npm:^4, object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: fcc6e4ea8c7fe48abfbb552578b1c53e0d194086e2e6bbbf59e0a536381a292f39943c6e9628af05b5528aa5e3318bb30d6b2e53cadaf5b8fe9e12c4b69af23f
@@ -12317,6 +12334,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"trpc-playground@npm:^0.1.6":
+  version: 0.1.6
+  resolution: "trpc-playground@npm:0.1.6"
+  dependencies:
+    "@trpc-playground/html": 0.1.5
+    "@trpc-playground/types": 0.1.1
+    lodash: ^4.17.21
+    zod-to-ts: ^0.2.2
+  peerDependencies:
+    "@trpc/server": ^9
+    express: ^4
+    next: ^10 || ^11 || ^12
+    zod: ^3
+  peerDependenciesMeta:
+    express:
+      optional: true
+    next:
+      optional: true
+  checksum: a46ea1a1e07a5d171a7f620538099aef451e9e63f9ba02fe19fb6568562e3735c639bd6d4f97fd32efcc232377da3b5d9c16bbe353600a77cd775124205a6fc1
+  languageName: node
+  linkType: hard
+
+"ts-essentials@npm:^9.1.2":
+  version: 9.1.2
+  resolution: "ts-essentials@npm:9.1.2"
+  peerDependencies:
+    typescript: ">=4.1.0"
+  checksum: 3b14d8511557bd1bdec068505074ee41d3b1cdb052d3c66a5046f00b483bd4722d529b32a99cca424a9d7db9caff7ba108acbf344a5477a741e0616af5649b47
+  languageName: node
+  linkType: hard
+
 "ts-interface-checker@npm:^0.1.9":
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
@@ -12827,7 +12875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vary@npm:~1.1.2":
+"vary@npm:^1, vary@npm:~1.1.2":
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: ae0123222c6df65b437669d63dfa8c36cee20a504101b2fcd97b8bf76f91259c17f9f2b4d70a1e3c6bbcee7f51b28392833adb6b2770b23b01abec84e369660b
@@ -13161,6 +13209,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xss@npm:^1.0.11":
+  version: 1.0.13
+  resolution: "xss@npm:1.0.13"
+  dependencies:
+    commander: ^2.20.3
+    cssfilter: 0.0.10
+  bin:
+    xss: bin/xss
+  checksum: 21909bdf60a32a703e2208cf3a942c1f82d281651bacff56d72deaba9ce553295f45540cde94f2f3e215c90efeeff6fbca70f514ea7477c805e6116915cc7c08
+  languageName: node
+  linkType: hard
+
 "xtend@npm:^4.0.2, xtend@npm:~4.0.1":
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
@@ -13235,6 +13295,16 @@ __metadata:
   bin:
     zod-prisma: bin/cli.js
   checksum: b6c33b603b31e2b6bab501117b81c661f711a231dac7130a34d236619bf2222593cb71f05d5bb1ed2826a3b059ba92e0e60c966fd92c3e626926115e92419abd
+  languageName: node
+  linkType: hard
+
+"zod-to-ts@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "zod-to-ts@npm:0.2.2"
+  peerDependencies:
+    typescript: ^4
+    zod: ^3
+  checksum: b60b771418e088467a17c2e6bccdbdd20c3989d962fd3a0c340c54bc014620580db5dbbfb54c2561c3ca240db8cafa41409282b9791442f09383ac99a5ec6454
   languageName: node
   linkType: hard
 

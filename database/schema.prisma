@@ -156,7 +156,7 @@ model Attendance {
   studentId BigInt  @map("student_id")
 
   classTime   ClassTime @relation(fields: [classTimeId], references: [id], map: "class_time")
-  classTimeId BigInt    @map("class_id")
+  classTimeId BigInt    @map("class_time_id")
 
   date DateTime @default(now())
 
