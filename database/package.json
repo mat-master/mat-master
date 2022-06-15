@@ -7,9 +7,11 @@
 	"scripts": {
 		"build": "prisma format && prisma generate && tsup",
 		"dev": "prisma generate --watch & tsup --watch",
-		"deploy": "yarn build && prisma migrate dev"
+		"migrate:dev": "yarn dotenv -e ../.env.dev -- yarn prisma migrate dev",
+		"start:dev": "docker run -d -p 5432:5432 --name mat-master-db -e POSTGRES_PASSWORD=password postgres"
 	},
 	"devDependencies": {
+		"dotenv-cli": "^5.1.0",
 		"prisma": "^3.14.0",
 		"tsup": "^6.0.1",
 		"zod-prisma": "^0.5.4"

@@ -1,8 +1,9 @@
 import { TRPCError } from '@trpc/server'
-import jwt from 'jsonwebtoken'
+import { TokenExpiredError } from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { Payload, Snowflake, verificationPayloadSchema } from '../../models'
+import { decodeToken, signPayload } from '../../util/payload-encoding'
 
 export const authVerifyParamsSchema = z.object({
 	token: z.string(),
@@ -19,12 +20,10 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 }) => {
 	let userId: Snowflake
 	try {
-		const payload = verificationPayloadSchema.parse(
-			jwt.verify(token, ctx.env.JWT_SECRET)
-		)
+		const payload = verificationPayloadSchema.parse(decodeToken(token))
 		userId = payload.id
 	} catch (err) {
-		if (err instanceof jwt.TokenExpiredError)
+		if (err instanceof TokenExpiredError)
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
 				message: 'verification token expired',
@@ -42,6 +41,12 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 		},
 		rejectOnNotFound: true,
 	})
+
+	if (user.emailVerified)
+		throw new TRPCError({
+			code: 'CONFLICT',
+			message: 'email already verified',
+		})
 
 	const stripeCustomer = await ctx.stripe.customers.create({
 		name: `${user.firstName} ${user.lastName}`,
@@ -66,5 +71,5 @@ export const verify: Procedure<AuthVerifyParams, AuthVerifyResult> = async ({
 		students: user.students.map(({ id }) => id),
 	}
 
-	return { jwt: jwt.sign(payload, ctx.env.JWT_SECRET) }
+	return { jwt: signPayload(payload) }
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import sgmail from '@sendgrid/mail'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -9,16 +10,18 @@ import { expressHandler } from 'trpc-playground/handlers/express'
 import { createContextConstructor, router } from './procedures'
 
 const main = async () => {
+	// Load .env into process.env
+	dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') })
+	dotenv.config({ override: true }) // Override dev env variables with production ones
+
 	const app = express()
 	const db = new PrismaClient()
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 		apiVersion: '2020-08-27',
 	})
 
-	// Load .env into process.env
-	dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') })
-	dotenv.config({ override: true }) // Override dev env variables with production ones
-	console.log(process.env)
+	await db.$connect()
+	sgmail.setApiKey(process.env.SENDGRID_API_KEY!)
 
 	app.use(cors())
 
@@ -43,12 +46,15 @@ const main = async () => {
 				router,
 				trpcApiEndpoint: '/trpc',
 				playgroundEndpoint: '/playground',
+				request: {
+					superjson: true,
+				},
 			})
 		)
 	}
 
-	await db.$connect()
-	app.listen(8080, () => console.log('API listening on port 8080'))
+	const port = parseInt(process.env.PORT || '') || 8080
+	app.listen(port, () => console.log(`API listening on port ${port}`))
 }
 
 main()

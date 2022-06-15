@@ -1,4 +1,5 @@
 import sgmail from '@sendgrid/mail'
+import { getBaseLinkUrl } from './get-base-link-url'
 
 export const sendVerificationEmail = (email: string, token: string) =>
 	sgmail.send({
@@ -6,6 +7,6 @@ export const sendVerificationEmail = (email: string, token: string) =>
 		from: 'nate19522@gmail.com',
 		templateId: 'd-e51a013f84ba4eda81f2d3ba6b26bb1b',
 		dynamicTemplateData: {
-			link: `https://dashboard.matmaster.app/verify?token=${token}`,
+			link: `${getBaseLinkUrl()}/verify?token=${token}`,
 		},
 	})

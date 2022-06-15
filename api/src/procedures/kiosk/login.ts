@@ -1,9 +1,9 @@
 import { TRPCError } from '@trpc/server'
-import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { snowflakeSchema } from '../../models'
 import { KioskPayload } from '../../models/kiosk-payload'
+import { signPayload } from '../../util/payload-encoding'
 
 export const loginKioskParams = z.object({
 	schoolId: snowflakeSchema,
@@ -31,5 +31,5 @@ export const loginKiosk: Procedure<LoginKioskParams, LoginKioskResult> = async (
 		schoolId,
 	}
 
-	return { jwt: jwt.sign(payload, ctx.env.JWT_SECRET) }
+	return { jwt: signPayload(payload) }
 }

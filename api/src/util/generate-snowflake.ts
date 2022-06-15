@@ -8,7 +8,7 @@ const WORKER_ID_BITS = 10
 /** Number of bits allocated to the random generated number */
 const SEQUENCE_BITS = 12
 /** The epoch to start timestamps from */
-const EPOCH = Date.UTC(2022, 0, 1)
+const EPOCH = Date.UTC(1970, 0, 1)
 
 export const generateSnowflake = () => {
 	const ip = getProcessIp()

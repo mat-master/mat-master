@@ -4,6 +4,8 @@ import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { ProcedureResolver } from '@trpc/server/dist/declarations/src/internals/procedure'
 import Stripe from 'stripe'
 import superjson from 'superjson'
+import { filterInternalErrors } from '../middleware/filter-internal-errors'
+import { logger } from '../middleware/logger'
 import { parseAuthHeader } from '../util/parse-auth-header'
 import { authRouter } from './auth'
 import { schoolRouter } from './school'
@@ -38,7 +40,9 @@ export type ProcedureData<P> = {
 }
 
 export const router = trpcRouter<Context>()
+	.middleware(logger)
+	.middleware(filterInternalErrors)
+	.transformer(superjson)
 	.merge('auth.', authRouter)
 	.merge('user.', userRouter)
 	.merge('school.', schoolRouter)
-	.transformer(superjson)

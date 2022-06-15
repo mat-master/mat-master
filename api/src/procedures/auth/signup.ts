@@ -1,11 +1,11 @@
 import { TRPCError } from '@trpc/server'
 import { hash } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { Snowflake } from '../../models/snowflake'
 import { VerificationPayload } from '../../models/verification-payload'
 import { generateSnowflake } from '../../util/generate-snowflake'
+import { signPayload } from '../../util/payload-encoding'
 import { sendVerificationEmail } from '../../util/send-verification-email'
 
 export const authSignupParamsSchema = z.object({
@@ -24,12 +24,12 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	ctx,
 	input: { firstName, lastName, email, password },
 }) => {
-	const existingUsers = await ctx.db.user.findUnique({
+	const existingUser = await ctx.db.user.findUnique({
 		where: { email },
-		select: { _count: true },
+		select: { id: true },
 	})
 
-	if (!existingUsers?._count)
+	if (existingUser)
 		throw new TRPCError({
 			code: 'CONFLICT',
 			message: "There's already an account registered with that email",
@@ -46,9 +46,7 @@ export const signup: Procedure<AuthSignupParams, AuthSignupResult> = async ({
 	})
 
 	const verificationPayload: VerificationPayload = { id: user.id }
-	const verificationToken = sign(verificationPayload, ctx.env.JWT_SECRET, {
-		expiresIn: '15m',
-	})
+	const verificationToken = signPayload(verificationPayload, { expiresIn: '15m' })
 
 	await sendVerificationEmail(email, verificationToken)
 	return { id: user.id }

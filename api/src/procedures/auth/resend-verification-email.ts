@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server'
-import { sign } from 'jsonwebtoken'
 import { Procedure } from '..'
 import { VerificationPayload } from '../../models/verification-payload'
+import { signPayload } from '../../util/payload-encoding'
 import { sendVerificationEmail } from '../../util/send-verification-email'
 import { useAuthentication } from '../../util/use-authentication'
 
@@ -14,7 +14,7 @@ export const reSendVerificationEmail: Procedure = async ({ ctx }) => {
 		})
 
 	const verificationPayload: VerificationPayload = { id: payload.id }
-	const verificationToken = sign(verificationPayload, ctx.env.JWT_SECRET, {
+	const verificationToken = signPayload(verificationPayload, {
 		expiresIn: '15m',
 	})
 
