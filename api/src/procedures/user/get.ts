@@ -10,10 +10,10 @@ export const getUserResultSchema = userRowSchema.omit({
 
 export type GetUserResult = z.infer<typeof getUserResultSchema>
 
-export const getUser: Procedure<void, GetUserResult> = async ({ ctx, input }) => {
-	const payload = useAuthentication(ctx.payload)
+export const getUser: Procedure<void, GetUserResult> = async ({ ctx }) => {
+	useAuthentication(ctx)
 	const user = await ctx.db.user.findUnique({
-		where: { id: payload.id },
+		where: { id: ctx.payload.id },
 		rejectOnNotFound: true,
 	})
 

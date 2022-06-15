@@ -30,7 +30,7 @@ export const getSchoolMembership: Procedure<
 	GetSchoolMembershipParams,
 	GetSchoolMembershipResult
 > = async ({ ctx, input: { id, schoolId } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	const membership = await ctx.db.membership.findFirst({
 		where: { id, schoolId },
 		select: {

@@ -13,19 +13,19 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 	ctx,
 	input: { id: schoolId },
 }) => {
-	const payload = useAuthentication(ctx.payload)
-	if (!payload.emailVerified)
+	useAuthentication(ctx)
+	if (!ctx.payload.emailVerified)
 		throw 'You need to verify your email before you can join a school'
 
 	const paymentMethods = (
-		await ctx.stripe.customers.listPaymentMethods(payload.id.toString(), {
+		await ctx.stripe.customers.listPaymentMethods(ctx.payload.id.toString(), {
 			type: 'card',
 		})
 	).data
 	if (!paymentMethods.length) throw 'Missing payment method'
 
 	const invites = await ctx.db.invite.deleteMany({
-		where: { schoolId, email: payload.email },
+		where: { schoolId, email: ctx.payload.email },
 	})
 	if (!invites.count) throw "You haven't been invited to that school"
 
@@ -36,21 +36,21 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 			rejectOnNotFound: true,
 		}),
 		ctx.db.user.findUnique({
-			where: { id: payload.id },
+			where: { id: ctx.payload.id },
 			select: { firstName: true, lastName: true },
 			rejectOnNotFound: true,
 		}),
 	])
 
 	const token = await ctx.stripe.tokens.create(
-		{ customer: payload.stripeCustomerId! },
+		{ customer: ctx.payload.stripeCustomerId! },
 		{ stripeAccount: school.stripeAccountId }
 	)
 
 	const customer = await ctx.stripe.customers.create(
 		{
 			name: `${user.firstName} ${user.lastName}`,
-			email: payload.email,
+			email: ctx.payload.email,
 			source: token.id,
 		},
 		{ stripeAccount: school.stripeAccountId }
@@ -60,7 +60,7 @@ export const joinSchool: Procedure<JoinSchoolParams, JoinSchoolResult> = async (
 		data: {
 			id: generateSnowflake(),
 			stripeCustomerId: customer.id,
-			user: { connect: { id: payload.id } },
+			user: { connect: { id: ctx.payload.id } },
 			school: { connect: { id: schoolId } },
 		},
 		select: { id: true },

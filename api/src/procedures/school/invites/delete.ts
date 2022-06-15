@@ -16,6 +16,6 @@ export const deleteSchoolInvite: Procedure<DeleteSchoolInviteParams> = async ({
 	ctx,
 	input: { email, schoolId },
 }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	await ctx.db.invite.delete({ where: { schoolId_email: { email, schoolId } } })
 }

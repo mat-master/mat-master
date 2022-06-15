@@ -22,7 +22,7 @@ export type UpdateSchoolMembershipParams = z.infer<
 export const updateSchoolMembership: Procedure<
 	UpdateSchoolMembershipParams
 > = async ({ ctx, input: { id, schoolId, ...data } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	const [membership, school] = await Promise.all([
 		ctx.db.membership.findFirst({
 			where: { id, schoolId },

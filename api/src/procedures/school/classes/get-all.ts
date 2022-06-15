@@ -23,7 +23,7 @@ export const getAllSchoolClasses: Procedure<
 	GetAllSchoolClassesParams,
 	GetAllSchoolClassesResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	return await ctx.db.class.findMany({
 		where: { schoolId },
 		...prismaPagination(pagination),

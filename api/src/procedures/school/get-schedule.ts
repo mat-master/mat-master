@@ -17,7 +17,7 @@ export const getSchoolSchedule: Procedure<
 	GetSchoolScheduleParams,
 	GetSchoolScheduleResult
 > = async ({ ctx, input: { schoolId, reference = new Date(), scope } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	return await ctx.db.classTime.findMany({
 		where: {
 			class: { schoolId },

@@ -18,11 +18,11 @@ export const getSchool: Procedure<GetSchoolParams, GetSchoolResult> = async ({
 	ctx,
 	input: { id },
 }) => {
-	const payload = useAuthentication(ctx.payload)
+	useAuthentication(ctx)
 	const school = await ctx.db.school.findUnique({ where: { id } })
 
 	if (!school) throw 'School not found'
-	if (school.ownerId !== payload.id) throw "You aren't the owner of that school"
+	if (school.ownerId !== ctx.payload.id) throw "You aren't the owner of that school"
 
 	return getSchoolResultSchema.parse(school)
 }

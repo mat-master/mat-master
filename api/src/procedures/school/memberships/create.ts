@@ -24,7 +24,7 @@ export const createSchoolMembership: Procedure<
 	CreateSchoolMembershipParams,
 	CreateSchoolMembershipResult
 > = async ({ ctx, input: { schoolId, ...data } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	const school = await ctx.db.school.findUnique({
 		where: { id: schoolId },
 		select: { stripeAccountId: true },

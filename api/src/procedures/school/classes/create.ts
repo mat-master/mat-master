@@ -14,7 +14,7 @@ export const createSchoolClass: Procedure<
 	CreateSchoolClassParams,
 	CreateSchoolClassResult
 > = async ({ ctx, input: { schoolId, ...data } }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	return await ctx.db.class.create({
 		data: {
 			id: generateSnowflake(),

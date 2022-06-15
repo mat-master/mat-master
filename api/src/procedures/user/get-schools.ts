@@ -17,10 +17,12 @@ export interface UserSchoolsGetResult {
 export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({
 	ctx,
 }) => {
-	const payload = useAuthentication(ctx.payload)
+	useAuthentication(ctx)
 	const [ownerSchools, studentSchools] = await Promise.all([
-		ctx.db.school.findMany({ where: { students: { some: { id: payload.id } } } }),
-		ctx.db.school.findMany({ where: { ownerId: payload.id } }),
+		ctx.db.school.findMany({
+			where: { students: { some: { id: ctx.payload.id } } },
+		}),
+		ctx.db.school.findMany({ where: { ownerId: ctx.payload.id } }),
 	])
 
 	return {

@@ -14,7 +14,7 @@ export const updateSchoolClass: Procedure<UpdateSchoolClassParams> = async ({
 	ctx,
 	input: { id, schoolId, ...data },
 }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 
 	// Check that the given class is a part of the given school
 	const _class = await ctx.db.class.findFirst({ where: { id, schoolId } })

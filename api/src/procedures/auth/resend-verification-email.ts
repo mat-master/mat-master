@@ -6,17 +6,17 @@ import { sendVerificationEmail } from '../../util/send-verification-email'
 import { useAuthentication } from '../../util/use-authentication'
 
 export const reSendVerificationEmail: Procedure = async ({ ctx }) => {
-	const payload = useAuthentication(ctx.payload)
-	if (payload.emailVerified)
+	useAuthentication(ctx)
+	if (ctx.payload.emailVerified)
 		throw new TRPCError({
 			code: 'FORBIDDEN',
 			message: 'already verified',
 		})
 
-	const verificationPayload: VerificationPayload = { id: payload.id }
+	const verificationPayload: VerificationPayload = { id: ctx.payload.id }
 	const verificationToken = signPayload(verificationPayload, {
 		expiresIn: '15m',
 	})
 
-	await sendVerificationEmail(payload.email, verificationToken)
+	await sendVerificationEmail(ctx.payload.email, verificationToken)
 }

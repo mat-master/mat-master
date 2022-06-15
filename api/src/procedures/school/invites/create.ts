@@ -17,7 +17,7 @@ export const createSchoolInvite: Procedure<CreateSchoolInviteParams> = async ({
 	ctx,
 	input: { schoolId, email },
 }) => {
-	useSchoolAuthentication(ctx.payload, schoolId)
+	useSchoolAuthentication(ctx, schoolId)
 	const [{ name: schoolName }] = await Promise.all([
 		ctx.db.school.findUnique({
 			where: { id: schoolId },

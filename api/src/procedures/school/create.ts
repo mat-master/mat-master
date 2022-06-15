@@ -17,8 +17,8 @@ export const createSchool: Procedure<
 	CreateSchoolParams,
 	CreateSchoolResult
 > = async ({ ctx, input: { name, address } }) => {
-	const payload = useAuthentication(ctx.payload)
-	if (!payload.emailVerified)
+	useAuthentication(ctx)
+	if (!ctx.payload.emailVerified)
 		throw 'You need to verify your email before you can create a school'
 
 	const schoolId = generateSnowflake()
@@ -27,7 +27,7 @@ export const createSchool: Procedure<
 			type: 'standard',
 			country: 'US',
 			business_type: 'company',
-			email: payload.email,
+			email: ctx.payload.email,
 			company: {
 				address: {
 					country: 'US',
@@ -41,7 +41,7 @@ export const createSchool: Procedure<
 			},
 		}),
 		ctx.stripe.subscriptions.create({
-			customer: payload.stripeCustomerId!,
+			customer: ctx.payload.stripeCustomerId!,
 			items: [{ price: 'price_1KW88vGsHxGKM7KBG946ldmZ' }],
 			trial_end: Math.floor(Date.now() / 1000 + 7890000),
 			metadata: { id: schoolId.toString() },
@@ -54,7 +54,7 @@ export const createSchool: Procedure<
 			name,
 			stripeAccountId: account.id,
 			stripeSubscriptionId: subscription.id,
-			owner: { connect: { id: payload.id } },
+			owner: { connect: { id: ctx.payload.id } },
 			address: { create: { id: generateSnowflake(), ...address } },
 		},
 		select: { id: true },
