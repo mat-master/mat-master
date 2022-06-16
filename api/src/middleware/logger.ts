@@ -12,7 +12,7 @@ export const logger: MiddlewareFunction<Context, Context, any> = async ({
 
 	result.ok
 		? console.log(`OK: ${type} ${path} ${duration}ms`)
-		: console.log(`ERROR: ${type} ${path} ${duration}ms`)
+		: console.log(`ERROR: ${type} ${path} ${duration}ms\n${result.error}`)
 
 	return result
 }

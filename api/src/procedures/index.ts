@@ -40,8 +40,8 @@ export type ProcedureData<P> = {
 }
 
 export const router = trpcRouter<Context>()
-	.middleware(logger)
 	.middleware(filterInternalErrors)
+	.middleware(logger)
 	.transformer(superjson)
 	.merge('auth.', authRouter)
 	.merge('user.', userRouter)

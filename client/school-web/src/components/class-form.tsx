@@ -1,15 +1,14 @@
 import { TextInput } from '@mantine/core'
 import { Snowflake } from '@mat-master/api'
 import type React from 'react'
-import { useContext } from 'react'
 import { z } from 'zod'
 import { trpcClient } from '..'
-import { schoolContext } from '../data/school-provider'
+import getSchoolId from '../utils/get-school-id'
 import Form, { FormWrapperProps } from './form'
 import RemoteForm, { RemoteFormWrapperProps } from './remote-form'
 
 export const classFormDataSchema = z.object({
-	name: z.string(),
+	name: z.string().min(1, 'required'),
 })
 
 export type ClassFormData = z.infer<typeof classFormDataSchema>
@@ -55,7 +54,7 @@ export const RemoteClassForm: React.FC<RemoteClassFormProps> = ({
 	id,
 	...props
 }) => {
-	const { id: schoolId } = useContext(schoolContext)
+	const schoolId = getSchoolId()
 	return (
 		<RemoteForm<ClassFormData>
 			{...props}

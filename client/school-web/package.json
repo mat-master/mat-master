@@ -13,8 +13,6 @@
 		"@mantine/core": "^4.2.4",
 		"@mantine/dates": "^4.2.4",
 		"@mantine/hooks": "^4.2.4",
-		"@mantine/modals": "^4.2.1",
-		"@mantine/notifications": "^3.6.9",
 		"@mat-master/api": "workspace:^",
 		"@stripe/react-stripe-js": "^1.8.0",
 		"@stripe/stripe-js": "^1.29.0",

@@ -17,9 +17,17 @@ export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 	input: { id, schoolId },
 }) => {
 	useSchoolAuthentication(ctx, schoolId)
+	const now = new Date()
 	return await ctx.db.class.findUnique({
 		where: { id },
-		include: { schedule: true },
+		include: {
+			schedule: {
+				where: {
+					scheduleStart: { lte: now },
+					scheduleEnd: { gte: now },
+				},
+			},
+		},
 		rejectOnNotFound: true,
 	})
 }

@@ -9,7 +9,6 @@ export const filterInternalErrors: MiddlewareFunction<
 > = async ({ next }) => {
 	const result = await next()
 	if (!result.ok && result.error.cause) {
-		console.error(result.error.cause)
 		return {
 			...result,
 			error: new TRPCError({

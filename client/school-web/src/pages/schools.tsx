@@ -1,8 +1,9 @@
-import { SimpleGrid, Skeleton, Title } from '@mantine/core'
-import { useModals } from '@mantine/modals'
+import { SimpleGrid, Skeleton } from '@mantine/core'
 import type React from 'react'
+import { useContext } from 'react'
 import { Apps as NewSchoolIcon } from 'tabler-icons-react'
 import AppHeader from '../components/app-header'
+import { modalsCtx } from '../components/modals-context'
 import PageHeader from '../components/page-header'
 import SchoolCard from '../components/school-card'
 import { RemoteSchoolForm } from '../components/school-form'
@@ -10,7 +11,7 @@ import Page from '../page'
 import { trpc } from '../utils/trpc'
 
 const SchoolsPage: React.FC = () => {
-	const modals = useModals()
+	const modals = useContext(modalsCtx)
 	const { data: schools, isLoading } = trpc.useQuery(['user.schools.get'])
 
 	return (
@@ -22,8 +23,8 @@ const SchoolsPage: React.FC = () => {
 					{
 						icon: NewSchoolIcon,
 						action: () =>
-							modals.openModal({
-								title: <Title order={3}>New School</Title>,
+							modals.enqueue({
+								title: 'New School',
 								children: <RemoteSchoolForm />,
 							}),
 					},

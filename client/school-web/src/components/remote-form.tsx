@@ -54,8 +54,9 @@ const RemoteForm = <T extends FieldValues>({
 				(await updateResource(
 					filterUpdated(remoteData ?? {}, data) as UnpackNestedValue<Partial<T>>
 				))
+			return data
 		},
-		{ onSuccess: () => queryClient.invalidateQueries(queryKey) }
+		{ onSuccess: onSubmit && ((data) => onSubmit(data)) }
 	)
 
 	if (isLoading || (isQueryError && getResource)) {
@@ -74,10 +75,7 @@ const RemoteForm = <T extends FieldValues>({
 			error={isMutationError ? getErrorMessage(mutationError) : undefined}
 			{...props}
 			defaultValues={remoteData}
-			onSubmit={async (data) => {
-				await mutateAsync(data)
-				onSubmit && (await onSubmit(data))
-			}}
+			onSubmit={(data) => mutateAsync(data)}
 		/>
 	)
 }

@@ -8,7 +8,7 @@ export function useSchoolAuthentication(
 	id: Snowflake
 ): asserts ctx is Context & { payload: Payload } {
 	useAuthentication(ctx)
-	if (ctx.payload!.schools.includes(id))
+	if (!ctx.payload.schools.includes(id))
 		throw new TRPCError({
 			code: 'UNAUTHORIZED',
 			message: "You aren't the owner of this school",

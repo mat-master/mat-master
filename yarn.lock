@@ -1033,7 +1033,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.0":
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.0":
   version: 7.18.3
   resolution: "@babel/runtime@npm:7.18.3"
   dependencies:
@@ -1633,33 +1633,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/modals@npm:^4.2.1":
-  version: 4.2.7
-  resolution: "@mantine/modals@npm:4.2.7"
-  peerDependencies:
-    "@mantine/core": 4.2.7
-    "@mantine/hooks": 4.2.7
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: adeedf0af699b4eff625c789de0224cb39ee0f28b45ad2f9fce2d083a980bfd3a470c75589255475c9c82926449ef2260dfd9c48b058de8d5405ebe5331dc1a6
-  languageName: node
-  linkType: hard
-
-"@mantine/notifications@npm:^3.6.9":
-  version: 3.6.14
-  resolution: "@mantine/notifications@npm:3.6.14"
-  dependencies:
-    clsx: ^1.1.1
-    react-transition-group: ^4.4.2
-  peerDependencies:
-    "@mantine/core": 3.6.14
-    "@mantine/hooks": 3.6.14
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 18a5d4d2986122abaa565ef0c1ad99e92ea539473d7a3d73f323d914df596e7d29a4a99198a252a2d83ce9aef51864678f36a2deb318c38f325f2c0827f402cf
-  languageName: node
-  linkType: hard
-
 "@mantine/styles@npm:4.2.7":
   version: 4.2.7
   resolution: "@mantine/styles@npm:4.2.7"
@@ -1722,8 +1695,6 @@ __metadata:
     "@mantine/core": ^4.2.4
     "@mantine/dates": ^4.2.4
     "@mantine/hooks": ^4.2.4
-    "@mantine/modals": ^4.2.1
-    "@mantine/notifications": ^3.6.9
     "@mat-master/api": "workspace:^"
     "@stripe/react-stripe-js": ^1.8.0
     "@stripe/stripe-js": ^1.29.0
@@ -5063,16 +5034,6 @@ __metadata:
   dependencies:
     esutils: ^2.0.2
   checksum: fd7673ca77fe26cd5cba38d816bc72d641f500f1f9b25b83e8ce28827fe2da7ad583a8da26ab6af85f834138cf8dae9f69b0cd6ab925f52ddab1754db44d99ce
-  languageName: node
-  linkType: hard
-
-"dom-helpers@npm:^5.0.1":
-  version: 5.2.1
-  resolution: "dom-helpers@npm:5.2.1"
-  dependencies:
-    "@babel/runtime": ^7.8.7
-    csstype: ^3.0.2
-  checksum: 863ba9e086f7093df3376b43e74ce4422571d404fc9828bf2c56140963d5edf0e56160f9b2f3bb61b282c07f8fc8134f023c98fd684bddcb12daf7b0f14d951c
   languageName: node
   linkType: hard
 
@@ -10445,7 +10406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -10799,21 +10760,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 87360d4392276d4e87511a73be9b0634b8bcce8f4f648cf659334d993f25ad3d4062f468f1e1944fc614123acae4299580aad00b760c6a96cec190e076f847f5
-  languageName: node
-  linkType: hard
-
-"react-transition-group@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "react-transition-group@npm:4.4.2"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    dom-helpers: ^5.0.1
-    loose-envify: ^1.4.0
-    prop-types: ^15.6.2
-  peerDependencies:
-    react: ">=16.6.0"
-    react-dom: ">=16.6.0"
-  checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
   languageName: node
   linkType: hard
 

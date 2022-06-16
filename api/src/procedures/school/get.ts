@@ -2,7 +2,7 @@ import { schoolRowSchema } from '@mat-master/database'
 import { z } from 'zod'
 import { Procedure } from '..'
 import { snowflakeSchema } from '../../models'
-import { useAuthentication } from '../../util/use-authentication'
+import { useSchoolAuthentication } from '../../util/use-school-authentication'
 
 export const getSchoolParamsSchema = z.object({ id: snowflakeSchema })
 export const getSchoolResultSchema = schoolRowSchema.omit({
@@ -18,11 +18,10 @@ export const getSchool: Procedure<GetSchoolParams, GetSchoolResult> = async ({
 	ctx,
 	input: { id },
 }) => {
-	useAuthentication(ctx)
+	useSchoolAuthentication(ctx, id)
 	const school = await ctx.db.school.findUnique({ where: { id } })
 
 	if (!school) throw 'School not found'
-	if (school.ownerId !== ctx.payload.id) throw "You aren't the owner of that school"
 
 	return getSchoolResultSchema.parse(school)
 }

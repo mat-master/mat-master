@@ -45,8 +45,12 @@ const Form = <T extends FieldValues>({
 
 	const { isSubmitting } = form.formState
 	const [globalError, setGlobalError] = useState<string>()
-	const handleSubmit = form.handleSubmit(onSubmit ?? (() => {}), (err) =>
-		setGlobalError(getErrorMessage(err))
+	const handleSubmit = form.handleSubmit(
+		(data) => {
+			setGlobalError(undefined)
+			if (onSubmit) return onSubmit(data)
+		},
+		(err) => err && setGlobalError(getErrorMessage(err))
 	)
 
 	return (

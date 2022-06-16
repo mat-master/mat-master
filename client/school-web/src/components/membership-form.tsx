@@ -1,16 +1,15 @@
 import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
 import { Snowflake, snowflakeSchema } from '@mat-master/api'
 import type React from 'react'
-import { useContext } from 'react'
 import { Controller } from 'react-hook-form'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
 import { z } from 'zod'
 import { trpcClient } from '..'
-import { schoolContext } from '../data/school-provider'
+import getSchoolId from '../utils/get-school-id'
 import ClassesSelect from './classes-select'
 import type { FormWrapperProps } from './form'
 import Form from './form'
-import type { DeepPartial, RemoteFormWrapperProps } from './remote-form'
+import type { RemoteFormWrapperProps } from './remote-form'
 import RemoteForm from './remote-form'
 
 const INTERVALS = ['day', 'week', 'month', 'year'] as const
@@ -91,17 +90,16 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 	/>
 )
 
-export type RemoteMembershipFormProps = RemoteFormWrapperProps<MembershipFormData> & {
-	id?: Snowflake
-}
-
-type x = DeepPartial<MembershipFormData>
+export type RemoteMembershipFormProps =
+	RemoteFormWrapperProps<MembershipFormData> & {
+		id?: Snowflake
+	}
 
 export const RemoteMembershipForm: React.FC<RemoteMembershipFormProps> = ({
 	id,
 	...props
 }) => {
-	const { id: schoolId } = useContext(schoolContext)
+	const schoolId = getSchoolId()
 	return (
 		<RemoteForm<MembershipFormData>
 			{...props}

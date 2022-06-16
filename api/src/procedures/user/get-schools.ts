@@ -18,7 +18,7 @@ export const getUserSchools: Procedure<void, UserSchoolsGetResult> = async ({
 	ctx,
 }) => {
 	useAuthentication(ctx)
-	const [ownerSchools, studentSchools] = await Promise.all([
+	const [studentSchools, ownerSchools] = await Promise.all([
 		ctx.db.school.findMany({
 			where: { students: { some: { id: ctx.payload.id } } },
 		}),

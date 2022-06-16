@@ -31,9 +31,11 @@ export const createSchool: Procedure<
 			company: {
 				address: {
 					country: 'US',
-					...address,
-					postal_code: address.postalCode,
+					state: address.state,
+					city: address.city,
+					line1: address.line1,
 					line2: address.line2 ?? undefined,
+					postal_code: address.postalCode,
 				},
 			},
 			metadata: {

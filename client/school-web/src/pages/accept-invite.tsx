@@ -7,7 +7,7 @@ import {
 	useMantineTheme,
 } from '@mantine/core'
 import type React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import {
@@ -20,7 +20,6 @@ import {
 import BillingForm from '../components/billing-form'
 import EmailVerifier from '../components/email-verifier'
 import SignUpLoginForm from '../components/sign-up-login-form'
-import { schoolContext } from '../data/school-provider'
 import { getPrimaryColor } from '../utils/get-colors'
 import { trpc } from '../utils/trpc'
 
@@ -35,11 +34,11 @@ const AcceptInvitePage: React.FC<AcceptInvitePageProps> = ({}) => {
 	)
 
 	const navigate = useNavigate()
-	const { id } = useContext(schoolContext)
 	const { mutate: join, mutateAsync: joinAsync } = trpc.useMutation('school.join', {
 		onSuccess: () => navigate('/'),
 	})
 
+	const id = BigInt(0)
 	useEffect(() => join({ id }), [id])
 
 	const [currentStep, setCurrentStep] = useState(0)
