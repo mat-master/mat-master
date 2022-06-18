@@ -21,9 +21,11 @@ const AppHeader: React.FC = () => {
 	const { data: user } = trpc.useQuery(['user.get'])
 	const schoolId = getSchoolId()
 	const { data: school, isLoading } = trpc.useQuery(
-		['school.get', { id: schoolId }],
+		['school.get', { id: schoolId! }],
 		{ enabled: !!schoolId }
 	)
+
+	
 
 	return (
 		<Box

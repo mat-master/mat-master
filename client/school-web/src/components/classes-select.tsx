@@ -21,7 +21,7 @@ const errorItem = React.forwardRef<HTMLDivElement>((_, ref) => (
 
 const ClassesSelect = React.forwardRef<HTMLInputElement, ClassesSelectProps>(
 	(props, ref) => {
-		const schoolId = getSchoolId()
+		const schoolId = getSchoolId()!
 		const { data, isLoading, isError } = trpc.useQuery([
 			'school.classes.all.get',
 			{ schoolId },

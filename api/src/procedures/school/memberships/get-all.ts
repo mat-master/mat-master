@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { Snowflake, snowflakeSchema } from '../../../models'
-import { getMembershipPrice } from '../../../util/get-membership-price'
 import {
 	paginationParamsSchema,
 	prismaPagination,
@@ -19,7 +18,6 @@ export type GetAllSchoolMembershipsParams = z.infer<
 >
 export type GetAllSchoolMembershipsResult = {
 	id: Snowflake
-	schoolId: Snowflake
 	name: string
 	price: number
 	interval: 'day' | 'month' | 'week' | 'year'
@@ -38,7 +36,6 @@ export const getAllSchoolMemberships: Procedure<
 		select: {
 			id: true,
 			name: true,
-			schoolId: true,
 			stripeProductId: true,
 			classes: { select: { id: true } },
 			students: { select: { studentId: true } },
@@ -46,18 +43,18 @@ export const getAllSchoolMemberships: Procedure<
 		...prismaPagination(pagination),
 	})
 
-	const prices = await Promise.all(
-		memberships.map(({ stripeProductId }) =>
-			getMembershipPrice(ctx, { stripeProductId })
-		)
-	)
+	// const prices = await Promise.all(
+	// 	memberships.map(({ stripeProductId }) =>
+	// 		getMembershipPrice(ctx, { stripeProductId })
+	// 	)
+	// )
 
 	return memberships.map(({ stripeProductId, ...membership }, i) => {
 		return {
 			...membership,
-			price: prices[i].unit_amount!,
-			interval: prices[i].recurring!.interval,
-			intervalCount: prices[i].recurring!.interval_count,
+			price: 0,
+			interval: 'day',
+			intervalCount: 0,
 			classes: membership.classes.map(({ id }) => id),
 			students: membership.students.map(({ studentId }) => studentId),
 		}

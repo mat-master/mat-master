@@ -57,7 +57,7 @@ export const createSchool: Procedure<
 			stripeAccountId: account.id,
 			stripeSubscriptionId: subscription.id,
 			owner: { connect: { id: ctx.payload.id } },
-			address: { create: { id: generateSnowflake(), ...address } },
+			address: { create: address },
 		},
 		select: { id: true },
 	})

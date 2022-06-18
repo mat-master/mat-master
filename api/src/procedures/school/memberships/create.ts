@@ -59,8 +59,8 @@ export const createSchoolMembership: Procedure<
 
 	return await ctx.db.membership.create({
 		data: {
-			...data,
 			id: generateSnowflake(),
+			name: data.name,
 			school: { connect: { id: schoolId } },
 			classes: { connect: classes },
 			stripeProductId: product.id,

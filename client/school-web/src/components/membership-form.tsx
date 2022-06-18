@@ -31,6 +31,7 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 		schema={membershipFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
+			console.log(errors)
 
 			return (
 				<>
@@ -48,6 +49,7 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 								label='Classes'
 								error={fieldState.error?.message}
 								value={field.value?.map((id) => id.toString())}
+								onChange={(value) => field.onChange(value.map((id) => BigInt(id)))}
 							/>
 						)}
 					/>
@@ -99,7 +101,7 @@ export const RemoteMembershipForm: React.FC<RemoteMembershipFormProps> = ({
 	id,
 	...props
 }) => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	return (
 		<RemoteForm<MembershipFormData>
 			{...props}

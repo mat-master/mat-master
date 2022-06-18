@@ -2,8 +2,10 @@ import { Text } from '@mantine/core'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { CalendarPlus as NewClassIcon } from 'tabler-icons-react'
+import { trpcClient } from '../..'
 import AppHeader from '../../components/app-header'
 import { RemoteClassForm } from '../../components/class-form'
+import DynamicallySizedList from '../../components/dynamically-sized-list'
 import { modalsCtx } from '../../components/modals-context'
 import PageHeader from '../../components/page-header'
 import ScheduleDisplay from '../../components/schedule-display'
@@ -15,7 +17,7 @@ import getSchoolId from '../../utils/get-school-id'
 import { trpc } from '../../utils/trpc'
 
 const ClassesPage: React.FC = () => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	const modals = useContext(modalsCtx)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 
@@ -61,7 +63,19 @@ const ClassesPage: React.FC = () => {
 				]}
 				data={filteredClasses?.map(({ id, name, memberships }) => ({
 					name: <Text weight={700}>{name}</Text>,
-					memberships: memberships.join(', '),
+					memberships: (
+						<DynamicallySizedList<bigint, { name: string }>
+							itemIds={memberships}
+							estimatedItemWidth={72}
+							itemElement={({ name }) => <Text>{name}</Text>}
+							fetchItemData={(id) =>
+								trpcClient.query('school.memberships.get', {
+									id,
+									schoolId,
+								})
+							}
+						/>
+					),
 					schedule: <ScheduleDisplay schedule={[]} />,
 				}))}
 			/>

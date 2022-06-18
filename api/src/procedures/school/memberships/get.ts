@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { Procedure } from '../..'
 import { snowflakeSchema } from '../../../models'
-import { getMembershipPrice } from '../../../util/get-membership-price'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolMembershipParamsSchema = z.object({
@@ -42,14 +41,14 @@ export const getSchoolMembership: Procedure<
 	})
 	if (!membership) throw 'Membership not found'
 
-	const price = await getMembershipPrice(ctx, membership)
+	// const price = await getMembershipPrice(ctx, membership)
 
 	return {
 		id,
 		name: membership.name,
-		price: price.unit_amount!,
-		interval: price.recurring!.interval,
-		intervalCount: price.recurring!.interval_count,
+		price: 0,
+		interval: 'day',
+		intervalCount: 0,
 		classes: membership.classes.map(({ id }) => id),
 		students: membership.students.map(({ studentId }) => studentId),
 	}

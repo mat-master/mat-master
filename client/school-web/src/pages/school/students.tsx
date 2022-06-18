@@ -2,7 +2,9 @@ import { Avatar, Badge, Text } from '@mantine/core'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { UserPlus as AddUserIcon } from 'tabler-icons-react'
+import { trpcClient } from '../..'
 import AppHeader from '../../components/app-header'
+import DynamicallySizedList from '../../components/dynamically-sized-list'
 import { RemoteInviteForm } from '../../components/invite-form'
 import { modalsCtx } from '../../components/modals-context'
 import PageHeader from '../../components/page-header'
@@ -14,7 +16,7 @@ import getSchoolId from '../../utils/get-school-id'
 import { trpc } from '../../utils/trpc'
 
 const StudentsPage: React.FC = () => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	const modals = useContext(modalsCtx)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 
@@ -65,7 +67,19 @@ const StudentsPage: React.FC = () => {
 							TODO
 						</Badge>
 					),
-					memberships: memberships.join(', '),
+					memberships: (
+						<DynamicallySizedList<bigint, { name: string }>
+							itemIds={memberships}
+							estimatedItemWidth={72}
+							itemElement={({ name }) => <Text>{name}</Text>}
+							fetchItemData={(id) =>
+								trpcClient.query('school.memberships.get', {
+									id,
+									schoolId,
+								})
+							}
+						/>
+					),
 				}))}
 			/>
 		</Page>

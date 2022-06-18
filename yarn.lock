@@ -1715,6 +1715,7 @@ __metadata:
     react-router-dom: ^6.2.1
     superjson: ^1.9.1
     tabler-icons-react: ^1.37.0
+    ts-toolbelt: ^9.6.0
     typescript: ^4.5.4
     url: ^0.11.0
     vite: ^2.8.0
@@ -12347,6 +12348,13 @@ __metadata:
     "@ts-morph/common": ~0.12.3
     code-block-writer: ^11.0.0
   checksum: 0983a7c4e0e1063e3900186bf2e85c5080621e31b754434136d2130a82bda6556985fdf012b766a87b9ae47d6f63732a562bb80854c34644f9352bea9a35b8ee
+  languageName: node
+  linkType: hard
+
+"ts-toolbelt@npm:^9.6.0":
+  version: 9.6.0
+  resolution: "ts-toolbelt@npm:9.6.0"
+  checksum: 9f35fd95d895a5d32ea9fd2e532a695b0bae6cbff6832b77292efa188a0ed1ed6e54f63f74a8920390f3d909a7a3adb20a144686372a8e78b420246a9bd3d58a
   languageName: node
   linkType: hard
 

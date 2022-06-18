@@ -1,12 +1,16 @@
 /**
  * Attempts to parse the current schools id from the url.
- * throws on not found
  */
 const getSchoolId = () => {
 	const matches = /schools\/\d+/.exec(window.location.pathname)
-	if (!matches || !matches.length) throw "Couldn't resolve school id"
+	if (!matches || !matches.length) return
 	const match = matches[0]!.substring(8)
-	return BigInt(match)
+
+	try {
+		return BigInt(match)
+	} catch {
+		return undefined
+	}
 }
 
 export default getSchoolId

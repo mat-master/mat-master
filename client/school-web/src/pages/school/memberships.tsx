@@ -2,7 +2,9 @@ import { Avatar, AvatarsGroup, Text } from '@mantine/core'
 import type React from 'react'
 import { useContext, useMemo } from 'react'
 import { Plus as NewMembershipIcon } from 'tabler-icons-react'
+import { trpcClient } from '../..'
 import AppHeader from '../../components/app-header'
+import DynamicallySizedList from '../../components/dynamically-sized-list'
 import { RemoteMembershipForm } from '../../components/membership-form'
 import { modalsCtx } from '../../components/modals-context'
 import PageHeader from '../../components/page-header'
@@ -14,7 +16,7 @@ import getSchoolId from '../../utils/get-school-id'
 import { trpc } from '../../utils/trpc'
 
 const MembershipsPage: React.FC = () => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	const modals = useContext(modalsCtx)
 	const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm()
 
@@ -59,7 +61,19 @@ const MembershipsPage: React.FC = () => {
 				data={filteredMemberships?.map(
 					({ id, name, classes, price, interval, intervalCount, students }) => ({
 						name: <Text weight={700}>{name}</Text>,
-						classes: classes.join(', '),
+						classes: (
+							<DynamicallySizedList<bigint, { name: string }>
+								itemIds={classes}
+								estimatedItemWidth={72}
+								itemElement={({ name }) => <Text>{name}</Text>}
+								fetchItemData={(id) =>
+									trpcClient.query('school.classes.get', {
+										id,
+										schoolId,
+									})
+								}
+							/>
+						),
 						students: (
 							<AvatarsGroup limit={5}>
 								{students.map((id) => (
