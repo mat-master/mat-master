@@ -71,7 +71,7 @@ const StudentsPage: React.FC = () => {
 						<DynamicallySizedList<bigint, { name: string }>
 							itemIds={memberships}
 							estimatedItemWidth={72}
-							itemElement={({ name }) => <Text>{name}</Text>}
+							itemComponent={({ name }) => <Text>{name}</Text>}
 							fetchItemData={(id) =>
 								trpcClient.query('school.memberships.get', {
 									id,

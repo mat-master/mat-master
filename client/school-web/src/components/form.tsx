@@ -20,7 +20,7 @@ export type FormProps<T extends FieldValues = FieldValues> = Omit<
 	onSubmit?: SubmitHandler<T>
 	child: React.FC<{ form: UseFormReturn<T> }>
 	error?: string
-	defaultValues?: T
+	defaultValues?: Partial<T>
 	submitLabel?: string
 }
 

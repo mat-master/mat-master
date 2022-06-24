@@ -1,7 +1,9 @@
 import { Center, Loader, MultiSelect, MultiSelectProps, Text } from '@mantine/core'
-import React from 'react'
+import React, { useContext } from 'react'
 import getSchoolId from '../utils/get-school-id'
 import { trpc } from '../utils/trpc'
+import { RemoteClassForm } from './class-form'
+import { modalsCtx } from './modals-context'
 
 export type ClassesSelectProps = Omit<MultiSelectProps, 'data'>
 
@@ -21,6 +23,7 @@ const errorItem = React.forwardRef<HTMLDivElement>((_, ref) => (
 
 const ClassesSelect = React.forwardRef<HTMLInputElement, ClassesSelectProps>(
 	(props, ref) => {
+		const modals = useContext(modalsCtx)
 		const schoolId = getSchoolId()!
 		const { data, isLoading, isError } = trpc.useQuery([
 			'school.classes.all.get',
@@ -38,6 +41,15 @@ const ClassesSelect = React.forwardRef<HTMLInputElement, ClassesSelectProps>(
 				{...props}
 				data={options ?? ['state placeholder']}
 				itemComponent={isLoading ? loadingItem : isError ? errorItem : undefined}
+				searchable
+				creatable={true}
+				getCreateLabel={(query) => `+ Create ${query ?? 'new class'}`}
+				onCreate={(query) =>
+					modals.push({
+						title: 'New Class',
+						children: <RemoteClassForm />,
+					})
+				}
 			/>
 		)
 	}

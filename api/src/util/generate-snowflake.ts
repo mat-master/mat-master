@@ -11,11 +11,11 @@ const SEQUENCE_BITS = 12
 const EPOCH = Date.UTC(1970, 0, 1)
 
 export const generateSnowflake = () => {
-	const ip = getProcessIp()
-	if (!ip) throw 'An unknown error ocurred'
+	const ipSegments = getProcessIp()?.split('.')?.map(parseInt)
+	if (!ipSegments) throw 'Something went wrong getting the process ip'
 
 	// Takes the lower 16 bits of the ipv4 address and converts it to a number
-	const lower16 = (parseInt(ip[2]) << 8) | parseInt(ip[3])
+	const lower16 = (ipSegments[2]! << 8) | ipSegments[3]!
 	const randomId = crypto.randomBytes(8).readBigInt64BE() & BigInt(0x3ff)
 	// Forms snowflake from the timestamp, worker id, and random number
 	return (

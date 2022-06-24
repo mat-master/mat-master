@@ -27,6 +27,7 @@ export const updateSchoolMembership: Procedure<
 		ctx.db.membership.findFirst({
 			where: { id, schoolId },
 			select: { stripeProductId: true },
+			rejectOnNotFound: true,
 		}),
 		ctx.db.school.findUnique({
 			where: { id: schoolId },
@@ -35,28 +36,34 @@ export const updateSchoolMembership: Procedure<
 		}),
 	])
 
-	if (!membership) throw 'Membership not found'
 	let price = await getMembershipPrice(ctx, membership)
-	if (data.price || data.interval || data.intervalCount) {
-		price = await ctx.stripe.prices.create(
-			{
-				product: membership.stripeProductId,
-				currency: 'USD',
-				unit_amount: data.price ?? price.unit_amount!,
-				recurring: {
-					interval: data.interval ?? price.recurring!.interval,
-					interval_count: data.intervalCount ?? price.recurring!.interval_count,
+
+	if (
+		data.price !== price.unit_amount ||
+		data.interval !== price.recurring?.interval ||
+		data.intervalCount !== price.recurring?.interval_count
+	) {
+		await Promise.all([
+			ctx.stripe.prices.update(price.id, { active: false }),
+			ctx.stripe.prices.create(
+				{
+					product: membership.stripeProductId,
+					currency: 'USD',
+					unit_amount: data.price ?? price.unit_amount!,
+					recurring: {
+						interval: data.interval ?? price.recurring!.interval,
+						interval_count: data.intervalCount ?? price.recurring!.interval_count,
+					},
 				},
-			},
-			{ stripeAccount: school.stripeAccountId }
-		)
+				{ stripeAccount: school.stripeAccountId }
+			),
+		])
 	}
 
 	await ctx.db.membership.update({
 		where: { id },
 		data: {
 			name: data.name,
-			stripeProductId: price.id,
 			classes: data.classes
 				? { connect: data.classes?.map((id) => ({ id })) }
 				: undefined,

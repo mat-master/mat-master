@@ -29,18 +29,12 @@ model User {
   students Student[]
 }
 
-enum SchoolTier {
-  Trial
-  Basic
-  Premium
-}
-
 model School {
-  id                   BigInt     @id
-  name                 String     @db.VarChar(100)
-  tier                 SchoolTier @default(Trial)
-  stripeAccountId      String     @map("stripe_account_id") @db.VarChar(50)
-  stripeSubscriptionId String     @map("stripe_subscription_id") @db.VarChar(50)
+  id                   BigInt @id
+  name                 String @db.VarChar(100)
+  tier                 Int    @default(0)
+  stripeAccountId      String @map("stripe_account_id") @db.VarChar(50)
+  stripeSubscriptionId String @map("stripe_subscription_id") @db.VarChar(50)
 
   address Address?
 
@@ -79,15 +73,14 @@ model Class {
 model ClassTime {
   id BigInt @id
 
-  scheduleStart DateTime  @default(now()) @map("schedule_start")
-  scheduleEnd   DateTime? @map("schedule_end")
+  scheduleStart DateTime  @default(now()) @map("schedule_start") @db.Date
+  scheduleEnd   DateTime? @map("schedule_end") @db.Date
 
-  repeatMonth Int? @map("repeat_month")
-  repeatWeek  Int? @map("repeat_week")
-  repeatDay   Int? @map("repeat_day")
-  repeatDate  Int? @map("repeat_date")
+  repeatWeek Int? @map("repeat_week")
+  repeatDay  Int? @map("repeat_day")
+  repeatDate Int? @map("repeat_date")
 
-  startTime DateTime @map("start_time") @db.Timetz()
+  startTime DateTime @map("start_time") @db.Time()
   duration  Int
 
   class   Class  @relation(fields: [classId], references: [id])

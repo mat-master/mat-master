@@ -1,4 +1,4 @@
-import { Modal, Title } from '@mantine/core'
+import { Modal, Overlay, Title } from '@mantine/core'
 import { useListState } from '@mantine/hooks'
 import { createContext, ReactNode } from 'react'
 
@@ -55,19 +55,24 @@ export const ModalsProvider: React.FC = ({ children }) => {
 		}
 	}
 
-	const current = stack[stack.length - 1]
-
 	return (
 		<modalsCtx.Provider value={{ enqueue, push, pop }}>
-			{current && (
-				<Modal
-					opened
-					title={<Title order={3}>{current.title}</Title>}
-					onClose={pop}
-				>
-					{current.children}
-				</Modal>
+			{!!stack.length && (
+				<Overlay color='#000' opacity={0.666}>
+					{stack.map((props, i) => (
+						<Modal
+							opened
+							key={i}
+							title={<Title order={3}>{props.title}</Title>}
+							onClose={pop}
+							overlayOpacity={0}
+						>
+							{props.children}
+						</Modal>
+					))}
+				</Overlay>
 			)}
+
 			{children}
 		</modalsCtx.Provider>
 	)

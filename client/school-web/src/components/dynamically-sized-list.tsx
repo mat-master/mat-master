@@ -5,9 +5,9 @@ import { useQueries } from 'react-query'
 
 export interface DynamicallySizedListProps<TId, TData> {
 	itemIds: TId[]
-	fetchItemData: (id: TId) => Promise<TData>
-	itemElement: React.FC<TData>
 	estimatedItemWidth: number // px
+	fetchItemData: (id: TId) => TData | Promise<TData>
+	itemComponent: React.FC<TData>
 	estimateWeight?: number
 }
 
@@ -36,9 +36,9 @@ const useStyles = createStyles(() => ({
 
 const DynamicallySizedList = <TId, TData>({
 	itemIds,
-	fetchItemData,
-	itemElement: ItemElement,
 	estimatedItemWidth,
+	fetchItemData,
+	itemComponent: ItemComponent,
 	estimateWeight = 2,
 }: DynamicallySizedListProps<TId, TData>) => {
 	const [count, setCount] = useState(0)
@@ -53,7 +53,7 @@ const DynamicallySizedList = <TId, TData>({
 	// if any of the queries are loading, the entire component is in a loading state
 	const isLoading = queries.some(({ isLoading }) => isLoading)
 	const items = queries.map(
-		({ data }, i) => data && <ItemElement key={i} {...data} />
+		({ data }, i) => data && <ItemComponent key={i} {...data} />
 	)
 
 	const skeleton = useElementSize<HTMLDivElement>()
@@ -66,13 +66,15 @@ const DynamicallySizedList = <TId, TData>({
 	const settled = useRef(false)
 
 	useLayoutEffect(() => {
-		if (isLoading) return
+		if (isLoading || !listRef.current) return
 		const availableWidth = skeleton.ref.current.clientWidth
 		const contentWidth = content.ref.current.clientWidth
 		const unusedWidth = availableWidth - contentWidth
 
 		if (
 			unusedWidth > 0 &&
+			// after the list has settled only check if more items are needed
+			// if the amount of available width had increased
 			(!settled.current || availableWidth > previousAvailableWidth.current)
 		) {
 			// the weighted average of the known item widths and the initial estimate
@@ -82,27 +84,24 @@ const DynamicallySizedList = <TId, TData>({
 				: estimatedItemWidth
 
 			const adjustment = Math.round(unusedWidth / averageItemWidth)
+			const newCount = Math.min(itemIds.length, count + adjustment)
+			newCount === count ? (settled.current = true) : setCount(newCount)
 
-			if (!adjustment) settled.current = true
-			setCount(Math.min(itemIds.length, count + adjustment))
+			// if the content overflows take items out of the list one by one
+			// until the content doesn't overflow
 		} else if (unusedWidth < 0) {
-			const removedItems: ChildNode[] = []
-
-			// take items out of the list until the content doesn't overflow
+			const removedNodes: ChildNode[] = []
 			while (
-				listRef.current!.hasChildNodes() &&
-				content.ref.current!.clientWidth > availableWidth
+				listRef.current.hasChildNodes() &&
+				content.ref.current.clientWidth > availableWidth
 			) {
-				const el = listRef.current!.removeChild(listRef.current!.lastChild!)
-				removedItems.push(el)
+				removedNodes.push(listRef.current.removeChild(listRef.current.lastChild!))
 			}
 
-			const newCount = listRef.current!.childElementCount
-
 			// put the dom back the way it was so that react doesn't get confused
-			listRef.current!.append(...removedItems)
+			listRef.current.append(...removedNodes)
+			setCount(count - removedNodes.length)
 			settled.current = true
-			setCount(newCount)
 		}
 
 		previousAvailableWidth.current = availableWidth
@@ -112,15 +111,12 @@ const DynamicallySizedList = <TId, TData>({
 	const unShownItemCount = itemIds.length - count
 
 	return (
-		<Skeleton
-			ref={skeleton.ref}
-			visible={isLoading || !settled.current}
-			className={classes.skeleton}
-		>
+		<Skeleton ref={skeleton.ref} visible={isLoading} className={classes.skeleton}>
 			<div ref={content.ref} className={classes.content}>
 				<div ref={listRef} className={classes.list}>
 					{items}
 				</div>
+
 				{unShownItemCount > 0 && <Badge>+{unShownItemCount}</Badge>}
 			</div>
 		</Skeleton>

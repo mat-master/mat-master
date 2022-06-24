@@ -13,6 +13,7 @@ import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
+import { ClassSchedule } from '../../utils/get-interval-schedule'
 import getSchoolId from '../../utils/get-school-id'
 import { trpc } from '../../utils/trpc'
 
@@ -61,13 +62,13 @@ const ClassesPage: React.FC = () => {
 					{ key: 'memberships', width: 3 },
 					{ key: 'schedule', width: 3 },
 				]}
-				data={filteredClasses?.map(({ id, name, memberships }) => ({
+				data={filteredClasses?.map(({ id, name, memberships, schedule }) => ({
 					name: <Text weight={700}>{name}</Text>,
 					memberships: (
 						<DynamicallySizedList<bigint, { name: string }>
 							itemIds={memberships}
 							estimatedItemWidth={72}
-							itemElement={({ name }) => <Text>{name}</Text>}
+							itemComponent={({ name }) => <Text>{name},</Text>}
 							fetchItemData={(id) =>
 								trpcClient.query('school.memberships.get', {
 									id,
@@ -76,7 +77,7 @@ const ClassesPage: React.FC = () => {
 							}
 						/>
 					),
-					schedule: <ScheduleDisplay schedule={[]} />,
+					schedule: <ScheduleDisplay schedule={schedule as ClassSchedule} />,
 				}))}
 			/>
 		</Page>

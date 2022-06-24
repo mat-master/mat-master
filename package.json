@@ -7,7 +7,8 @@
 		"client/*",
 		"api",
 		"marketing/*",
-		"database"
+		"database",
+		"common"
 	],
 	"scripts": {
 		"build": "yarn workspaces foreach run build"

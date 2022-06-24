@@ -6,7 +6,7 @@ import { useSchoolAuthentication } from '../../util/use-school-authentication'
 
 export const getSchoolScheduleParamsSchema = z.object({
 	schoolId: snowflakeSchema,
-	reference: z.date().optional(),
+	ref: z.date().optional(),
 	scope: z.enum(['day', 'week', 'month']),
 })
 
@@ -16,12 +16,13 @@ export type GetSchoolScheduleResult = ClassTime[]
 export const getSchoolSchedule: Procedure<
 	GetSchoolScheduleParams,
 	GetSchoolScheduleResult
-> = async ({ ctx, input: { schoolId, reference = new Date(), scope } }) => {
+> = async ({ ctx, input: { schoolId, ref = new Date(), scope } }) => {
 	useSchoolAuthentication(ctx, schoolId)
+
 	return await ctx.db.classTime.findMany({
 		where: {
 			class: { schoolId },
-			scheduleStart: { gte: reference },
+			scheduleStart: { gte: ref },
 		},
 	})
 }

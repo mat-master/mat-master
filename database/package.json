@@ -10,6 +10,9 @@
 		"migrate:dev": "yarn dotenv -e ../.env.dev -- yarn prisma migrate dev",
 		"start:dev": "docker run -d -p 5432:5432 --name mat-master-db -e POSTGRES_PASSWORD=password postgres"
 	},
+	"dependencies": {
+		"zod": "^3.17.3"
+	},
 	"devDependencies": {
 		"dotenv-cli": "^5.1.0",
 		"prisma": "^3.14.0",

@@ -1,10 +1,10 @@
 import { Snowflake } from '../models'
 import { Context } from '../procedures'
 
-export async function getMembershipPrice(
+export const getMembershipPrice = async (
 	ctx: Context,
 	membership: Snowflake | { stripeProductId: string }
-) {
+) => {
 	const { stripeProductId } =
 		typeof membership === 'bigint'
 			? await ctx.db.membership.findUnique({
@@ -21,6 +21,5 @@ export async function getMembershipPrice(
 		limit: 100,
 	})
 
-	const prices = res.data.sort((a, b) => a.created - b.created)
-	return prices[0]
+	return res.data.at(-1)!
 }
