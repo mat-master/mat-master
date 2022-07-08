@@ -9,13 +9,14 @@
 		"build:prod": "esbuild src/main.ts --platform=node --bundle --minify --outfile='build.js'",
 		"build:docker": "docker build -t mat-master-api -f Dockerfile ..",
 		"build": "yarn build:dev && yarn build:prod && yarn build:docker",
-		"start": "node build/main.js",
-		"start:docker": "dock",
-		"dev": "tsup --watch --onSuccess=\"clear && yarn start\""
+		"start:dev": "node build/main.js",
+		"start:prod": "node build.js",
+		"dev": "tsup --watch --onSuccess=\"clear && yarn start:dev\""
 	},
 	"dependencies": {
+		"@mat-master/common": "workspace:^",
 		"@mat-master/database": "workspace:^",
-		"@prisma/client": "^3.14.0",
+		"@prisma/client": "^3.15.2",
 		"@sendgrid/mail": "^7.7.0",
 		"@trpc/server": "^9.25.0",
 		"bcryptjs": "^2.4.3",
@@ -26,7 +27,7 @@
 		"stripe": "^9.5.0",
 		"superjson": "^1.9.1",
 		"trpc-playground": "^0.1.6",
-		"zod": "^3.17.3"
+		"zod": "3.17.0"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "^2",

@@ -1,7 +1,7 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { snowflakeSchema } from '../../models'
 import { KioskPayload } from '../../models/kiosk-payload'
 import { signPayload } from '../../util/payload-encoding'
 

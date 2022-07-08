@@ -1,10 +1,8 @@
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { Snowflake, snowflakeSchema } from '../../../models'
-import {
-	paginationParamsSchema,
-	prismaPagination,
-} from '../../../util/prisma-pagination'
+import { getMembershipPrice } from '../../../util/get-membership-price'
+import { paginationParamsSchema } from '../../../util/prisma-pagination'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getAllSchoolMembershipsParamsSchema = z
@@ -31,31 +29,39 @@ export const getAllSchoolMemberships: Procedure<
 	GetAllSchoolMembershipsResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
 	useSchoolAuthentication(ctx, schoolId)
-	const memberships = await ctx.db.membership.findMany({
-		where: { schoolId },
+
+	const { stripeAccountId, memberships } = await ctx.db.school.findUnique({
+		where: { id: schoolId },
 		select: {
-			id: true,
-			name: true,
-			stripeProductId: true,
-			classes: { select: { id: true } },
-			students: { select: { studentId: true } },
+			stripeAccountId: true,
+			memberships: {
+				select: {
+					id: true,
+					name: true,
+					stripeProductId: true,
+					classes: { select: { classId: true } },
+					students: { select: { studentId: true } },
+				},
+			},
 		},
-		...prismaPagination(pagination),
+		rejectOnNotFound: true,
 	})
 
-	// const prices = await Promise.all(
-	// 	memberships.map(({ stripeProductId }) =>
-	// 		getMembershipPrice(ctx, { stripeProductId })
-	// 	)
-	// )
+	const prices = await Promise.all(
+		memberships.map(({ stripeProductId }) =>
+			getMembershipPrice(ctx, { stripeProductId }, stripeAccountId)
+		)
+	)
 
 	return memberships.map(({ stripeProductId, ...membership }, i) => {
+		const price = prices[i]!
+
 		return {
 			...membership,
-			price: 0,
-			interval: 'day',
-			intervalCount: 0,
-			classes: membership.classes.map(({ id }) => id),
+			price: price.unit_amount!,
+			interval: price.recurring!.interval,
+			intervalCount: price.recurring!.interval_count,
+			classes: membership.classes.map(({ classId }) => classId),
 			students: membership.students.map(({ studentId }) => studentId),
 		}
 	})

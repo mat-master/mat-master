@@ -1,92 +1,102 @@
 import {
 	ActionIcon,
-	createStyles,
 	Group,
 	InputWrapper,
-	InputWrapperBaseProps,
+	InputWrapperProps,
+	Text,
 } from '@mantine/core'
-import { randomId, useUncontrolled } from '@mantine/hooks'
-import React from 'react'
+import { ClassTime } from '@mat-master/common'
+import React, { useContext, useState } from 'react'
 import {
 	CircleMinus as RemoveIcon,
-	CirclePlus as AddIcon,
+	CirclePlus as CreateIcon,
 } from 'tabler-icons-react'
-import ClassTimeInput, { defaultClassTime } from './class-time-input'
-export interface ClassScheduleInputProps extends InputWrapperBaseProps {
-	value?: Array<ClassTime>
-	defaultValue?: Array<ClassTime>
-	onChange?: (value: Array<ClassTime>) => void
+import { getEnglishSchedule } from '../utils/get-english-schedule'
+import ClassTimeForm from './class-time-form'
+import { modalsCtx } from './modals-context'
+
+type ClassTimeData = Omit<ClassTime, 'id' | 'classId'>
+type ClassScheduleInputValue = ClassTimeData[]
+
+type BaseClassInputProps = {
+	value?: ClassScheduleInputValue
+	defaultValue?: ClassScheduleInputValue
+	onChange?: (value: ClassScheduleInputValue) => void
 }
 
-type ClassScheduleInputState = Array<{ key: string; time: ClassTime }>
-
-const classScheduleInputStateSchema: yup.SchemaOf<ClassScheduleInputState> = yup
-	.array()
-	.of(
-		yup
-			.object({ key: yup.string().required(), time: classTimeSchema.required() })
-			.required()
-	)
-
-const useStyles = createStyles((theme) => ({
-	timeInput: {
-		display: 'grid',
-		gridTemplateColumns: 'min-content 1fr',
-		columnGap: theme.spacing.sm,
-		alignItems: 'center',
-	},
-}))
+export type ClassScheduleInputProps = BaseClassInputProps &
+	Omit<InputWrapperProps, keyof BaseClassInputProps | 'children'>
 
 const ClassScheduleInput = React.forwardRef<
 	HTMLDivElement,
 	ClassScheduleInputProps
->(({ value: controlledValue, onChange, defaultValue, ...props }, ref) => {
-	const { classes } = useStyles()
+>(({ value: controlledValue, defaultValue = [], onChange }, ref) => {
+	const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
+	const value = controlledValue ?? uncontrolledValue
 
-	const [state, setState] = useUncontrolled<ClassScheduleInputState>({
-		value: controlledValue?.map((time) => ({ key: randomId(), time })),
-		defaultValue: (defaultValue ?? []).map((time) => ({ key: randomId(), time })),
-		finalValue: [],
-		onChange: (value) => onChange && onChange(value?.map(({ time }) => time) ?? []),
-		rule: (value) => !!classScheduleInputStateSchema.nullable().validateSync(value),
-	})
-
-	const addTime = () => {
-		const _state = state ?? []
-		setState([..._state, { key: randomId(), time: defaultClassTime }])
-	}
-
-	const updateTime = (i: number, time: ClassTime) => {
-		const newValue = state ? [...state] : []
-		if (newValue[i]) newValue[i].time = time
-		setState(newValue)
+	const createTime = (time: ClassTimeData) => {
+		const newValue = [...value, time]
+		setUncontrolledValue(newValue)
+		if (onChange) onChange(newValue)
 	}
 
 	const removeTime = (i: number) => {
-		const newValue = state ? [...state] : []
+		const newValue = [...value]
 		newValue.splice(i, 1)
-		setState(newValue)
+		setUncontrolledValue(newValue)
+		if (onChange) onChange(newValue)
 	}
 
+	const modals = useContext(modalsCtx)
+	const openCreateForm = () =>
+		modals.push({
+			title: 'New Class Time',
+			children: (
+				<ClassTimeForm
+					onSubmit={(value) => {
+						createTime(value)
+						modals.pop()
+					}}
+				/>
+			),
+		})
+
 	return (
-		<InputWrapper {...props} onChange={undefined} ref={ref}>
-			<Group direction='column' spacing='sm'>
-				{state?.map(({ key, time }, i) => (
-					<div key={key} className={classes.timeInput}>
-						<ActionIcon disabled={state.length <= 1} onClick={() => removeTime(i)}>
-							<RemoveIcon size={16} />
-						</ActionIcon>
-						<ClassTimeInput
-							value={time}
-							onChange={(value) => updateTime(i, value)}
-						/>
-					</div>
+		<InputWrapper ref={ref}>
+			<ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
+				{value.map((time, i) => (
+					<li key={i}>
+						<Group
+							spacing='xs'
+							style={{
+								display: 'inline-flex',
+								width: '100%',
+							}}
+						>
+							<ActionIcon
+								key='delete'
+								variant='hover'
+								color='red'
+								onClick={() => removeTime(i)}
+							>
+								<RemoveIcon size={18} />
+							</ActionIcon>
+							<Text style={{ marginRight: 'auto' }}>
+								{getEnglishSchedule(time)}
+							</Text>
+						</Group>
+					</li>
 				))}
 
-				<ActionIcon onClick={addTime}>
-					<AddIcon size={16} />
-				</ActionIcon>
-			</Group>
+				<li>
+					<Group spacing='xs'>
+						<ActionIcon variant='hover' onClick={openCreateForm}>
+							<CreateIcon size={18} />
+						</ActionIcon>
+						<Text color='dimmed'>New Class Time</Text>
+					</Group>
+				</li>
+			</ul>
 		</InputWrapper>
 	)
 })

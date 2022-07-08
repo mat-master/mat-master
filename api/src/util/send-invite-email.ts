@@ -1,5 +1,5 @@
+import { Snowflake } from '@mat-master/common'
 import sgmail from '@sendgrid/mail'
-import { Snowflake } from '../models'
 import { getBaseLinkUrl } from './get-base-link-url'
 
 export const sendInviteEmail = (

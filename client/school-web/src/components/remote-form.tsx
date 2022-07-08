@@ -1,5 +1,5 @@
 import { Center, Loader, Text } from '@mantine/core'
-import type { FieldValues, SubmitHandler, UnpackNestedValue } from 'react-hook-form'
+import type { FieldValues, SubmitHandler } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import filterUpdated from '../utils/filter-updated'
 import getErrorMessage from '../utils/get-error-message'
@@ -48,12 +48,10 @@ const RemoteForm = <T extends FieldValues>({
 		error: mutationError,
 	} = useMutation(
 		queryKey,
-		async (data: UnpackNestedValue<T>) => {
+		async (data: T) => {
 			createResource && (await createResource(data))
 			updateResource &&
-				(await updateResource(
-					filterUpdated(remoteData ?? {}, data) as UnpackNestedValue<Partial<T>>
-				))
+				(await updateResource(filterUpdated(remoteData ?? {}, data)))
 			return data
 		},
 		{ onSuccess: onSubmit && ((data) => onSubmit(data)) }

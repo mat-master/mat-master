@@ -83,7 +83,7 @@ export const getEnglishSchedule = (time: Omit<ClassTime, 'id' | 'classId'>) => {
 		} of every month`
 	} else if (time.repeatDay) {
 		// every tuesday
-		dateStr = `Every ${WEEKDAYS[time.repeatDay]}}`
+		dateStr = `Every ${WEEKDAYS[time.repeatDay]}`
 	} else if (time.repeatDate) {
 		// the 31st of every month
 		dateStr = `The ${ordinalSuffixed(time.repeatDate)} of every month`

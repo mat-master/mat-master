@@ -1,6 +1,6 @@
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { Snowflake, snowflakeSchema } from '../../../models'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolStudentParamsSchema = z.object({

@@ -1,7 +1,7 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { Class, ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { snowflakeSchema } from '../../../models'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
 export const getSchoolClassParamsSchema = z.object({
@@ -17,9 +17,10 @@ export const getSchoolClass: Procedure<GetSchoolClassParams, Class> = async ({
 	input: { id, schoolId },
 }) => {
 	useSchoolAuthentication(ctx, schoolId)
+
 	const now = new Date()
-	return await ctx.db.class.findUnique({
-		where: { id },
+	return await ctx.db.class.findFirst({
+		where: { id, schoolId },
 		include: {
 			schedule: {
 				where: {

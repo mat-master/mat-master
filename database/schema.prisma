@@ -66,7 +66,7 @@ model Class {
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
 
-  memberships Membership[]
+  memberships MembershipClass[]
   schedule    ClassTime[]
 }
 
@@ -89,6 +89,16 @@ model ClassTime {
   attendances Attendance[]
 }
 
+model MembershipClass {
+  membership   Membership @relation(fields: [membershipId], references: [id])
+  membershipId BigInt     @map("membership_id")
+
+  class   Class  @relation(fields: [classId], references: [id])
+  classId BigInt @map("class_id")
+
+  @@id([membershipId, classId])
+}
+
 model Membership {
   id              BigInt @id
   name            String @db.VarChar(100)
@@ -97,7 +107,7 @@ model Membership {
   school   School @relation(fields: [schoolId], references: [id])
   schoolId BigInt @map("school_id")
 
-  classes  Class[]
+  classes  MembershipClass[]
   students StudentMembership[]
 }
 

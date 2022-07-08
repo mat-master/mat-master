@@ -1,7 +1,7 @@
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
 import { Class, ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { Snowflake, snowflakeSchema } from '../../../models'
 import {
 	paginationParamsSchema,
 	prismaPagination,
@@ -25,23 +25,17 @@ export const getAllSchoolClasses: Procedure<
 	GetAllSchoolClassesResult
 > = async ({ ctx, input: { schoolId, pagination } }) => {
 	useSchoolAuthentication(ctx, schoolId)
-	const now = new Date()
 	const classes = await ctx.db.class.findMany({
 		where: { schoolId },
 		include: {
-			memberships: { select: { id: true } },
-			schedule: {
-				where: {
-					scheduleStart: { lte: now },
-					scheduleEnd: { gte: now },
-				},
-			},
+			memberships: { select: { membershipId: true } },
+			schedule: true,
 		},
 		...prismaPagination(pagination),
 	})
 
 	return classes.map((_class) => ({
 		..._class,
-		memberships: _class.memberships.map(({ id }) => id),
+		memberships: _class.memberships.map(({ membershipId }) => membershipId),
 	}))
 }

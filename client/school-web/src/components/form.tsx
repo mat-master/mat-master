@@ -12,17 +12,20 @@ import {
 import { z } from 'zod'
 import getErrorMessage from '../utils/get-error-message'
 
-export type FormProps<T extends FieldValues = FieldValues> = Omit<
-	JSX.IntrinsicElements['form'],
-	'onSubmit' | 'id'
-> & {
-	schema: z.ZodTypeAny
+type BaseFormProps<T extends FieldValues> = {
+	schema: z.ZodSchema<T>
 	onSubmit?: SubmitHandler<T>
 	child: React.FC<{ form: UseFormReturn<T> }>
 	error?: string
 	defaultValues?: Partial<T>
 	submitLabel?: string
 }
+
+export type FormProps<T extends FieldValues = FieldValues> = Omit<
+	JSX.IntrinsicElements['form'],
+	keyof BaseFormProps<T>
+> &
+	BaseFormProps<T>
 
 export type FormWrapperProps<T extends FieldValues = FieldValues> = Omit<
 	FormProps<T>,
@@ -39,7 +42,7 @@ const Form = <T extends FieldValues>({
 	...props
 }: FormProps<T>) => {
 	const form = useForm<T>({
-		resolver: zodResolver(schema),
+		resolver: zodResolver(schema) as any,
 		defaultValues: defaultValues as DefaultValues<T>,
 	})
 

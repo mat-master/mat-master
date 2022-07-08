@@ -67,10 +67,7 @@ const MembershipsPage: React.FC = () => {
 								estimatedItemWidth={72}
 								itemComponent={({ name }) => <Text>{name}</Text>}
 								fetchItemData={(id) =>
-									trpcClient.query('school.classes.get', {
-										id,
-										schoolId,
-									})
+									trpcClient.query('school.classes.get', { id, schoolId })
 								}
 							/>
 						),

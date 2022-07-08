@@ -1,5 +1,5 @@
 import { MultiSelect } from '@mantine/core'
-import { Snowflake } from '@mat-master/api'
+import { Snowflake } from '@mat-master/common'
 import type React from 'react'
 import { z } from 'zod'
 import { trpcClient } from '..'
@@ -29,7 +29,7 @@ export const RemoteStudentForm: React.FC<RemoteStudentFormProps> = ({
 	id,
 	...props
 }) => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	return (
 		<RemoteForm<StudentFormData>
 			{...props}

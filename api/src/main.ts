@@ -6,7 +6,6 @@ import dotenv from 'dotenv'
 import express from 'express'
 import path from 'path'
 import Stripe from 'stripe'
-import { expressHandler } from 'trpc-playground/handlers/express'
 import { createContextConstructor, router } from './procedures'
 
 const main = async () => {
@@ -14,17 +13,16 @@ const main = async () => {
 	dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') })
 	dotenv.config({ override: true }) // Override dev env variables with production ones
 
-	const app = express()
 	const db = new PrismaClient()
+	await db.$connect()
+
+	sgmail.setApiKey(process.env.SENDGRID_API_KEY!)
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 		apiVersion: '2020-08-27',
 	})
 
-	await db.$connect()
-	sgmail.setApiKey(process.env.SENDGRID_API_KEY!)
-
+	const app = express()
 	app.use(cors())
-
 	app.use(
 		'/trpc',
 		createExpressMiddleware({
@@ -38,20 +36,6 @@ const main = async () => {
 			}),
 		})
 	)
-
-	if (process.env.NODE_ENV !== 'prod') {
-		app.use(
-			'/playground',
-			await expressHandler({
-				router,
-				trpcApiEndpoint: '/trpc',
-				playgroundEndpoint: '/playground',
-				request: {
-					superjson: true,
-				},
-			})
-		)
-	}
 
 	const port = parseInt(process.env.PORT || '') || 8080
 	app.listen(port, () => console.log(`API listening on port ${port}`))

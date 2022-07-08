@@ -1,5 +1,6 @@
+import { Snowflake } from '@mat-master/common'
 import { TRPCError } from '@trpc/server'
-import { Payload, Snowflake } from '../models'
+import { Payload } from '../models'
 import { Context } from '../procedures'
 import { useAuthentication } from './use-authentication'
 
@@ -14,5 +15,3 @@ export function useSchoolAuthentication(
 			message: "You aren't the owner of this school",
 		})
 }
-
-

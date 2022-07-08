@@ -1,5 +1,5 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
-import { snowflakeSchema } from './snowflake'
 
 export const kioskPayloadSchema = z.object({
 	id: snowflakeSchema,

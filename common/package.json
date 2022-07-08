@@ -1,6 +1,7 @@
 {
 	"name": "@mat-master/common",
 	"packageManager": "yarn@3.2.0",
+	"main": "build/index.js",
 	"module": "build/index.mjs",
 	"types": "build/index.d.ts",
 	"scripts": {
@@ -9,8 +10,7 @@
 	},
 	"dependencies": {
 		"@mat-master/database": "workspace:^",
-		"dayjs": "^1.11.3",
-		"zod": "^3.17.3"
+		"zod": "3.17.0"
 	},
 	"devDependencies": {
 		"tsup": "^6.1.2"

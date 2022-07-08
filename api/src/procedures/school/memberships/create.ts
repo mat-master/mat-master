@@ -1,6 +1,7 @@
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { Snowflake, snowflakeSchema } from '../../../models'
 import { generateSnowflake } from '../../../util/generate-snowflake'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 
@@ -25,25 +26,30 @@ export const createSchoolMembership: Procedure<
 	CreateSchoolMembershipResult
 > = async ({ ctx, input: { schoolId, ...data } }) => {
 	useSchoolAuthentication(ctx, schoolId)
-	const school = await ctx.db.school.findUnique({
-		where: { id: schoolId },
-		select: { stripeAccountId: true },
-		rejectOnNotFound: true,
-	})
 
-	const product = await ctx.stripe.products.create(
-		{ name: `${data.name} Membership` },
-		{ stripeAccount: school.stripeAccountId }
-	)
-
-	const [classes] = await Promise.all([
+	const [school, classes] = await Promise.all([
+		ctx.db.school.findUnique({
+			where: { id: schoolId },
+			select: { stripeAccountId: true },
+			rejectOnNotFound: true,
+		}),
 		ctx.db.class.findMany({
 			where: { id: { in: data.classes }, schoolId },
 			select: { id: true },
 		}),
-		ctx.stripe.prices.create(
-			{
-				product: product.id,
+	])
+
+	// check that every class exists and is owned by the given school
+	if (classes.length !== data.classes.length)
+		throw new TRPCError({
+			code: 'NOT_FOUND',
+			message: "Couldn't find one or more of the given classes",
+		})
+
+	const product = await ctx.stripe.products.create(
+		{
+			name: `${data.name} Membership`,
+			default_price_data: {
 				currency: 'USD',
 				unit_amount: data.price,
 				recurring: {
@@ -51,18 +57,16 @@ export const createSchoolMembership: Procedure<
 					interval_count: data.intervalCount,
 				},
 			},
-			{ stripeAccount: school.stripeAccountId }
-		),
-	])
-
-	if (classes.length !== data.classes.length) throw 'One or more classes not found'
+		},
+		{ stripeAccount: school.stripeAccountId }
+	)
 
 	return await ctx.db.membership.create({
 		data: {
 			id: generateSnowflake(),
 			name: data.name,
 			school: { connect: { id: schoolId } },
-			classes: { connect: classes },
+			classes: { createMany: { data: classes.map(({ id }) => ({ classId: id })) } },
 			stripeProductId: product.id,
 		},
 		select: { id: true },

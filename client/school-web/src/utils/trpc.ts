@@ -1,4 +1,3 @@
-// trpc-helper.ts
 import type { Router } from '@mat-master/api'
 import { createReactQueryHooks } from '@trpc/react'
 import type {

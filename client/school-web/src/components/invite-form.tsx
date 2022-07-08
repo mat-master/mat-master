@@ -14,7 +14,7 @@ export const inviteFormDataSchema = z.object({
 export type InviteFormData = z.infer<typeof inviteFormDataSchema>
 export type InviteFormProps = FormWrapperProps<InviteFormData>
 
-const InviteForm: React.FC<InviteFormProps> = (props) => (
+export const InviteForm: React.FC<InviteFormProps> = (props) => (
 	<Form<InviteFormData>
 		{...props}
 		schema={inviteFormDataSchema}
@@ -35,7 +35,7 @@ const InviteForm: React.FC<InviteFormProps> = (props) => (
 export type RemoteInviteFormProps = RemoteFormWrapperProps<InviteFormData>
 
 export const RemoteInviteForm: React.FC<RemoteInviteFormProps> = (props) => {
-	const schoolId = getSchoolId()
+	const schoolId = getSchoolId()!
 	return (
 		<RemoteForm<InviteFormData>
 			submitLabel='Send'

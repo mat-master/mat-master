@@ -41,10 +41,8 @@ const BillingFormInternals: React.FC<BillingFormProps> = ({
 	)
 }
 
-const BillingForm: React.FC<BillingFormProps> = (props) => (
+export const BillingForm: React.FC<BillingFormProps> = (props) => (
 	<StripeProvider>
 		<BillingFormInternals {...props} />
 	</StripeProvider>
 )
-
-export default BillingForm

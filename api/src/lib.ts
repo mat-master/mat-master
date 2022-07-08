@@ -8,6 +8,4 @@ exporting from neither includes nor imports any private or node-specific code.
 */
 
 import type { router } from './procedures'
-
-export * from './models'
 export type Router = typeof router

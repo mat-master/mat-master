@@ -1,6 +1,6 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { snowflakeSchema } from '../../../models'
 import { sendInviteEmail } from '../../../util/send-invite-email'
 import { useSchoolAuthentication } from '../../../util/use-school-authentication'
 

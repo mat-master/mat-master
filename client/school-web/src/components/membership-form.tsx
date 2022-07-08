@@ -1,5 +1,5 @@
 import { Grid, InputWrapper, NumberInput, Select, TextInput } from '@mantine/core'
-import { Snowflake, snowflakeSchema } from '@mat-master/api'
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
 import type React from 'react'
 import { Controller } from 'react-hook-form'
 import { CurrencyDollar as PriceIcon } from 'tabler-icons-react'
@@ -31,7 +31,6 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 		schema={membershipFormDataSchema}
 		child={({ form }) => {
 			const { errors } = form.formState
-			console.log(errors)
 
 			return (
 				<>
@@ -72,16 +71,28 @@ export const MembershipForm: React.FC<MembershipFormProps> = (props) => (
 								<Controller
 									name='intervalCount'
 									control={form.control}
-									render={({ field }) => <NumberInput min={0} {...field} />}
+									render={({ field }) => <NumberInput min={1} {...field} />}
 								/>
 							</Grid.Col>
 							<Grid.Col span={3}>
 								<Controller
 									name='interval'
 									control={form.control}
-									render={({ field }) => (
-										<Select data={[...INTERVALS]} {...field} />
-									)}
+									render={({ field }) => {
+										const count = form.watch('intervalCount') ?? 0
+
+										return (
+											<Select
+												{...field}
+												data={INTERVALS.map((value) => ({
+													value,
+													label: `${value[0]!.toUpperCase()}${value.substring(1)}${
+														count !== 1 ? 's' : ''
+													}`,
+												}))}
+											/>
+										)
+									}}
 								/>
 							</Grid.Col>
 						</Grid>

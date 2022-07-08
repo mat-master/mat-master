@@ -1,7 +1,7 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { ClassTime } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { snowflakeSchema } from '../../models'
 import { useSchoolAuthentication } from '../../util/use-school-authentication'
 
 export const getSchoolScheduleParamsSchema = z.object({

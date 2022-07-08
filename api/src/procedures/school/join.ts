@@ -1,6 +1,6 @@
+import { Snowflake, snowflakeSchema } from '@mat-master/common'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { Snowflake, snowflakeSchema } from '../../models'
 import { generateSnowflake } from '../../util/generate-snowflake'
 import { useAuthentication } from '../../util/use-authentication'
 

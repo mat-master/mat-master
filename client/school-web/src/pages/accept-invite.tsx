@@ -17,7 +17,7 @@ import {
 	ShieldLock as VerifyIcon,
 	User as UserIcon,
 } from 'tabler-icons-react'
-import BillingForm from '../components/billing-form'
+import { BillingForm } from '../components/billing-form'
 import EmailVerifier from '../components/email-verifier'
 import SignUpLoginForm from '../components/sign-up-login-form'
 import { getPrimaryColor } from '../utils/get-colors'

@@ -1,7 +1,7 @@
 import { Paper, SimpleGrid, Title } from '@mantine/core'
 import type React from 'react'
 import AppHeader from '../components/app-header'
-import BillingForm from '../components/billing-form'
+import { BillingForm } from '../components/billing-form'
 import { RemoteUserForm } from '../components/user-form'
 import Page from '../page'
 

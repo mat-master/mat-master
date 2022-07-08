@@ -13,7 +13,6 @@ import SideBar from '../../components/side-bar'
 import Table from '../../components/table'
 import useSearchTerm from '../../hooks/use-search-term'
 import Page from '../../page'
-import { ClassSchedule } from '../../utils/get-interval-schedule'
 import getSchoolId from '../../utils/get-school-id'
 import { trpc } from '../../utils/trpc'
 
@@ -46,9 +45,7 @@ const ClassesPage: React.FC = () => {
 						action: () =>
 							modals.enqueue({
 								title: 'New Class',
-								children: (
-									<RemoteClassForm onSubmit={() => console.log('close modal')} />
-								),
+								children: <RemoteClassForm onSubmit={modals.pop} />,
 							}),
 					},
 				]}
@@ -77,7 +74,7 @@ const ClassesPage: React.FC = () => {
 							}
 						/>
 					),
-					schedule: <ScheduleDisplay schedule={schedule as ClassSchedule} />,
+					schedule: <ScheduleDisplay schedule={schedule} />,
 				}))}
 			/>
 		</Page>

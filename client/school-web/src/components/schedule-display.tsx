@@ -1,5 +1,5 @@
 import { Box, Group, Text } from '@mantine/core'
-import { ClassSchedule, getClassScheduleInterval } from '@mat-master/common'
+import { ClassSchedule } from '@mat-master/common'
 import type React from 'react'
 import { WEEKDAYS } from '../utils/get-english-schedule'
 
@@ -9,18 +9,18 @@ export interface ScheduleDisplayProps {
 
 const ScheduleDisplay: React.FC<ScheduleDisplayProps> = ({ schedule }) => {
 	const today = new Date()
-	const interval = getClassScheduleInterval(schedule, [
-		// this monday
-		new Date(today.getFullYear(), today.getMonth(), -24 * (today.getDate() - 1)),
-		// next sunday
-		new Date(
-			today.getFullYear(),
-			today.getMonth(),
-			today.getDate() + ((7 - today.getDay()) % 7)
-		),
-	])
+	// const interval = getClassScheduleInterval(schedule, [
+	// 	// this monday
+	// 	new Date(today.getFullYear(), today.getMonth(), -24 * (today.getDate() - 1)),
+	// 	// next sunday
+	// 	new Date(
+	// 		today.getFullYear(),
+	// 		today.getMonth(),
+	// 		today.getDate() + ((7 - today.getDay()) % 7)
+	// 	),
+	// ])
 
-	const dayIndexes = interval.map(({ start }) => start.getDay())
+	const dayIndexes: number[] = []
 	return (
 		<Group spacing={4}>
 			{WEEKDAYS.map((day, i) => {

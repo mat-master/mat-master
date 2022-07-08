@@ -1,7 +1,7 @@
+import { snowflakeSchema } from '@mat-master/common'
 import { Invite } from '@prisma/client'
 import { z } from 'zod'
 import { Procedure } from '../..'
-import { snowflakeSchema } from '../../../models'
 import {
 	paginationParamsSchema,
 	prismaPagination,

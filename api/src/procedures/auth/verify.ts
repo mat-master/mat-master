@@ -1,8 +1,9 @@
+import { Snowflake } from '@mat-master/common'
 import { TRPCError } from '@trpc/server'
 import { TokenExpiredError } from 'jsonwebtoken'
 import { z } from 'zod'
 import { Procedure } from '..'
-import { Payload, Snowflake, verificationPayloadSchema } from '../../models'
+import { Payload, verificationPayloadSchema } from '../../models'
 import { decodeToken, signPayload } from '../../util/payload-encoding'
 
 export const authVerifyParamsSchema = z.object({
